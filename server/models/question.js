@@ -14,10 +14,21 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   question.init({
-    question_type_id: DataTypes.INTEGER,
-    description: DataTypes.TEXT,
-    abbr: DataTypes.STRING,
-    active: DataTypes.BOOLEAN,
+    id: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER,
+    },
+    uuid: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+    },
+    question_type_id: {type:DataTypes.INTEGER,allowNull:false},
+    description: {type:DataTypes.TEXT,allowNull:false},
+    abbr: {type:DataTypes.STRING,allowNull:false},
+    active: {type:DataTypes.BOOLEAN,allowNull:false},
     deleted_at: DataTypes.DATE
   }, {
     sequelize,

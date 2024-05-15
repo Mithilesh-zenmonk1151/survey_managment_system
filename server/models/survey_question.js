@@ -14,8 +14,19 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   survey_question.init({
-    survey_id: DataTypes.INTEGER,
-    question_id: DataTypes.INTEGER,
+    id: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER,
+    },
+    uuid: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+    },
+    survey_id: {type:DataTypes.INTEGER,allowNull:false},
+    question_id: {type:DataTypes.INTEGER,allowNull:false},
     order: DataTypes.INTEGER,
     question_description: DataTypes.TEXT,
     deleted_at: DataTypes.TIME

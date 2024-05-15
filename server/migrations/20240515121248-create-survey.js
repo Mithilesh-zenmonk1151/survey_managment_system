@@ -7,22 +7,32 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+      },
+      uuid: {
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
+        allowNull: false,
       },
       survey_type_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull:false
       },
       name: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
+        allowNull:false
       },
       abbr: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull:false
       },
       is_published: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        allowNull:false
       },
       options: {
-        type: Sequelize.JSON
+        type: Sequelize.JSON,
+        allowNull:false
       },
       published_at: {
         type: Sequelize.DATE

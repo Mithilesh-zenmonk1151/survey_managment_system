@@ -13,6 +13,17 @@ module.exports = (sequelize, DataTypes) => {
   }
   survey.init(
     {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER,
+      },
+      uuid: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        allowNull: false,
+      },
       survey_type_id: { type: DataTypes.INTEGER, allowNull: false },
       name: { type: DataTypes.TEXT, allowNull: false },
       abbr: { type: DataTypes.STRING, allowNull: false },
