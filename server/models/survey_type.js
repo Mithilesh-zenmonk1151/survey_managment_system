@@ -14,8 +14,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   survey_type.init({
-    name: DataTypes.STRING,
-    abbr: DataTypes.STRING
+    name: {type:DataTypes.STRING,allowNull:false},
+    abbr: {type:DataTypes.STRING, allowNull:false},
   }, {
     sequelize,
     modelName: 'survey_type',

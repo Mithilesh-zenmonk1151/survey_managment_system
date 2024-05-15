@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class survey extends Model {
     /**
@@ -13,18 +11,25 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  survey.init({
-    survey_type_id: DataTypes.INTEGER,
-    name: DataTypes.TEXT,
-    abbr: DataTypes.STRING,
-    is_published: DataTypes.BOOLEAN,
-    options: DataTypes.JSON,
-    published_at: DataTypes.DATE,
-    publication_status_changed_at: DataTypes.DATE,
-    deleted_at: DataTypes.DATE
-  }, {
-    sequelize,
-    modelName: 'survey',
-  });
+  survey.init(
+    {
+      survey_type_id: { type: DataTypes.INTEGER, allowNull: false },
+      name: { type: DataTypes.TEXT, allowNull: false },
+      abbr: { type: DataTypes.STRING, allowNull: false },
+      is_published: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+      options: { type: DataTypes.JSON, allowNull: false },
+      published_at: { type: DataTypes.DATE },
+      publication_status_changed_at: DataTypes.DATE,
+      deleted_at: DataTypes.DATE,
+    },
+    {
+      sequelize,
+      modelName: "survey",
+    }
+  );
   return survey;
 };
