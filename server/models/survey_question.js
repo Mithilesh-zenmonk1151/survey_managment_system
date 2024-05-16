@@ -10,7 +10,15 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      survey_question.belongsTo(models.Survey, {
+        foreignKey: 'survey_id',
+        onDelete: 'CASCADE'
+      });
+    
+      survey_question.belongsTo(models.Question, {
+        foreignKey: 'question_id',
+        onDelete: 'CASCADE'
+      });
     }
   }
   survey_question.init({

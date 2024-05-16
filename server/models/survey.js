@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
         otherKey: 'question_id',
         as: 'questions'
       });
+      survey.hasMany(models.survey_question, {
+        foreignKey: 'survey_id',
+        onDelete: 'CASCADE'
+      });
     }
   }
   survey.init(

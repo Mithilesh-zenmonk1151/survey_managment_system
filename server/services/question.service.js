@@ -28,8 +28,10 @@ exports.create_question= async(payload)=>{
 exports.get_question = async (payload) => {
     try {
         const {question_id}=payload.body;
+        console.log("BOLY.BODY",payload.body)
         const ServeyQu= await survey_question.findAll({where:{question_id:question_id}});
         console.log("SSEEERRRRRYJJK",ServeyQu);
+        const survey= await findAll()
 
         console.log("GGETTT++++======")
       const surveyes = await question.findAll({
@@ -49,6 +51,22 @@ exports.get_question = async (payload) => {
 exports.update_question=async(payload)=>{
     try{
         const {question_id}=payload.body;
+
+
+         const sell=await question.find(question_Id)
+ 
+    if (!sell) {
+      throw new Error('Question not found');
+    }
+
+    // Include the SurveyQuestion model to access the Survey association
+    return question.getSurveyQuestions({
+      include: [{
+        model: Survey,
+        where: { published: true } // Check if the associated Survey is published
+      }]
+    });
+  }
 
 
     }

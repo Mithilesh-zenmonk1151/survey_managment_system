@@ -20,7 +20,11 @@ module.exports = (sequelize, DataTypes) => {
       question.belongsTo(models.question_type,{
         foreignKey:"question_type_id",
         as:"question_type",
-      })
+      });
+      question.hasMany(models.survey_question, {
+        foreignKey: 'question_id',
+        onDelete: 'CASCADE'
+      });
 
     }
   }
