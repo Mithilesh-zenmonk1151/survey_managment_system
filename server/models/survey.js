@@ -8,7 +8,16 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      survey.belongsTo(models.survey_type, {
+        foreignKey: 'survey_type_id',
+        as: 'survey_type', 
+      });
+      survey.belongsToMany(models.question, {
+        through: models.survey_question,
+        foreignKey: 'survey_id',
+        otherKey: 'question_id',
+        as: 'questions'
+      });
     }
   }
   survey.init(
@@ -40,6 +49,9 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "survey",
+      // createdAt: 'created_at',
+      // updatedAt: 'updated_at',
+      deletedAt:"deleted_at"
     }
   );
   return survey;

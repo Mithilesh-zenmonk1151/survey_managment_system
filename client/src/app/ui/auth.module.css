@@ -1,0 +1,11 @@
+.main_body{
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    flex-direction: column;
+    background-image: url("/images/signupBackground.png");
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

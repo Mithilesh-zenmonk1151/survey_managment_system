@@ -33,6 +33,9 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'survey_question',
+    // createdAt: 'created_at',
+    // updatedAt: 'updated_at',
+    deletedAt:"deleted_at"
   });
   return survey_question;
 };

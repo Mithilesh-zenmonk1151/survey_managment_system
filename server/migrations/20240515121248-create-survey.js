@@ -28,7 +28,8 @@ module.exports = {
       },
       is_published: {
         type: Sequelize.BOOLEAN,
-        allowNull:false
+        allowNull:false,
+        defaultValue:false,
       },
       options: {
         type: Sequelize.JSON,

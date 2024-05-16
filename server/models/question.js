@@ -10,7 +10,18 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      question.belongsToMany(models.survey, {
+        through: models.survey_question,
+        foreignKey: 'question_id',
+        otherKey: 'survey_id',
+        as: 'surveys'
+      });
+
+      question.belongsTo(models.question_type,{
+        foreignKey:"question_type_id",
+        as:"question_type",
+      })
+
     }
   }
   question.init({
@@ -33,6 +44,9 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'question',
+    // createdAt: 'created_at',
+    // updatedAt: 'updated_at',
+    deletedAt:"deleted_at"
   });
   return question;
 };

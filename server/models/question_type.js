@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      question_type.hasMany(models.question,{
+        foreignKey:"question_type_id",
+        as:"questions"
+      })
     }
   }
   question_type.init(
@@ -27,10 +31,15 @@ module.exports = (sequelize, DataTypes) => {
       name: { type: DataTypes.STRING, allowNull: false },
       abbr: { type: DataTypes.STRING, allowNull: false },
       deleted_at: DataTypes.TIME,
+      // updated_at: DataTypes.TIME,
     },
     {
       sequelize,
       modelName: "question_type",
+      // createdAt: 'created_at',
+      // updatedAt: 'updated_at',
+      deletedAt:"deleted_at"
+      
     }
   );
   return question_type;

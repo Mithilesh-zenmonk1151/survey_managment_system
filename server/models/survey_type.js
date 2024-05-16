@@ -10,7 +10,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      survey_type.hasMany(models.survey, {
+        foreignKey: 'survey_type_id',
+        as: 'surveys', 
+      });
     }
   }
   survey_type.init({
@@ -30,6 +33,9 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'survey_type',
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    deletedAt:"deleted_at"
   });
   return survey_type;
 };
