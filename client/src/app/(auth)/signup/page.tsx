@@ -6,6 +6,7 @@ import TextFieldCompo from '@/components/textField/TextFieldCompo'
 import { useAppDispatch } from '@/store/hooks'
 import { register_users } from '@/slice/auth/auth_action'
 import toast from 'react-hot-toast'
+import CustomButton from '@/components/customButton/CustomButton'
 
 export default function SignUpPage() {
   const [full_name,set_full_name]=useState("");
@@ -22,16 +23,11 @@ export default function SignUpPage() {
           console.log("USSSSEEERRR===",user);
           dispatch(register_users(user));
           toast.success("User signup successfully")
-
-
         }
         catch(error){
           console.log("error come while we are going to register new user");
         }
     }
-
-
-
   return (
    <Box className={style.main_body} >
     <Typography>SignUp</Typography>
@@ -39,21 +35,15 @@ export default function SignUpPage() {
       bgcolor:"white",
       height:"470px",
       width:"400px",
-      
-      
-
     }}>
       <Box>
       <TextFieldCompo placeholder='Enter your full name' value={full_name} label='Full name' type='text' name='firstName' nameT='firstNamer' customClassName='' setValue={set_full_name}/>
         <TextFieldCompo placeholder='Enter your email here' value={email} label='Email' type='email' name='email' nameT='email' customClassName='' setValue={set_email}/>
         <TextFieldCompo placeholder='Enter Password eg:-abc@22' value={password} label='Password' type='password' name='password' nameT='password' customClassName='' setValue={set_password}/>
         <TextFieldCompo placeholder='confirm Password' value={confirm_password} label="Confirm Passsword" type='text' name='lastName' nameT='lastName' customClassName='' setValue={set_confirm_password}/>
-        <Button onClick={handleOnClick}>Signup</Button>
-
-
-        
+        {/* <Button onClick={handleOnClick}>Signup</Button> */}
+        <CustomButton onClick={handleOnClick} text='Signup' />
       </Box>
-
     </Box>
    </Box>
   )

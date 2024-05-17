@@ -1,0 +1,18 @@
+#menu-appbar .MuiPaper-root {
+    width: 200px;
+    margin-top: 6px;
+    border-radius: 4px;
+    margin-left: -4px;
+  }
+  #menu-appbar .ellipsisText {
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  #menu-appbar .MuiButtonBase-root.MuiMenuItem-root {
+    height: auto !important;
+    min-height: 40px !important;
+    padding: 4px 16px !important;
+    box-sizing: border-box;
+  }

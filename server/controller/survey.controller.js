@@ -33,7 +33,8 @@ exports.update_survey = async (req, res) => {
 };
 exports.survey_update_at_publish = async (req, res) => {
   try {
-    const response = await survey_service.update_survey(req);
+    console.log("PUBLISHCONTR")
+    const response = await survey_service.survey_update_at_publish(req);
     res.status(200).json({ response });
   } catch (error) {
     console.log(error);

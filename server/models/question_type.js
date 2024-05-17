@@ -44,3 +44,6 @@ module.exports = (sequelize, DataTypes) => {
   );
   return question_type;
 };
+
+
+
