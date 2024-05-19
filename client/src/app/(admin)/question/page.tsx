@@ -46,9 +46,9 @@ export default function QuestionPage() {
                 
             }}>
             <SearchbarCompo/>
-            <DropDown/>
+            {/* <DropDown/> */}
             <CheckBoxDropDown/>
-            <DropDown/>
+            {/* <DropDown/> */}
 
             </Box>
             <Switch {...label} />

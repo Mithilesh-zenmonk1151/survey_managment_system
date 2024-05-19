@@ -1,30 +1,41 @@
-import * as React from 'react';
+import React from 'react';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import "./DropDown.css"
-export default function DropDown() {
-//   const [age, setAge] = React.useState('');
+import "./DropDown.css";
 
-  const handleChange = (event: SelectChangeEvent) => {
-    // setAge(event.target.value);
+type DropDownProps = {
+  select_type?: string;
+  options: Array<{ uuid: string; id: string; name: string; abb: string }>;
+  value?: string;
+  onChange: (value: string) => void;
+  id?:number,
+};
+
+export default function DropDown(props: DropDownProps) {
+  const { select_type, options, value, onChange} = props;
+
+  const handleChange = (event: SelectChangeEvent<string>) => {
+    onChange(event.target.value);
   };
 
   return (
-      <FormControl sx={{ width:"90px", height:"50px"}} className='header-drop'>
-        <Select
-          
-        //   value={age}
-          onChange={handleChange}
-        >
-          <MenuItem value="">
-            <em>None</em>
+    <FormControl sx={{ width: "200px", height: "50px" }} className='header-drop'>
+      <InputLabel>{select_type}</InputLabel>
+      <Select
+        value={value || ""}
+        onChange={handleChange}
+      >
+        <MenuItem value="">
+          <em>{select_type}</em>
+        </MenuItem>
+        {options.map(option => (
+          <MenuItem key={option.id} value={option.id} >
+            {option.name}
           </MenuItem>
-          <MenuItem value={10}>Twenty</MenuItem>
-          <MenuItem value={21}>Twenty one</MenuItem>
-          <MenuItem value={22}>Twenty one and a half</MenuItem>
-        </Select>
-      </FormControl>
+        ))}
+      </Select>
+    </FormControl>
   );
 }
