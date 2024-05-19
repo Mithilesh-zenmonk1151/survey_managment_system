@@ -1,5 +1,5 @@
 const CustomError = require("../libs/error");
-const { survey_type } = require("../models");
+const { survey_type,survey } = require("../models");
 exports.create_survey_type = async (payload) => {
   try {
     const { name, abbr } = payload.body;
@@ -20,7 +20,7 @@ exports.get_survey_type = async (payload) => {
     try {
         console.log("GGETTT++++======")
       const sry_type= await survey_type.findAll({
-        include: [{ model: question, as: "questions" }],
+        include: [{ model: survey, as: "surveys" }],
       });
   
       console.log("Survey==========================");

@@ -1,4 +1,5 @@
 "use client"
+import DialogBoxSurvey from '@/components/DialogBoxSurvey/DialogBoxSurvey'
 import CustomButton from '@/components/customButton/CustomButton'
 import BasicTabs from '@/components/tabComponent/BasicTab'
 import { get_question_type } from '@/slice/question_type/question_type_action'
@@ -34,7 +35,7 @@ export default function page() {
             fontWeight:"500",
             fontFamily:""
         }}>Surveys List</Typography>
-        <CustomButton text='CREATE' onClick={handldeOnClick}/>
+       <Box> <DialogBoxSurvey/></Box>
     </Box>
     <Box>
         <BasicTabs/>
