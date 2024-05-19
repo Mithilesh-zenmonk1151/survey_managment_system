@@ -5,12 +5,13 @@ import post_question_service from "@/services/question_service/post_question";
 import { get_survey_type, post_survey_type } from "./survey_type";
 import post_survey_type_service from "@/services/survey_type_service/post_survey_type";
 import get_survey_service from "@/services/survey_service/get_survey_service";
+import post_survey_service from "@/services/survey_service/post_survey_service";
 export const create_survey = createAsyncThunk(
  post_survey_type,
   async (survey:{name:string,abbr:string,survey_type_id:number,is_published:boolean,options:{modality:string,languages:string}}, { rejectWithValue }) => {
     try {
       // console.log("Slice wala teststssss",test);
-      const response = await post_survey_type_service(survey);
+      const response = await post_survey_service(survey);
       const data = response?.data;
       console.log("data survey added from slice===",data);
       return data;

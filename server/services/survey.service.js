@@ -25,28 +25,28 @@ exports.create_survey = async (payload) => {
 };
 exports.get_survey = async (payload) => {
   try {
-    const page_number = payload.query.page_number || 1;
+    // const page_number = payload.query.page_number || 1;
     console.log("");
-    const limit = payload.query.limit || 3;
-    console.log("PAGENUMER", page_number);
-    console.log("PAGENUMER", limit);
-    const offset = (page_number - 1) * limit;
+    // const limit = payload.query.limit || 3;
+    // console.log("PAGENUMER", page_number);
+    // console.log("PAGENUMER", limit);
+    // const offset = (page_number - 1) * limit;
     console.log("PAYload.Query", payload.query);
     const get_srv = await survey.findAndCountAll({
       include: [{ model: survey_type, as: "survey_type" }],
-      limit: limit,
-      offset: offset,
+      // limit: limit,
+      // offset: offset,
     });
     console.log("GGetttetdfj", get_srv);
     if (!get_srv) {
       throw new CustomError("Survey not found", 404);
     }
-    const total_items = await question.count();
+    // const total_items = await question.count();
     const res = {
       data: get_srv,
-      total_items: total_items,
-      total_pages: Math.ceil(total_items / limit),
-      current_page: page_number,
+      // total_items: total_items,
+      // total_pages: Math.ceil(total_items / limit),
+      // current_page: page_number,
     };
     return res;
   } catch (error) {

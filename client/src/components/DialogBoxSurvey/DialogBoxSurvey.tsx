@@ -16,6 +16,7 @@ import { create_question } from "@/slice/question/question_action";
 import { get_survey_type } from "@/slice/survey_type/survey_type_action";
 import style from "@/app/ui/layout.module.css"
 import { create_survey } from "@/slice/survey/survey_action";
+import DropDownSurvey from "../dropDownSurvey/DropDownSurvey";
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
@@ -59,6 +60,7 @@ export default function DialogBoxSurvey() {
     setOpen(false);
     try {
       dispatch(create_survey(survey))
+      console.log("SURRRRRVVVVEEEYEYY=====",survey)
     } catch (error) {
       console.log(error);
       console.log(
@@ -206,8 +208,8 @@ export default function DialogBoxSurvey() {
                 gap:"20px"
 
             }}> 
-                <DropDown onChange={set_selected_modality} options={modalityy} select_type="Modality" customClassDrop={style.drop_down}/>
-                <DropDown onChange={set_language} options={language} select_type="Language" customClassDrop={style.drop_down}/>
+                <DropDownSurvey onChange={set_selected_modality} options={modalityy} select_type="Modality" customClassDrop={style.drop_down}/>
+                <DropDownSurvey onChange={set_language} options={language} select_type="Language" customClassDrop={style.drop_down}/>
             </Box>
           </Box>
         </DialogContent>

@@ -7,80 +7,75 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import Switch from '@mui/material/Switch';
+import IconButton from '@mui/material/IconButton';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import EditIcon from '@mui/icons-material/Edit';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { get_survey } from '@/slice/survey/survey_action';
 
 interface Column {
-  id: 'name' | 'code' | 'population' | 'size' | 'density';
+  id: 'ID' | 'Name' | 'Question' | 'Type of Survey' | 'Abbreviation' | 'Modified' | 'Status' | 'Actions';
   label: string;
   minWidth?: number;
   align?: 'right';
-  format?: (value: number) => string;
+  format?: (value: number | string | Date) => string;
 }
 
 const columns: readonly Column[] = [
-  { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
-  {
-    id: 'population',
-    label: 'Population',
-    minWidth: 170,
-    align: 'right',
-    format: (value: number) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'size',
-    label: 'Size\u00a0(km\u00b2)',
-    minWidth: 170,
-    align: 'right',
-    format: (value: number) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'density',
-    label: 'Density',
-    minWidth: 170,
-    align: 'right',
-    format: (value: number) => value.toFixed(2),
-  },
+  { id: 'ID', label: 'ID', minWidth: 50 },
+  { id: 'Name', label: 'Name', minWidth: 170 },
+  { id: 'Question', label: 'Question', minWidth: 100 },
+  { id: 'Type of Survey', label: 'Type of Survey', minWidth: 170 },
+  { id: 'Abbreviation', label: 'Abbreviation', minWidth: 100 },
+  { id: 'Modified', label: 'Modified', minWidth: 170, format: (value: Date) => value.toISOString().split('T')[0] },
+  { id: 'Status', label: 'Status', minWidth: 100, align: 'right' },
+  { id: 'Actions', label: 'Actions', minWidth: 100, align: 'right' }
 ];
 
 interface Data {
-  name: string;
-  code: string;
-  population: number;
-  size: number;
-  density: number;
+  ID: number;
+  Name: string;
+  Question: number;
+  'Type of Survey': string;
+  Abbreviation: string;
+  Modified: Date;
+  Status: boolean;
 }
 
 function createData(
-  name: string,
-  code: string,
-  population: number,
-  size: number,
+  ID: number,
+  Name: string,
+  Question: number,
+  TypeOfSurvey: string,
+  Abbreviation: string,
+  Modified: Date,
+  Status: boolean
 ): Data {
-  const density = population / size;
-  return { name, code, population, size, density };
+  return { ID, Name, Question, 'Type of Survey': TypeOfSurvey, Abbreviation, Modified, Status };
 }
 
 const rows = [
-  createData('India', 'IN', 1324171354, 3287263),
-  createData('China', 'CN', 1403500365, 9596961),
-  createData('Italy', 'IT', 60483973, 301340),
-  createData('United States', 'US', 327167434, 9833520),
-  createData('Canada', 'CA', 37602103, 9984670),
-  createData('Australia', 'AU', 25475400, 7692024),
-  createData('Germany', 'DE', 83019200, 357578),
-  createData('Ireland', 'IE', 4857000, 70273),
-  createData('Mexico', 'MX', 126577691, 1972550),
-  createData('Japan', 'JP', 126317000, 377973),
-  createData('France', 'FR', 67022000, 640679),
-  createData('United Kingdom', 'GB', 67545757, 242495),
-  createData('Russia', 'RU', 146793744, 17098246),
-  createData('Nigeria', 'NG', 200962417, 923768),
-  createData('Brazil', 'BR', 210147125, 8515767),
+  createData(1, 'Prueba Diana', 7, 'SSTP', 'PRD', new Date('2024-05-17'), false),
+  createData(2, 'ghjhg', 5, 'SSTP', 'ABBR', new Date('2024-05-17'), false),
+  createData(3, 'Survey 1.1', 0, 'SSAC', 'S1', new Date('2024-05-16'), false),
+  createData(4, 'Z', 0, 'SSTP', 'D', new Date('2024-05-16'), true),
+  createData(5, 'zreguofg', 2, 'SSTP', 'QD', new Date('2024-05-16'), true),
+  createData(6, 'Survey33', 9, 'SSTP', 'SU3', new Date('2024-05-15'), true),
+  createData(7, 'Survey 2', 4, 'SSAC', 'S2', new Date('2024-05-15'), true)
 ];
 
 export default function StickyHeadTable() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const dispatch= useAppDispatch();
+  
+  const survey= useAppSelector((state)=>state.survey);
+  console.log("Survey==== get",survey);
+  // React.useEffect(()=>{
+  //   dispatch(get_survey())
+  // },[dispatch]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -89,6 +84,13 @@ export default function StickyHeadTable() {
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+  };
+
+  const handleEyeClick = (id: number) => {
+    // Here, you should implement the logic to open a new tab in the tab section
+    console.log(`Opening tab for ID: ${id}`);
+    // Assuming you have a function `openNewTab` that handles opening a new tab
+    // openNewTab(id);
   };
 
   return (
@@ -113,14 +115,30 @@ export default function StickyHeadTable() {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.ID}>
                     {columns.map((column) => {
                       const value = row[column.id];
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === 'number'
-                            ? column.format(value)
-                            : value}
+                          {column.id === 'Status' ? (
+                            <Switch checked={value as boolean} />
+                          ) : column.id === 'Modified' ? (
+                            column.format ? column.format(value as Date) : value
+                          ) : column.id === 'Actions' ? (
+                            <>
+                              <IconButton onClick={() => handleEyeClick(row.ID)}>
+                                <VisibilityIcon />
+                              </IconButton>
+                              <IconButton>
+                                <EditIcon />
+                              </IconButton>
+                              <IconButton>
+                                <MoreVertIcon />
+                              </IconButton>
+                            </>
+                          ) : (
+                            value
+                          )}
                         </TableCell>
                       );
                     })}

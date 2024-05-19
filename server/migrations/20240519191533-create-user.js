@@ -7,21 +7,15 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER
       },
-      uuid: {
-        type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4,
-        allowNull: false,
-      },
-      full_name: {
+      name: {
         type: Sequelize.STRING
       },
-     
       email: {
         type: Sequelize.STRING
       },
-      password: {
+      googleId: {
         type: Sequelize.STRING
       },
       createdAt: {
