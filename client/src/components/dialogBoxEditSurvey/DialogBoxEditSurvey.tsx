@@ -8,14 +8,12 @@ import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { Box, TextField } from "@mui/material";
-import Textarea from "@mui/joy/Textarea";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { get_question_type } from "@/slice/question_type/question_type_action";
 import { update_question } from "@/slice/question/question_action";
 import DropDown from "../dropDown/DropDown";
-import DropDownSurvey from "../dropDownSurvey/DropDownSurvey";
 import DropDownForEditSurvey from "../dropDownForEditSurvey/DropDownForEditSurvey";
-import { get_survey_type } from "@/slice/survey_type/survey_type_action";
+import { put_survey } from "@/slice/survey/survey_action";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -34,13 +32,6 @@ interface DataRow {
   modified: string;
 }
 
-interface Question {
-  id: number;
-  type: string;
-  abbreviation: string;
-  description: string;
-}
-
 interface EditQuestionDialogBoxProps {
   open: boolean;
   onClose: () => void;
@@ -49,113 +40,52 @@ interface EditQuestionDialogBoxProps {
 
 const EditSurveyDialogBox: React.FC<EditQuestionDialogBoxProps> = ({ open, onClose, question }) => {
   const [selected_survey_type_id, set_selected_survey_type_id] = useState("");
-  const [modality,set_selected_modality]=useState("");
-  const [languages,set_language]= useState("");
-const [description, set_description] = useState("");
-  console.log("descriptiondsfrgdf",description)
+  const [modality, set_selected_modality] = useState("");
+  const [languages, set_language] = useState("");
+  const [description, set_description] = useState("");
   const [abbr, set_abbr] = useState("");
   const dispatch = useAppDispatch();
-  console.log("QQQQQSSSSS=========================",question?.name);
-  console.log("QQQQQSSSSS=========================",question?.id);
-
-
-
+  const [name, set_name] = useState(question?.name);
 
   useEffect(() => {
     if (question) {
       set_description(question.name);
       set_abbr(question.abbreviation);
-      // Assuming you have a way to get question type ID from question
-      // set_selected_question_type_id(question.question_type_id.toString());
     }
   }, [question]);
 
   useEffect(() => {
     dispatch(get_question_type());
   }, [dispatch]);
-  const [name, set_name]=useState(question?.name);
 
   const question_type = useAppSelector((state) => state.question_type?.content?.response);
+  const sttt = useAppSelector((state) => state.survey_type?.content?.response);
+
+  const options = { modality, languages };
+  const is_published = false;
+  const survey_type_id = parseInt(selected_survey_type_id);
+
+  const modalityy = [
+    { id: "1", name: "In Person", value: "In Person" },
+    { id: "2", name: "In Value", value: "In Value" }
+  ];
+
+  const language = [
+    { id: "1", name: "English", value: "English" },
+    { id: "2", name: "Spanish", value: "Spanish" },
+    { id: "3", name: "Chinese", value: "Chinese" },
+    { id: "4", name: "Italian", value: "Italian" },
+    { id: "5", name: "French", value: "French" },
+    { id: "6", name: "Portuguese", value: "Portuguese" }
+  ];
 
   const handleSave = () => {
-    if (question) {
-      const updatedQuestion = {
-        id: question.id,
-        description:description,
-        
-      };
-    }
+    const id = question?.id;
+    const survey = { name, options, survey_type_id, id };
+    console.log("Survetegprtkhoireudofiuwerioufgior",survey);
+    dispatch(put_survey(survey));
     onClose();
   };
-  const sttt= useAppSelector((state)=>state.survey_type?.content?.response);
-  console.log("Stateyujtyuty===sssss",sttt)
-  const options= {modality,languages};
-  const is_published=false;
-  const survey_type_id = parseInt(selected_survey_type_id);
-  // useEffect(()=>{
-  //   dispatch(get_survey_type());
-
-  // },[dispatch])
-  // const survey_types= useAppSelector((state)=>state.survey_type);
-  // console.log("Survey Type",survey_types)
-
-
-  const survey= {name,is_published ,abbr,options,survey_type_id};
-  console.log("Survey===",survey)
-  const modalityy=[
-    {"id":"1",
-    "name":"In Persion",
-    "value":"In Persion"
-
-    },{
-        "id":"2",
-        "name":"In Value",
-    "value":"In Value"
-
-
-    }
-  ]
-  const language =[
-    {"id":"1",
-    "name":"English",
-    "value":"English"
-
-    },{
-        "id":"2",
-        "name":"Spanish",
-    "value":"Spanish"
-
-
-    },
-    ,{
-        "id":"3",
-        "name":"Chinese",
-    "value":"Chinese"
-
-
-    }
-    ,{
-        "id":"4",
-        "name":"Italian",
-    "value":"Italian"
-
-
-    }
-    ,{
-        "id":"5",
-        "name":"French",
-    "value":"French"
-
-
-    }
-    ,{
-        "id":"6",
-        "name":"Portuguese(Portuguese)",
-    "value":"Portuguese(Portuguese)"
-
-
-    }
-  ]
 
   return (
     <BootstrapDialog onClose={onClose} aria-labelledby="customized-dialog-title" open={open}>
@@ -171,6 +101,7 @@ const [description, set_description] = useState("");
           }}
           onClick={onClose}
         >
+          <CloseIcon />
         </IconButton>
       </DialogTitle>
       <DialogContent>
@@ -179,44 +110,27 @@ const [description, set_description] = useState("");
             <TextField
               value={name}
               onChange={(e) => set_name(e.target.value)}
+              placeholder="Name"
             />
-           
           </Box>
-          <Box sx={{
-            display:'flex',
-            gap:"20px"
-          }}>
-          <TextField
-              
-              value={question?.abbreviation}
-              // onChange={(e) => set_abbr(e.target.value)}
-              placeholder="Abbreviatiion"
-              disabled
+          <Box sx={{ display: "flex", gap: "20px" }}>
+            <TextField
+              value={abbr}
+              onChange={(e) => set_abbr(e.target.value)}
+              placeholder="Abbreviation"
             />
-          <DropDown
-            select_type="Survey Type"
-            options={sttt}
-            value={selected_survey_type_id}
-            onChange={set_selected_survey_type_id}
-          />
+            <DropDown
+              select_type="Survey Type"
+              options={sttt}
+              value={selected_survey_type_id}
+              onChange={set_selected_survey_type_id}
+            />
           </Box>
-          <Box sx={{
-            display:"flex",
-            gap:"30px"
-          }}>
-          <DropDownForEditSurvey onChange={set_selected_modality} options={modalityy} select_type="Modality" />
-          <DropDownForEditSurvey onChange={set_language} options={language} select_type="Language" />
-
-
-
-
-
-
-
+          <Box sx={{ display: "flex", gap: "30px" }}>
+            <DropDownForEditSurvey onChange={set_selected_modality} options={modalityy} select_type="Modality" />
+            <DropDownForEditSurvey onChange={set_language} options={language} select_type="Language" />
           </Box>
         </Box>
-        
-          
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
