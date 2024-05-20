@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { create_survey, get_survey } from "./survey_action";
+import { create_survey, get_survey, update_survey } from "./survey_action";
 
 type initialStateProps = {
   isLoading: boolean;
@@ -65,6 +65,20 @@ export const survey_slice = createSlice({
       state.isLoading = false;
     });
     builder.addCase(create_survey.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error;
+    });
+    builder.addCase(update_survey.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(update_survey.fulfilled, (state, action) => {
+      state.isLoading = false;
+      const updatedQuestion = action.payload;
+      if (state.content.survey.id === updatedQuestion.id) {
+        state.content.survey = updatedQuestion;
+      }
+    });
+    builder.addCase(update_survey.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error;
     });

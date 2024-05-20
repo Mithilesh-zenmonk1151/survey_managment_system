@@ -31,37 +31,37 @@ exports.create_question = async (payload) => {
 };
 exports.get_question = async (payload) => {
   try {
-    const page_number = payload.query.page_number || 1;
+    // const page_number = payload.query.page_number || 1;
     console.log("");
-    const limit = payload.query.limit || 3;
-    console.log("PAGENUMER", page_number);
-    console.log("PAGENUMER", limit);
-    const search = payload.query.search || "";
+    // const limit = payload.query.limit || 3;
+    // console.log("PAGENUMER", page_number);
+    // console.log("PAGENUMER", limit);
+    // const search = payload.query.search || "";
     // console.log("LIMITsdjkghfegf==",limit)
-    const offset = (page_number - 1) * limit;
+    // const offset = (page_number - 1) * limit;
     // console.log("LIMIT&&&&OFerde",limit,offset);
-    console.log("PAYload.Query", payload.query.search);
+    // console.log("PAYload.Query", payload.query.search);
     const surveyes = await question.findAndCountAll({
       include: [{ model: question_type, as: "question_type" }],
-      limit: limit,
-      offset: offset,
+      // limit: limit,
+      // offset: offset,
     });
     if (!surveyes) {
       throw new CustomError("Survey not found", 404);
     }
-    if (search) {
-      queryOptions.where = {
-        description: {
-          [Op.like]: `%${search}%`,
-        },
-      };
-    }
-    const total_items = await question.count();
+    // if (search) {
+    //   queryOptions.where = {
+    //     description: {
+    //       [Op.like]: `%${search}%`,
+    //     },
+    //   };
+    // }
+    // const total_items = await question.count();
     const res = {
       data: surveyes,
-      total_items: total_items,
-      total_pages: Math.ceil(total_items / limit),
-      current_page: page_number,
+      // total_items: total_items,
+      // total_pages: Math.ceil(total_items / limit),
+      // current_page: page_number,
     };
     return res;
   } catch (error) {
@@ -70,7 +70,9 @@ exports.get_question = async (payload) => {
 };
 exports.update_question = async (payload) => {
   try {
-    const { question_id, description } = payload.body;
+    const {id, description } = payload.body;
+    const question_id=id;
+    console.log("Quetioniiiiiiddddddddd======",question_id)
     console.log("PAYLOAD===========", payload.body);
     const servey_qu = await survey_question.findAll({
       where: { question_id: question_id },
@@ -138,6 +140,32 @@ exports.delete_question = async (payload) => {
       where: { id: question_id },
     });
     return delete_question;
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.get_question_thr_id = async (payload) => {
+  try {
+    const { question_id } = payload.body;
+    console.log("Payload.body",payload.body);
+
+    const surveyes = await question.findOne({
+      where: { id: question_id },
+      include: [{ model: question_type, as: "question_type" }],
+    });
+   if(is_published){
+    
+   }
+    if (!surveyes) {
+      throw new CustomError("Survey not found", 404);
+    }
+
+    const res = {
+      data: surveyes,
+    };
+
+    return res;
   } catch (error) {
     throw error;
   }

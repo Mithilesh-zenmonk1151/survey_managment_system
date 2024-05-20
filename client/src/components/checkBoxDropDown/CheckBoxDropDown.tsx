@@ -49,8 +49,8 @@ export default function CheckBoxDropDown() {
 
   return (
     <div>
-      <FormControl sx={{ m: 1, width: 300 }}>
-        <InputLabel id="demo-multiple-checkbox-label">Tag</InputLabel>
+      <FormControl sx={{ m: 1, width: 200, borderRadius:"300px", }}>
+        <InputLabel id="demo-multiple-checkbox-label">Abbreviation</InputLabel>
         <Select
           labelId="demo-multiple-checkbox-label"
           id="demo-multiple-checkbox"

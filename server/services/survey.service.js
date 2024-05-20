@@ -63,7 +63,7 @@ exports.update_survey = async (payload) => {
       throw new CustomError("Survey is not exists", 404);
     }
     const updated_survey = await survey.update(
-      { name: name, survey_type_id, options },
+      { name: name, survey_type_id:survey_type_id, options:options },
       { where: { id: survey_id } },
       { new: true }
     );
@@ -75,8 +75,10 @@ exports.update_survey = async (payload) => {
 
 exports.survey_update_at_publish = async (payload) => {
   try {
-    const { is_published, survey_id } = payload.body;
+    const { is_published } = payload.body;
     console.log("PAYy", payload.body);
+    const survey_id = payload.body.id;
+    console.log("SurveyID", survey_id);
 
     const check_is_survey_exists = await survey.findOne({
       where: { id: survey_id },
@@ -84,11 +86,30 @@ exports.survey_update_at_publish = async (payload) => {
     if (!check_is_survey_exists) {
       throw new CustomError("Survey is not exists", 404);
     }
-    const updated_survey = await survey.update(
-      { is_published: is_published },
+    const published_at = new Date();
+    console.log("PUBLISHEd at", published_at);
+    const publication_status_changed_at = new Date();
+    console.log("PUBLISHEd at", publication_status_changed_at);
+
+    let updated_survey;
+    if (is_published) {
+      updated_survey = await survey.update(
+        {
+          is_published: is_published,
+          published_at: published_at,
+          publication_status_changed_at: publication_status_changed_at,
+        },
+        { where: { id: survey_id } }
+      );
+    }
+    updated_survey = await survey.update(
+      {
+        is_published: is_published,
+        publication_status_changed_at: publication_status_changed_at,
+      },
       { where: { id: survey_id } }
     );
-    console.log("updated_survey ====", updated_survey);
+    console.log("updated_survey ===========", updated_survey);
     return updated_survey;
   } catch (error) {
     throw error;

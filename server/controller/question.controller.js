@@ -50,3 +50,15 @@ exports.delete_question = async (req, res) => {
     res.status(error.code).json({ message: error.message, success: false });
   }
 };
+exports.get_question_thr_id =async (req, res) => {
+  try {
+    console.log("GGGEEETTTT");
+    const response = await question_service.get_question_thr_id(req);
+    res.status(200).json({ response });
+  } catch (error) {
+    res.status(error.code).json({
+      message: error.message,
+      success: false,
+    });
+  }
+};

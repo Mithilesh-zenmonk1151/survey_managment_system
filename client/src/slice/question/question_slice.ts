@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { create_question, get_question } from "./question_action";
+import { create_question, get_question, get_question_thr_id,  update_question } from "./question_action";
 
 type initialStateProps = {
   isLoading: boolean;
@@ -50,6 +50,18 @@ export const question_slice = createSlice({
       state.isLoading = false;
       state.error = action.error;
     });
+    builder.addCase(get_question_thr_id.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(get_question_thr_id.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.content = action.payload;
+      console.log("action.payload", action.payload);
+    });
+    builder.addCase(get_question_thr_id.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error;
+    });
     builder.addCase(create_question.pending, (state) => {
       state.isLoading = true;
     });
@@ -60,7 +72,22 @@ export const question_slice = createSlice({
       state.isLoading = false;
       state.error = action.error;
     });
-  },
+  
+  builder.addCase(update_question.pending, (state) => {
+    state.isLoading = true;
+  });
+  builder.addCase(update_question.fulfilled, (state, action) => {
+    state.isLoading = false;
+    const updatedQuestion = action.payload;
+    if (state.content.question.id === updatedQuestion.id) {
+      state.content.question = updatedQuestion;
+    }
+  });
+  builder.addCase(update_question.rejected, (state, action) => {
+    state.isLoading = false;
+    state.error = action.error;
+  });
+},
 });
 
 export default question_slice.reducer;

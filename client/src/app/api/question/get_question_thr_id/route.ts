@@ -1,0 +1,29 @@
+import axios from "axios";
+import { NextResponse, NextRequest } from "next/server";
+export async function GET(request: NextRequest) {
+  try {
+    console.log("helloii======");
+    const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/question/question`
+    );
+    console.log("getting question types", res.data);
+    if (!res) {
+      alert("getting question  failed");
+      return;
+    }
+    return NextResponse.json(res.data);
+  } catch (error: any) {
+    console.log(error);
+    console.log("error occurred during getting question type");
+  }
+}
+
+
+
+
+
+
+
+
+
+

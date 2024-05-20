@@ -4,18 +4,25 @@ import CustomButton from '@/components/customButton/CustomButton'
 import SearchbarCompo from '@/components/searchBar/SearchBarCompo'
 import BasicTabs from '@/components/tabComponent/BasicTab'
 import StickyHeadTable from '@/components/tableOneComponent/StickyHeadTable'
-import { Box, Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import React from 'react'
 import Switch from '@mui/material/Switch';
 import DropDown from '@/components/dropDown/DropDown'
 import CheckBoxDropDown from '@/components/checkBoxDropDown/CheckBoxDropDown'
 import DialogBox from '@/components/DialogBox/DialogBox'
+import QuestionTableComponent from '@/components/questionTableComponent/QuestionTableComponent'
+import DropDownQuest from '@/components/dropDownQuest/DropDownQuest'
 const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
 export default function QuestionPage() {
     // const handldeOnClick=()=>{
 
     // }
+    const dummyOptions = [
+        { value: 'option1', label: 'Option 1' },
+        { value: 'option2', label: 'Option 2' },
+        { value: 'option3', label: 'Option 3' },
+      ];
   return (
     <Box>
     <Box sx={{
@@ -23,8 +30,8 @@ export default function QuestionPage() {
         justifyContent:"space-between"
     }}>
         <Typography sx={{
-            fontSize:"20px",
-            fontWeight:"500",
+            fontSize:"22px",
+            fontWeight:"600",
             fontFamily:""
         }}>Questions List</Typography>
         {/* <CustomButton text='CREATE' onClick={handldeOnClick}/> */}
@@ -34,7 +41,8 @@ export default function QuestionPage() {
         bgcolor:"white",
         borderRadius:"5px"
     }}><Box sx={{
-        padding:"20px"
+        padding:"30px",
+        marginTop:"20px"
     }}>
         
         <Box sx={{
@@ -43,17 +51,27 @@ export default function QuestionPage() {
         }}>
             <Box sx={{
                 display:"flex",
+                gap:"30px"
                 
             }}>
             <SearchbarCompo/>
             {/* <DropDown/> */}
+            <DropDownQuest options={dummyOptions} value={dummyOptions.value}/>
             <CheckBoxDropDown/>
             {/* <DropDown/> */}
+            <Button>Clear</Button>
 
             </Box>
-            <Switch {...label} />
+            <Box sx={{
+                display:"flex",
+                alignItems:"center"
+            }}>
+            <Switch {...label} aria-label='Show deleted' />
+              <Typography>Show deleted</Typography>
+            </Box>
         </Box>
-       <StickyHeadTable/>
+       {/* <StickyHeadTable/> */}
+       <QuestionTableComponent/>
     </Box>
     </Box>
     </Box>
