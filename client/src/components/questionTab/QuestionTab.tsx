@@ -5,7 +5,7 @@ import SearchbarCompo from '@/components/searchBar/SearchBarCompo'
 import BasicTabs from '@/components/tabComponent/BasicTab'
 import StickyHeadTable from '@/components/tableOneComponent/StickyHeadTable'
 import { Box, Button, Typography } from '@mui/material'
-import React from 'react'
+import React, { useEffect } from 'react'
 import Switch from '@mui/material/Switch';
 import DropDown from '@/components/dropDown/DropDown'
 import CheckBoxDropDown from '@/components/checkBoxDropDown/CheckBoxDropDown'
@@ -14,9 +14,12 @@ import QuestionTableComponent from '@/components/questionTableComponent/Question
 import DropDownQuest from '../dropDownQuest/DropDownQuest'
 import AddQuestionToSurveyDrwar from '../addQuestionToSurveyDrawer/AddQuestionToSurveyDrwaer'
 import SurveyQuestionTable from '../surveyQuestionTable/SurveyQuestionTable'
+import { useAppDispatch } from '@/store/hooks'
+import { get_question_of_survey } from '@/slice/question/question_action'
 const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
 export default function QuestionTab() {
+    
     // const handldeOnClick=()=>{
 
     // }

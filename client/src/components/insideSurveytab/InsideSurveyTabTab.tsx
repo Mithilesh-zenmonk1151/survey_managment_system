@@ -56,8 +56,8 @@ export default function InsideSurveyTabTab({ survey }: InsideSurveyTabTabProps) 
   }
 
   return (
-    <Box sx={{ width: '100%', bgcolor: "white" }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+    <Box sx={{ width: '100%', bgcolor: "white"  }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between" ,padding:"30px"}}>
         <Typography sx={{ fontSize: "20px", fontWeight: "500" }}>{survey.name} - {survey.modality}</Typography>
         <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <Switch checked={survey.is_published} disabled />

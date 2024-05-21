@@ -26,18 +26,15 @@ exports.create_survey = async (payload) => {
 exports.get_survey = async (payload) => {
   try {
     // const page_number = payload.query.page_number || 1;
-    console.log("");
     // const limit = payload.query.limit || 3;
     // console.log("PAGENUMER", page_number);
     // console.log("PAGENUMER", limit);
     // const offset = (page_number - 1) * limit;
-    console.log("PAYload.Query", payload.query);
     const get_srv = await survey.findAndCountAll({
       include: [{ model: survey_type, as: "survey_type" }],
       // limit: limit,
       // offset: offset,
     });
-    console.log("GGetttetdfj", get_srv);
     if (!get_srv) {
       throw new CustomError("Survey not found", 404);
     }
@@ -56,17 +53,14 @@ exports.get_survey = async (payload) => {
 exports.update_survey = async (payload) => {
   try {
     const { name, survey_type_id, options } = payload.body;
-    console.log("Payload body", payload.body.id);
     // console.log("Surveyiiiddd",survey_id)
     const survey_id = payload.body.id;
-    console.log("SURvey Id", survey_id);
     const check_is_survey_exists = await survey.findOne({
       where: { id: survey_id },
     });
     if (!check_is_survey_exists) {
       throw new CustomError("Survey is not exists", 404);
     }
-    console.log("Not errro");
     const updated_survey = await survey.update(
       { name: name, survey_type_id: survey_type_id, options: options },
       { where: { id: survey_id } },
@@ -81,9 +75,7 @@ exports.update_survey = async (payload) => {
 exports.survey_update_at_publish = async (payload) => {
   try {
     const { is_published } = payload.body;
-    console.log("PAYy", payload.body);
     const survey_id = payload.body.id;
-    console.log("SurveyID", survey_id);
 
     const check_is_survey_exists = await survey.findOne({
       where: { id: survey_id },
@@ -92,9 +84,7 @@ exports.survey_update_at_publish = async (payload) => {
       throw new CustomError("Survey is not exists", 404);
     }
     const published_at = new Date();
-    console.log("PUBLISHEd at", published_at);
     const publication_status_changed_at = new Date();
-    console.log("PUBLISHEd at", publication_status_changed_at);
 
     let updated_survey;
     if (is_published) {
@@ -114,7 +104,6 @@ exports.survey_update_at_publish = async (payload) => {
       },
       { where: { id: survey_id } }
     );
-    console.log("updated_survey ===========", updated_survey);
     return updated_survey;
   } catch (error) {
     throw error;

@@ -32,7 +32,6 @@ exports.create_question = async (payload) => {
 exports.get_question = async (payload) => {
   try {
     // const page_number = payload.query.page_number || 1;
-    console.log("");
     // const limit = payload.query.limit || 3;
     // console.log("PAGENUMER", page_number);
     // console.log("PAGENUMER", limit);
@@ -72,8 +71,6 @@ exports.update_question = async (payload) => {
   try {
     const {id, description } = payload.body;
     const question_id=id;
-    console.log("Quetioniiiiiiddddddddd======",question_id)
-    console.log("PAYLOAD===========", payload.body);
     const servey_qu = await survey_question.findAll({
       where: { question_id: question_id },
     });
@@ -148,7 +145,6 @@ exports.delete_question = async (payload) => {
 exports.get_question_thr_id = async (payload) => {
   try {
     const { question_id } = payload.body;
-    console.log("Payload.body",payload.body);
 
     const surveyes = await question.findOne({
       where: { id: question_id },
@@ -170,3 +166,30 @@ exports.get_question_thr_id = async (payload) => {
     throw error;
   }
 };
+exports.get_question_of_survey = async (payload) => {
+  try {
+    
+    const { survey_id } = payload.query;
+    console.log("PPPAYYYLLOOADDDBOODDY",payload.body)
+    const survey_data = await survey_question.findAll({
+      where: { survey_id: survey_id },
+    });
+
+    const question_ids_in_table = await survey_data.map(
+      (survey_question) => survey_question.question_id
+    );
+    const all_question_ids = await question.findAll({
+      attributes: ["id"],
+    });
+    const questions = await question.findAll({
+      where: {
+        id: question_ids_in_table,
+      },
+    });
+
+    return questions;
+  } catch (error) {
+    throw error;
+
+  }
+}
