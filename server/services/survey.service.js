@@ -56,19 +56,19 @@ exports.get_survey = async (payload) => {
 exports.update_survey = async (payload) => {
   try {
     const { name, survey_type_id, options } = payload.body;
-    console.log("Payload body",payload.body.id);
+    console.log("Payload body", payload.body.id);
     // console.log("Surveyiiiddd",survey_id)
-    const survey_id=payload.body.id;
-    console.log("SURvey Id",survey_id)
+    const survey_id = payload.body.id;
+    console.log("SURvey Id", survey_id);
     const check_is_survey_exists = await survey.findOne({
       where: { id: survey_id },
     });
     if (!check_is_survey_exists) {
       throw new CustomError("Survey is not exists", 404);
     }
-    console.log("Not errro")
+    console.log("Not errro");
     const updated_survey = await survey.update(
-      { name: name, survey_type_id:survey_type_id, options:options },
+      { name: name, survey_type_id: survey_type_id, options: options },
       { where: { id: survey_id } },
       { new: true }
     );

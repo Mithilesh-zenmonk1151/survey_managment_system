@@ -23,7 +23,7 @@ const DropDownForEditSurvey: React.FC<CustomDropdownProps> = ({
 }) => {
   return (
     <FormControl  size="small" sx={{
-        width:"100px",
+        width:"90%",
         borderRadius:"80px"
     }}>
       <InputLabel id="dropdown-label">Select</InputLabel>

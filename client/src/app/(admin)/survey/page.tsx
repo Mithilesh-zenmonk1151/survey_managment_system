@@ -1,12 +1,16 @@
 "use client"
 import DialogBoxSurvey from '@/components/DialogBoxSurvey/DialogBoxSurvey'
 import CustomButton from '@/components/customButton/CustomButton'
+import MyTabsComponent from '@/components/myTabComponent/MyTabComponent'
+import MyTabsComponentS from '@/components/tabComponent/BasicTab'
 import BasicTabs from '@/components/tabComponent/BasicTab'
+import DataTable from '@/components/tableOneComponent/StickyHeadTable'
+// import MyTabsComponent from '@/components/tableOneComponent/StickyHeadTable'
 import { get_question_type } from '@/slice/question_type/question_type_action'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { Box, Typography } from '@mui/material'
 import React, { useEffect } from 'react'
-export default function page() {
+export default function Surveypage() {
     const dispatch= useAppDispatch();
     const handldeOnClick=()=>{
     }
@@ -29,7 +33,11 @@ export default function page() {
        <Box> <DialogBoxSurvey/></Box>
     </Box>
     <Box>
-        <BasicTabs/>
+        {/* <BasicTabs/> */}
+        {/* <MyTabsComponent/> */}
+        {/* <DataTable/> */}
+        {/* <MyTabsComponentS/> */}
+        <MyTabsComponent/>
     </Box>
    </Box>
   )

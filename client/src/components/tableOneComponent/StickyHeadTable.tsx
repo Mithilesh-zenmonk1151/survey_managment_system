@@ -1,18 +1,15 @@
-import * as React from "react";
-import { useState, useEffect } from "react";
-import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import IconButton from "@mui/material/IconButton";
-import Switch from "@mui/material/Switch";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import EditIcon from "@mui/icons-material/Edit";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import {
-  get_survey,
-  update_survey,
-} from "@/slice/survey/survey_action";
-import EditQuestionDialogBox from "../editQuestionDialogBox/EditQuestionDialogBox";
-import EditSurveyDialogBox from "../dialogBoxEditSurvey/DialogBoxEditSurvey";
+import React, { useState, useEffect } from 'react';
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import IconButton from '@mui/material/IconButton';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import EditIcon from '@mui/icons-material/Edit';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { Switch } from '@mui/material';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { get_survey, update_survey } from '@/slice/survey/survey_action';
+import EditSurveyDialogBox from '../dialogBoxEditSurvey/DialogBoxEditSurvey';
+import SurveyInfo from './SurveyInfo';
+import InsideSurveyTabTab from '../insideSurveytab/InsideSurveyTabTab';
 
 interface DataRow {
   id: number;
@@ -24,18 +21,18 @@ interface DataRow {
   status: boolean;
 }
 
-const DataTable: React.FC = () => {
+interface DataTableProps {
+  onAddTab: (tab: { id: string, label: string, content: JSX.Element }) => void;
+}
+
+const DataTable: React.FC<DataTableProps> = ({ onAddTab }) => {
   const [rows, setRows] = useState<DataRow[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [selectedQuestion, setSelectedQuestion] = useState<DataRow | null>(
-    null
-  );
+  const [selectedQuestion, setSelectedQuestion] = useState<DataRow | null>(null);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const dispatch = useAppDispatch();
 
-  const survey = useAppSelector(
-    (state) => state.survey?.content?.response?.data?.rows
-  );
+  const survey = useAppSelector((state) => state.survey?.content?.response?.data?.rows);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,7 +40,7 @@ const DataTable: React.FC = () => {
         await dispatch(get_survey());
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error('Error fetching data:', error);
         setLoading(false);
       }
     };
@@ -59,7 +56,7 @@ const DataTable: React.FC = () => {
         question: item.options.length,
         type: item.survey_type.name,
         abbreviation: item.abbr,
-        modified: new Date(item.updatedAt).toISOString().split("T")[0],
+        modified: new Date(item.updatedAt).toISOString().split('T')[0],
         status: item.is_published,
       }));
       setRows(mappedRows);
@@ -82,33 +79,38 @@ const DataTable: React.FC = () => {
   };
 
   const handleEyeClick = (id: number) => {
-    console.log(`Opening tab for ID: ${id}`);
-    // openNewTab(id);
+    const selectedSurvey = survey.find((item: any) => item.id === id);
+    console.log("Iddd dsfefghfg",id)
+    if (selectedSurvey) {
+      onAddTab({
+        id: `survey-${id}`,
+        label: selectedSurvey.name,
+        content: <SurveyInfo survey={selectedSurvey} />,
+      });
+    }
   };
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 50 },
-    { field: "name", headerName: "Name", width: 170 },
-    { field: "question", headerName: "Question", width: 100 },
-    { field: "type", headerName: "Type of Survey", width: 170 },
-    { field: "abbreviation", headerName: "Abbreviation", width: 100 },
-    { field: "modified", headerName: "Modified", width: 170 },
+    { field: 'id', headerName: 'ID', width: 50 },
+    { field: 'name', headerName: 'Name', width: 170 },
+    { field: 'question', headerName: 'Question', width: 100 },
+    { field: 'type', headerName: 'Type of Survey', width: 170 },
+    { field: 'abbreviation', headerName: 'Abbreviation', width: 100 },
+    { field: 'modified', headerName: 'Modified', width: 170 },
     {
-      field: "status",
-      headerName: "Status",
+      field: 'status',
+      headerName: 'Status',
       width: 100,
       renderCell: (params: GridRenderCellParams) => (
         <Switch
           checked={params.value as boolean}
-          onChange={(event) =>
-            handleStatusChange(params.row.id, event.target.checked)
-          }
+          onChange={(event) => handleStatusChange(params.row.id, event.target.checked)}
         />
       ),
     },
     {
-      field: "actions",
-      headerName: "Actions",
+      field: 'actions',
+      headerName: 'Actions',
       width: 150,
       sortable: false,
       renderCell: (params: GridRenderCellParams) => (
@@ -128,7 +130,7 @@ const DataTable: React.FC = () => {
   ];
 
   return (
-    <div style={{ height: 600, width: "100%" }}>
+    <div style={{ height: 600, width: '100%' , background:"white" }} >
       <DataGrid
         rows={rows}
         columns={columns}

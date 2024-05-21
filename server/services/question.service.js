@@ -116,12 +116,12 @@ exports.get_question_for_survey = async (payload) => {
       attributes: ["id"],
     });
     const all_question_id_list = all_question_ids.map((q) => q.id);
-    const missingQuestionIds = all_question_id_list.filter(
+    const missing_question_ids = all_question_id_list.filter(
       (question_id) => !question_ids_in_table.includes(question_id)
     );
     const missing_questions = await question.findAll({
       where: {
-        id: missingQuestionIds,
+        id: missing_question_ids,
       },
     });
 
