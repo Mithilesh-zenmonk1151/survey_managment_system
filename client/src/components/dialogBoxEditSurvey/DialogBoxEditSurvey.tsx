@@ -91,6 +91,7 @@ const EditSurveyDialogBox: React.FC<EditQuestionDialogBoxProps> = ({ open, onClo
     <BootstrapDialog onClose={onClose} aria-labelledby="customized-dialog-title" open={open}>
       <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
         Edit Survey
+        
         <IconButton
           aria-label="close"
           sx={{

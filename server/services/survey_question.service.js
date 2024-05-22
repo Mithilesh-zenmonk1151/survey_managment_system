@@ -63,17 +63,20 @@ exports.create_survey_question = async (payload) => {
 };
 exports.update_survey_question = async (payload) => {
   try {
-    const { survey_question_id, description } = payload.body;
-    if (!survey_question_id) {
+    const { question_id,survey_id, question_description } = payload.body;
+    console.log("PAyloadBoooodyyy$$$$$$$$$$$$$$$$$$$$$$",payload.body,question_id,survey_id)
+    if (!question_id) {
       throw new CustomError("Survey question not found", 404);
     }
+
     const updated_survey_question = await survey_question.update(
       {
-        description: description,
+        question_description:question_description
       },
-      { where: { id: survey_question_id } },
+      { where: { question_id: question_id,survey_id:survey_id } },
       { new: true }
     );
+    console.log("Updated@@@@@@@@@",updated_survey_question);
     return updated_survey_question;
   } catch (error) {
     throw error;

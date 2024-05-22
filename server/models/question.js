@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         through: models.survey_question,
         foreignKey: 'question_id',
         otherKey: 'survey_id',
-        as: 'surveys'
+        as: 'surveys'       
       });
 
       question.belongsTo(models.question_type,{

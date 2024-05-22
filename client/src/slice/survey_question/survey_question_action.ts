@@ -1,7 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { FieldValues } from "react-hook-form";
-import { get_survey_question_type, post_survey_question_type } from "./survey_question_type";
+import { get_survey_question_type, post_survey_question_type, put_survey_question_type } from "./survey_question_type";
 import post_survey_question_service from "@/services/survey_question_service/post_survey_question";
+import put_survey_question_service from "@/services/survey_question_service/put_survey_question";
 export const create_survey_question = createAsyncThunk(
  post_survey_question_type,
   async (survey_question:{survey_id:number,question_id:number[],order:number}, { rejectWithValue }) => {
@@ -31,20 +32,20 @@ export const create_survey_question = createAsyncThunk(
 //     }
 //   }
 // );
-// export const update_survey = createAsyncThunk(
-//   put_survey_type,
-//   async ( survey: { id: number, is_published:boolean}, { rejectWithValue }) => {
-//       try {
-//           const response = await put_survey_service(survey);
-//           const data = response?.data;
-//           console.log("data survey updated from slice===", data);
-//           return data;
-//       } catch (err) {
-//           console.log(err);
-//           return rejectWithValue(err);
-//       }
-//   }
-// );
+export const update_survey_question = createAsyncThunk(
+  put_survey_question_type,
+  async ( survey_question: { question_id: number, survey_id:number,question_description:string}, { rejectWithValue }) => {
+      try {
+          const response = await put_survey_question_service(survey_question);
+          const data = response?.data;
+          console.log("data survey updated from slice===", data);
+          return data;
+      } catch (err) {
+          console.log(err);
+          return rejectWithValue(err);
+      }
+  }
+);
 // export const put_survey = createAsyncThunk(
 //   update_survey_type,
 //   async (survey:{name:string,survey_type_id:number,id:number,options:{modality:string,languages:string}}, { rejectWithValue }) => {

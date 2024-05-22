@@ -9,6 +9,8 @@ import { useAppDispatch } from "@/store/hooks";
 import EditQuestionDialogBox from "../editQuestionDialogBox/EditQuestionDialogBox";
 import './SurveyQuestionTable.styles.css';
 import toast from "react-hot-toast";
+import EditSurveyDialogBox from "../dialogBoxEditSurvey/DialogBoxEditSurvey";
+import EditSurveyQuestionDialogBox from "../editSurveyQuestionDialogBox/EditSurveyQuetionDialogBox";
 
 interface DataRow {
   id: number;
@@ -67,7 +69,7 @@ export default function SurveyQuestionTable({ survey }: SurveyInfo) {
       const mappedRows = response?.map((item:any, index: number) => ({
         id: item?.id || index,
         name: item?.description || "",
-        order:index|| "",
+        order:index+1|| "",
        
         abbreviation: item?.abbr || "",
         modified: item?.createdAt || "",
@@ -83,6 +85,7 @@ export default function SurveyQuestionTable({ survey }: SurveyInfo) {
 
   const handleDelete = (id: number) => {
     console.log(`Delete row with id: ${id}`);
+    
   };
 
   const columns: GridColDef[] = [
@@ -119,10 +122,11 @@ export default function SurveyQuestionTable({ survey }: SurveyInfo) {
         loading={loading}
         rowsPerPageOptions={[5]}
       />
-      <EditQuestionDialogBox
+      <EditSurveyQuestionDialogBox
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         question={selectedQuestion}
+        survey={survey}
       />
     </div>
   );

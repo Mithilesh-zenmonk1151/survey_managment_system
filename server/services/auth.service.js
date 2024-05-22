@@ -2,6 +2,18 @@ const { User } = require("../models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const CustomError = require("../libs/error");
+
+const { profile } =require('passport-google-oauth20');
+
+exports.findOrCreateUser = async (payload) => {
+  console.log("Payload Body");
+  const [user] = await User.findOrCreate({
+    where: { email: profile.emails[0].value },
+    defaults: { name: profile.displayName },
+  });
+  return user;
+};
+
 exports.signup = async (payload) => {
   try {
     const {full_name,  email, password, confirm_passwword} =
