@@ -9,7 +9,7 @@ type initialStateProps = {
     survey_question: {
       id: number;
       survey_id: number;
-      question_id: number;
+      question_id: number[];
       question_description: string;
       order: number;
     };
@@ -28,7 +28,7 @@ const initialState: initialStateProps = {
       question_description: "",
       survey_id: 0,
       order: 0,
-      question_id: 0,
+      question_id: [],
     },
   },
 };

@@ -37,25 +37,25 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
   console.log("Survey data:", survey);
   const survey_id=survey?.id;
   console.log("SSSUUURRRVVVVEEEYYYYIIID",survey_id)
-  const dispatch= useAppDispatch();
-    useEffect(()=>{
-        dispatch(get_question_of_survey(survey_id))
-    },[dispatch])
+  // const dispatch= useAppDispatch();
+  //   useEffect(()=>{
+  //       dispatch(get_question_of_survey(survey_id))
+  //   },[dispatch])
 
 
-const fetchSurveyQuestions = ({surveyId}:number) => {
-  dispatch(get_question_of_survey({ survey_id: surveyId }))
-    .unwrap()
-    .then((response) => {
-      console.log("Survey questions:", response);
-    })
-    .catch((error) => {
-      console.error("Error fetching survey questions:", error);
-    });
-};
+// const fetchSurveyQuestions = ({surveyId}:number) => {
+//   dispatch(get_question_of_survey({ survey_id: surveyId }))
+//     .unwrap()
+//     .then((response) => {
+//       console.log("Survey questions:", response);
+//     })
+//     .catch((error) => {
+//       console.error("Error fetching survey questions:", error);
+//     });
+// };
 
 // Call the function with the desired survey ID
-fetchSurveyQuestions(1); // Replace 1 with the actual survey ID
+// fetchSurveyQuestions(1); // Replace 1 with the actual survey ID
 
 
   return (

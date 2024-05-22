@@ -4,7 +4,7 @@ import { get_survey_question_type, post_survey_question_type } from "./survey_qu
 import post_survey_question_service from "@/services/survey_question_service/post_survey_question";
 export const create_survey_question = createAsyncThunk(
  post_survey_question_type,
-  async (survey_question:{question_description:string,survey_id:number,question_id:number,order:number}, { rejectWithValue }) => {
+  async (survey_question:{survey_id:number,question_id:number[],order:number}, { rejectWithValue }) => {
     try {
       // console.log("Slice wala teststssss",test);
       const response = await post_survey_question_service(survey_question);

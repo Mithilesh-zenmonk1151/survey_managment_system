@@ -101,7 +101,9 @@ exports.update_question = async (payload) => {
 
 exports.get_question_for_survey = async (payload) => {
   try {
-    const { survey_id } = payload.body;
+    const { survey_id } = payload.params;
+    console.log("PPPAYYloa@######",payload.params)
+
     const survey_data = await survey_question.findAll({
       where: { survey_id: survey_id },
     });
@@ -169,11 +171,13 @@ exports.get_question_thr_id = async (payload) => {
 exports.get_question_of_survey = async (payload) => {
   try {
     
-    const { survey_id } = payload.query;
-    console.log("PPPAYYYLLOOADDDBOODDY",payload.body)
+    const { survey_id } = payload.params;
     const survey_data = await survey_question.findAll({
       where: { survey_id: survey_id },
     });
+    if(!survey_id){
+      throw new CustomError("errroroor",4400)
+    }
 
     const question_ids_in_table = await survey_data.map(
       (survey_question) => survey_question.question_id

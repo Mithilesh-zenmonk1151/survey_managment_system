@@ -10,7 +10,6 @@ exports.create_question = async (req, res) => {
 };
 exports.get_question = async (req, res) => {
   try {
-    console.log("GGGEEETTTT");
     const response = await question_service.get_question(req);
     res.status(200).json({ response });
   } catch (error) {
@@ -31,7 +30,6 @@ exports.update_question = async (req, res) => {
 };
 exports.get_question_for_survey = async (req, res) => {
   try {
-    console.log("GGGEEETTTT");
     const response = await question_service.get_question_for_survey(req);
     res.status(200).json({ response });
   } catch (error) {
@@ -52,7 +50,6 @@ exports.delete_question = async (req, res) => {
 };
 exports.get_question_thr_id =async (req, res) => {
   try {
-    console.log("GGGEEETTTT");
     const response = await question_service.get_question_thr_id(req);
     res.status(200).json({ response });
   } catch (error) {
@@ -65,7 +62,7 @@ exports.get_question_thr_id =async (req, res) => {
 
 exports.get_question_of_survey=async(req,res)=> {
   try {
-    console.log("GGGEEETTTT");
+    console.log("ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp");
     const response = await question_service.get_question_of_survey(req);
     res.status(200).json({ response });
   } catch (error) {

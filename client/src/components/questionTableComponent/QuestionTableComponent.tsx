@@ -19,6 +19,7 @@ interface DataRow {
 const DataTable: React.FC = () => {
   const [rows, setRows] = useState<DataRow[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  
   const [selectedQuestion, setSelectedQuestion] = useState<DataRow | null>(
     null
   );

@@ -1,14 +1,14 @@
-import axios from "axios";
-import type { FieldValues } from "react-hook-form";
+import axios from 'axios';
 
-const get_question_of_survey_service = async (inputs: FieldValues) => {
-  console.log("IIINNNNPPUUUTTTSTSTTSTST", inputs);
-
-  const response = await axios.get("/api/question/get_question_of_survey", {
-    params: inputs
-  });
-  console.log(response);
-  return response;
+const get_question_of_survey_service = async (survey_id: string) => {
+  try {
+    console.log("00000000000000000000000000000",survey_id);
+    const response = await axios.get(`http://localhost:3000/api/question/question_of_survey/${survey_id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data by ID:', error);
+    throw error;
+  }
 };
 
 export default get_question_of_survey_service;

@@ -1,0 +1,9 @@
+.drawer.open{
+    width: 300px;
+    display: inline-flex ;
+}
+
+.drawer.closed{
+    display: none;
+    width: 0;
+}

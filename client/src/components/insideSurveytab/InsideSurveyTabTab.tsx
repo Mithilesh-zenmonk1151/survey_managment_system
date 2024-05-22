@@ -60,7 +60,7 @@ export default function InsideSurveyTabTab({ survey }: InsideSurveyTabTabProps) 
       <Box sx={{ display: "flex", justifyContent: "space-between" ,padding:"30px"}}>
         <Typography sx={{ fontSize: "20px", fontWeight: "500" }}>{survey.name} - {survey.modality}</Typography>
         <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <Switch checked={survey.is_published} disabled />
+          <Switch checked={survey.is_published}  />
           <Typography>PUBLISH SURVEY</Typography>
           <Box sx={{ display: "flex", gap: "10px" }}>
             <Button variant='outlined'>Preview</Button>
@@ -78,8 +78,8 @@ export default function InsideSurveyTabTab({ survey }: InsideSurveyTabTabProps) 
         <CustomTabPanel value={value} index={0}>
           <SurveyInformation survey={survey} />
         </CustomTabPanel>
-        <CustomTabPanel value={value} index={1}>
-          <QuestionTab />
+        <CustomTabPanel value={value} index={1} >
+          <QuestionTab  survey={survey}/>
         </CustomTabPanel>
       </Box>
     </Box>

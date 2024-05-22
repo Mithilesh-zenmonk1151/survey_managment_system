@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(res.data);
   } catch (error: any) {
     console.log(error);
-    console.log("error occurred during getting question type");
+    console.log("error occurred during getting question type   errrorrororororororo");
   }
 }
 

@@ -4,9 +4,11 @@ import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { get_question } from "@/slice/question/question_action";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { get_question_of_survey } from "@/slice/question/question_action";
+import { useAppDispatch } from "@/store/hooks";
 import EditQuestionDialogBox from "../editQuestionDialogBox/EditQuestionDialogBox";
+import './SurveyQuestionTable.styles.css';
+import toast from "react-hot-toast";
 
 interface DataRow {
   id: number;
@@ -16,24 +18,39 @@ interface DataRow {
   modified: string;
 }
 
-const SurveyQuestionTable: React.FC = () => {
+interface Question {
+  id: number;
+  description: string;
+  question_type: {
+    name: string;
+  };
+  abbr: string;
+  createdAt: string;
+}
+
+interface SurveyInfo {
+  survey: {
+    id: number;
+  };
+}
+
+export default function SurveyQuestionTable({ survey }: SurveyInfo) {
   const [rows, setRows] = useState<DataRow[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [selectedQuestion, setSelectedQuestion] = useState<DataRow | null>(
-    null
-  );
+  const [selectedQuestion, setSelectedQuestion] = useState<DataRow | null>(null);
+  const [response, setResponse] = useState<Question[] | null>(null);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-
-  const questiondata = useAppSelector(
-    (state) => state.questions?.content?.response?.data.rows
-  );
-  console.log("QQQUUUEEETTTIIOOODDDAATA===", questiondata);
+  const survey_id = survey.id;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await dispatch(get_question());
+        const data = await dispatch(get_question_of_survey(survey_id));
+        const respo: Question[] = data?.payload?.response;
+        setResponse(respo);
+
+        toast.success("Get success");
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -42,20 +59,22 @@ const SurveyQuestionTable: React.FC = () => {
     };
 
     fetchData();
-  }, [dispatch]);
+  }, [dispatch, survey_id]);
+  console.log("&&&&&&&&&&&&&&&asfhdfklgdfgl;dfg5645",response);
 
   useEffect(() => {
-    if (questiondata) {
-      const mappedRows = questiondata.map((item: any, index: number) => ({
-        id: item.id || index,
-        name: item.description || "",
-        type: item.question_type.name || "",
-        abbreviation: item.abbr || "",
-        modified: item.createdAt || "",
+    if (response) {
+      const mappedRows = response?.map((item:any, index: number) => ({
+        id: item?.id || index,
+        name: item?.description || "",
+        order:index|| "",
+       
+        abbreviation: item?.abbr || "",
+        modified: item?.createdAt || "",
       }));
       setRows(mappedRows);
     }
-  }, [questiondata]);
+  }, [response]);
 
   const handleEdit = (row: DataRow) => {
     setSelectedQuestion(row);
@@ -68,10 +87,10 @@ const SurveyQuestionTable: React.FC = () => {
 
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width: 150 },
-    { field: "name", headerName: "Name", width: 150},
+    { field: "name", headerName: "Name", width: 150 },
     { field: "type", headerName: "Type", width: 150 },
-    { field: "abbreviation", headerName: "Abbreviation", width: 150},
-    { field: "order", headerName: "Order", width: 150},
+    { field: "abbreviation", headerName: "Abbreviation", width: 150 },
+    { field: "order", headerName: "Order", width: 150 },
     { field: "modified", headerName: "Modified", width: 150 },
     {
       field: "actions",
@@ -108,5 +127,3 @@ const SurveyQuestionTable: React.FC = () => {
     </div>
   );
 };
-
-export default SurveyQuestionTable;

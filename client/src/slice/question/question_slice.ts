@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { create_question, get_question, get_question_of_survey, get_question_thr_id,  update_question } from "./question_action";
+import { create_question, get_question, get_question_for_survey, get_question_of_survey, get_question_thr_id,  update_question } from "./question_action";
 
 type initialStateProps = {
   isLoading: boolean;
@@ -50,30 +50,32 @@ export const question_slice = createSlice({
       state.isLoading = false;
       state.error = action.error;
     });
-    builder.addCase(get_question_thr_id.pending, (state) => {
+    builder.addCase(get_question_for_survey.pending, (state) => {
       state.isLoading = true;
     });
-    builder.addCase(get_question_thr_id.fulfilled, (state, action) => {
+    builder.addCase(get_question_for_survey.fulfilled, (state, action) => {
       state.isLoading = false;
       state.content = action.payload;
       console.log("action.payload", action.payload);
     });
-    builder.addCase(get_question_thr_id.rejected, (state, action) => {
+    builder.addCase(get_question_for_survey.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error;
     });
-    builder.addCase(get_question_of_survey.pending, (state) => {
-      state.isLoading = true;
-    });
-    builder.addCase(get_question_of_survey.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.content = action.payload;
-      console.log("action.payload", action.payload);
-    });
-    builder.addCase(get_question_of_survey.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error;
-    });
+    // builder.addCase(get_question_of_survey.pending, (state) => {
+    //   state.isLoading = true;
+    // });
+    // builder.addCase(get_question_of_survey.fulfilled, (state, action) => {
+    //   state.isLoading = false;
+    //   state.content = action.payload;
+    //   console.log("action.payload", action.payload);
+    // });
+    // builder.addCase(get_question_of_survey.rejected, (state, action) => {
+    //   state.isLoading = false;
+    //   state.error = action.error;
+    // });
+    
+    
     builder.addCase(create_question.pending, (state) => {
       state.isLoading = true;
     });
