@@ -23,6 +23,7 @@ const DataTable: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedQuestion, setSelectedQuestion] = useState<DataRow | null>(null);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState('')
   const dispatch = useAppDispatch();
 
   const questiondata = useAppSelector(

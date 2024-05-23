@@ -53,7 +53,6 @@ export default function SurveyQuestionTable({ survey }: SurveyInfo) {
         const respo: Question[] = data?.payload?.response;
         setResponse(respo);
 
-        toast.success("Get success");
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);

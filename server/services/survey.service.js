@@ -83,6 +83,9 @@ exports.survey_update_at_publish = async (payload) => {
   try {
     const { is_published } = payload.body;
     const survey_id = payload.body.id;
+    if(!survey_id){
+      throw new CustomError("Survey id required",499)
+    }
 
     const check_is_survey_exists = await survey.findOne({
       where: { id: survey_id },

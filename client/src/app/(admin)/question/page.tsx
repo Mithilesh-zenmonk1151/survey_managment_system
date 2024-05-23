@@ -54,7 +54,7 @@ export default function QuestionPage() {
                 gap:"30px"
                 
             }}>
-            <SearchbarCompo/>
+            <SearchbarCompo />
             {/* <DropDown/> */}
             <DropDownQuest options={dummyOptions} value={dummyOptions.value}/>
             <CheckBoxDropDown/>

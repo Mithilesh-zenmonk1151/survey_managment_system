@@ -31,36 +31,36 @@ exports.create_question = async (payload) => {
 };
 exports.get_question = async (payload) => {
   try {
-    // const page_number = payload.query.page_number || 1;
-    // const limit = payload.query.limit || 3;
-    // console.log("PAGENUMER", page_number);
-    // console.log("PAGENUMER", limit);
-    // const search = payload.query.search || "";
-    // console.log("LIMITsdjkghfegf==",limit)
-    // const offset = (page_number - 1) * limit;
-    // console.log("LIMIT&&&&OFerde",limit,offset);
-    // console.log("PAYload.Query", payload.query.search);
+    const page_number = payload.query.page_number || 1;
+    const limit = payload.query.limit || 3;
+    console.log("PAGENUMER", page_number);
+    console.log("PAGENUMER", limit);
+    const search = payload.query.search || "";
+    console.log("LIMITsdjkghfegf==",limit)
+    const offset = (page_number - 1) * limit;
+    console.log("LIMIT&&&&OFerde",limit,offset);
+    console.log("PAYload.Query", payload.query.search);
     const surveyes = await question.findAndCountAll({
       include: [{ model: question_type, as: "question_type" }],
-      // limit: limit,
-      // offset: offset,
+      limit: limit,
+      offset: offset,
     });
     if (!surveyes) {
       throw new CustomError("Survey not found", 404);
     }
-    // if (search) {
-    //   queryOptions.where = {
-    //     description: {
-    //       [Op.like]: `%${search}%`,
-    //     },
-    //   };
-    // }
-    // const total_items = await question.count();
+    if (search) {
+      queryOptions.where = {
+        description: {
+          [Op.like]: `%${search}%`,
+        },
+      };
+    }
+    const total_items = await question.count();
     const res = {
       data: surveyes,
-      // total_items: total_items,
-      // total_pages: Math.ceil(total_items / limit),
-      // current_page: page_number,
+      total_items: total_items,
+      total_pages: Math.ceil(total_items / limit),
+      current_page: page_number,
     };
     return res;
   } catch (error) {
@@ -103,6 +103,9 @@ exports.get_question_for_survey = async (payload) => {
   try {
     const { survey_id } = payload.params;
     console.log("PPPAYYloa@######",payload.params)
+    if(!survey_id){
+      throw new CustomError("survey id is required",400)
+    }
 
     const survey_data = await survey_question.findAll({
       where: { survey_id: survey_id },
@@ -111,6 +114,7 @@ exports.get_question_for_survey = async (payload) => {
     const question_ids_in_table = await survey_data.map(
       (survey_question) => survey_question.question_id
     );
+    
     const all_question_ids = await question.findAll({
       attributes: ["id"],
     });

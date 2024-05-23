@@ -38,6 +38,9 @@ exports.get_survey_type = async (payload) => {
     try {
       // const { survey_id_type } = payload.params;
       const {survey_type_id,name,abbr}= payload.body;
+      if(!survey_type_id){
+        throw new CustomError("survey type id is not found",404)
+      }
 
       const updated_survey_type = await survey.update(
         { name: name, abbr:abbr },

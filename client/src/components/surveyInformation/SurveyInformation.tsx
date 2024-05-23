@@ -2,14 +2,16 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Switch, TextField, Typography, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import OppositeContentTimeline from '../timeline/TimeLine'; // Ensure this component displays the timeline correctly
-import { useAppDispatch } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { get_question_of_survey } from '@/slice/question/question_action';
+import { get_survey_type } from '@/slice/survey_type/survey_type_action';
 
 interface SurveyInformationProps {
   survey: any;
 }
 
 function SurveyInformation({ survey }: SurveyInformationProps) {
+  const dispatch= useAppDispatch();
   const languages = [
     { id: "1", name: "English", value: "English" },
     { id: "2", name: "Spanish", value: "Spanish" },
@@ -18,15 +20,25 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
     { id: "5", name: "French", value: "French" },
     { id: "6", name: "Portuguese", value: "Portuguese" }
   ];
-  console.log("dgkgrogdlfdfljsdkf653655%%%%%",survey?.survey_type?.name);
+  console.log("*****************************%%%%%",survey?.options?.languages);
+  const moda=survey?.options?.modality
   const sselle=survey?.survey_type?.name
+  const lang=survey?.options?.languages
   const [selected_value_type,set_selected_value_type]=useState(sselle);
+  const [selected_modality, set_selected_modality]=useState(moda);
+  const [selected_language,set_selected_language]=useState(lang);
 
   const surveyTypes = [
     { id: "1", name: "Student Satisfaction With The Content Of The Subject (SSAC)" },
     { id: "2", name: "Course Feedback" },
     { id: "3", name: "Instructor Evaluation" }
   ];
+  // useEffect(()=>{
+  //   dispatch(get_survey_type());
+
+  // })
+  const survey_types= useAppSelector((state)=>state.survey_type?.content.response)
+  // console.log(";;;;;;;;;;;;;;;;;;;;;;;;",survey_types);
 
   const modalities = [
     { id: "1", name: "In Person" },
@@ -83,45 +95,53 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
             value={survey?.abbr || ''}
             disabled
           />
-          <FormControl sx={{ width: "90%" }}>
-            <InputLabel id="type-label">Type of Survey</InputLabel>
-            <Select
-              labelId="type-label"
-              id="outlined-type"
-              value={selected_value_type}
-              onChange={(e) => set_selected_value_type( e.target.value)} // Implement change handler as needed
-            >
-              {surveyTypes.map((type) => (
-                <MenuItem key={type.id} value={type.name}>
-                  {type.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl sx={{ width: "90%" }}>
-            <InputLabel id="modality-label">Modality</InputLabel>
-            <Select
-              labelId="modality-label"
-              id="outlined-modality"
-              label="Modality"
-              value={survey?.modality || ''}
-              onChange={(e) => console.log('Modality changed:', e.target.value)} // Implement change handler as needed
-            >
-              {modalities.map((modality) => (
-                <MenuItem key={modality.id} value={modality.name}>
-                  {modality.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+         
+
+          <FormControl fullWidth variant="outlined" sx={{
+            width:"90%"
+          }}>
+        <InputLabel id="type-of-survey-label">Type of Survey</InputLabel>
+        <Select
+          labelId="type-of-survey-label"
+          id="type-of-survey"
+          value={selected_value_type}
+          onChange={(e) => set_selected_value_type( e.target.value)} // Implement change handler as needed
+          label="Type of Survey"
+        >
+          {survey_types.map((type:any) => (
+            <MenuItem key={type.id} value={type.name}>
+              {type.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+         
+          <FormControl fullWidth variant="outlined" sx={{
+            width:"90%"
+          }}>
+        <InputLabel id="type-of-survey-label">Modality</InputLabel>
+        <Select
+          labelId="type-of-survey-label"
+          id="type-of-survey"
+          value={selected_modality}
+          onChange={(e) => set_selected_modality( e.target.value)} // Implement change handler as needed
+          label="Type of Survey"
+        >
+          {modalities.map((type:any) => (
+            <MenuItem key={type.id} value={type.name}>
+              {type.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
           <FormControl sx={{ width: "90%" }}>
             <InputLabel id="language-label">Language</InputLabel>
             <Select
               labelId="language-label"
               id="outlined-language"
               label="Language"
-              value={survey?.language || ''}
-              onChange={(e) => console.log('Language changed:', e.target.value)} // Implement change handler as needed
+              value={selected_language}
+              onChange={(e) => set_selected_language( e.target.value)} 
             >
               {languages.map((lang) => (
                 <MenuItem key={lang.id} value={lang.value}>
@@ -130,6 +150,7 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
               ))}
             </Select>
           </FormControl>
+          
           <TextField
             id="outlined-questions"
             label="N. questions"

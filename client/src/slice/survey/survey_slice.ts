@@ -74,9 +74,7 @@ export const survey_slice = createSlice({
     builder.addCase(update_survey.fulfilled, (state, action) => {
       state.isLoading = false;
       const updatedQuestion = action.payload;
-      if (state.content.survey.id === updatedQuestion.id) {
-        state.content.survey = updatedQuestion;
-      }
+      
     });
     builder.addCase(update_survey.rejected, (state, action) => {
       state.isLoading = false;
