@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+"use client"
+import React, { useEffect, useState } from 'react';
 import { Box, Switch, TextField, Typography, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import OppositeContentTimeline from '../timeline/TimeLine'; // Ensure this component displays the timeline correctly
 import { useAppDispatch } from '@/store/hooks';
@@ -17,6 +18,9 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
     { id: "5", name: "French", value: "French" },
     { id: "6", name: "Portuguese", value: "Portuguese" }
   ];
+  console.log("dgkgrogdlfdfljsdkf653655%%%%%",survey?.survey_type?.name);
+  const sselle=survey?.survey_type?.name
+  const [selected_value_type,set_selected_value_type]=useState(sselle);
 
   const surveyTypes = [
     { id: "1", name: "Student Satisfaction With The Content Of The Subject (SSAC)" },
@@ -84,9 +88,8 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
             <Select
               labelId="type-label"
               id="outlined-type"
-              label="Type of Survey"
-              value={survey?.type || ''}
-              onChange={(e) => console.log('Type of Survey changed:', e.target.value)} // Implement change handler as needed
+              value={selected_value_type}
+              onChange={(e) => set_selected_value_type( e.target.value)} // Implement change handler as needed
             >
               {surveyTypes.map((type) => (
                 <MenuItem key={type.id} value={type.name}>
@@ -143,7 +146,7 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
         <Box sx={{ width: "50%" }}>
           <Typography sx={{ fontSize: "20px", fontWeight: "500" }}>Dates</Typography>
           <Box sx={{ bgcolor: "#fafafa", border: "1px solid #e0e0e0", width: "85%", padding: 2 }}>
-            <OppositeContentTimeline timeline={survey?.timeline} />
+            <OppositeContentTimeline survey={survey} />
           </Box>
         </Box>
       </Box>

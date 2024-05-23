@@ -1,5 +1,5 @@
 const CustomError = require("../libs/error");
-const { survey, survey_type } = require("../models");
+const { survey, survey_type ,question} = require("../models");
 exports.create_survey = async (payload) => {
   try {
     const { survey_type_id, name, abbr, options } = payload.body;
@@ -31,7 +31,10 @@ exports.get_survey = async (payload) => {
     // console.log("PAGENUMER", limit);
     // const offset = (page_number - 1) * limit;
     const get_srv = await survey.findAndCountAll({
-      include: [{ model: survey_type, as: "survey_type" }],
+      include: [
+        { model: survey_type, as: "survey_type" },
+        { model: question, as: "questions" }, // Include the 'question' model
+      ],
       // limit: limit,
       // offset: offset,
     });
@@ -53,11 +56,15 @@ exports.get_survey = async (payload) => {
 exports.update_survey = async (payload) => {
   try {
     const { name, survey_type_id, options } = payload.body;
-    // console.log("Surveyiiiddd",survey_id)
+    console.log("Surve^%%^&&yiiiddd",payload.body)
     const survey_id = payload.body.id;
+    if(!survey_type_id){
+      throw new CustomError("Survey Id not found",400);
+    }
     const check_is_survey_exists = await survey.findOne({
       where: { id: survey_id },
     });
+
     if (!check_is_survey_exists) {
       throw new CustomError("Survey is not exists", 404);
     }
@@ -105,6 +112,37 @@ exports.survey_update_at_publish = async (payload) => {
       { where: { id: survey_id } }
     );
     return updated_survey;
+  } catch (error) {
+    throw error;
+  }
+};
+exports.delete_survey = async (payload) => {
+  try {
+    const { survey_id } = payload.params;
+    console.log("$%%$%fgdfggfgfh%^^",payload.params);
+    if (!survey_id) {
+      throw new CustomError("Survey id required", 400);
+    }
+    // const servey_qu = await survey_question.findAll({
+    //   where: { question_id: question_id },
+    // });
+    // const survey_ids = [...new Set(servey_qu.map((res) => res.survey_id))];
+    // const published = await survey.findAll({
+    //   where: {
+    //     id: survey_ids,
+    //     is_published: true,
+    //   },
+    // });
+    // if (published.length > 0) {
+    //   throw new CustomError(
+    //     "Survey is published in which this question is added",
+    //     400
+    //   );
+    // }
+    const delete_surve = await survey.destroy({
+      where: { id: survey_id },
+    });
+    return delete_surve;
   } catch (error) {
     throw error;
   }

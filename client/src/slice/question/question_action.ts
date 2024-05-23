@@ -104,3 +104,20 @@ export const get_question_for_survey = createAsyncThunk(
   }
 );
 
+export const delete_question = createAsyncThunk(
+  'survey/deleteQuestionOfSurvey',
+  async ( question_id:number, { rejectWithValue }) => {
+    try {
+      console.log(`Deleting question ${question_id} f`);
+      const response = await axios.delete(
+        `http://localhost:4000/api/question/${question_id}`
+      );
+      console.log('Response from delete question:', response);
+      return {  question_id };
+    } catch (err: any) {
+      console.error("Error in deleting question of survey");
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+

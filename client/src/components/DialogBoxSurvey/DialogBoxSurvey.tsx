@@ -9,14 +9,11 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { Box, TextField } from "@mui/material";
 import DropDown from "../dropDown/DropDown";
-import Textarea from "@mui/joy/Textarea";
+import DropDownForEditSurvey from "../dropDownForEditSurvey/DropDownForEditSurvey";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { get_question_type } from "@/slice/question_type/question_type_action";
-import { create_question } from "@/slice/question/question_action";
-import { get_survey_type } from "@/slice/survey_type/survey_type_action";
-import style from "@/app/ui/layout.module.css"
 import { create_survey } from "@/slice/survey/survey_action";
-import DropDownSurvey from "../dropDownSurvey/DropDownSurvey";
+import { get_survey_type } from "@/slice/survey_type/survey_type_action";
+
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
@@ -30,109 +27,69 @@ type QuestionType = {
   response: Array<{ uuid: string; id: string; name: string; abb: string }>;
 };
 
-export default function DialogBoxSurvey() {
+const DialogBoxSurvey: React.FC = () => {
   const [open, setOpen] = useState(false);
-  const [name,set_name]=useState("");
-  const [selected_question_type_id, set_selected_question_type_id] =
-    useState("");
-    const [modality,set_selected_modality]=useState("");
-    const [languages,set_language]= useState("");
-  const [description, set_description] = useState("");
+  const [name, set_name] = useState("");
+  const [selected_question_type_id, set_selected_question_type_id] =useState("");
+  const [modality, set_modality] = useState("");
+  const [languages, set_languages] = useState("");
   const [abbr, set_abbr] = useState("");
-  const [questionTypeList, setQuestionTypeList] = useState<QuestionType[]>([]);
-  console.log("SEEEEEELLLECTTTEDDD___TYYYPPEE++", selected_question_type_id);
-  console.log("Type of selected value", typeof selected_question_type_id);
-  const survey_type_id = parseInt(selected_question_type_id);
   const dispatch = useAppDispatch();
 
   const handleClickOpen = () => {
     setOpen(true);
   };
-//   const active = false;
-  const is_published=false;
-//   const question = { description, abbr, active, question_type_id };
-  const options= {modality,languages};
-  const survey= {name,is_published ,abbr,options,survey_type_id};
-  console.log("Survey===",survey)
-
 
   const handleClose = () => {
     setOpen(false);
-    try {
-      dispatch(create_survey(survey))
-      console.log("SURRRRRVVVVEEEYEYY=====",survey)
-    } catch (error) {
-      console.log(error);
-      console.log(
-        "Error comes in main folder while you are going to add question"
-      );
-    }
   };
 
-  useEffect(() => {
-    dispatch(get_survey_type());
-  }, [dispatch]);
+  const handleCreateSurvey = () => {
+    const survey = {
+      name,
+      is_published: false,
+      abbr,
+      options: { modality, languages },
+      survey_type_id: parseInt(selected_question_type_id),
+    };
+
+    try {
+      dispatch(create_survey(survey));
+      console.log("Survey created:", survey);
+      setOpen(false); // Close dialog after creating survey
+    } catch (error) {
+      console.error("Error creating survey:", error);
+    }
+  };
   
+
+  // useEffect(() => {
+  //  dispatch(get_survey_type())
+  // }, [dispatch]);
+  useEffect(()=>{
+    dispatch(get_survey_type());
+  },[dispatch])
+  const survey_type= useAppSelector((state)=>state.survey_type?.content?.response )
+  // console.log("safdssadsfsdkosuijisbfoisiofsioiofdsiofdsidfsifdsiodfsiio",survey_type)
 
   const question_type = useAppSelector(
     (state) => state.survey_type?.content?.response
   );
-  console.log("states======Survey_type", question_type);
-  const modalityy=[
-    {"id":"1",
-    "name":"In Persion",
-    "value":"In Persion"
 
-    },{
-        "id":"2",
-        "name":"In Value",
-    "value":"In Value"
+  const modalityy = [
+    { id: "1", name: "In Person", value: "In Person" },
+    { id: "2", name: "Online", value: "Online" },
+  ];
 
+  const language = [
+    { id: "1", name: "English", value: "English" },
+    { id: "2", name: "Spanish", value: "Spanish" },
+    { id: "3", name: "Chinese", value: "Chinese" },
+    { id: "4", name: "Italian", value: "Italian" },
+    { id: "5", name: "French", value: "French" },
+    { id: "6", name: "Portuguese", value: "Portuguese" },
+  ];
 
-    }
-  ]
-  const language =[
-    {"id":"1",
-    "name":"English",
-    "value":"English"
-
-    },{
-        "id":"2",
-        "name":"Spanish",
-    "value":"Spanish"
-
-
-    },
-    ,{
-        "id":"3",
-        "name":"Chinese",
-    "value":"Chinese"
-
-
-    }
-    ,{
-        "id":"4",
-        "name":"Italian",
-    "value":"Italian"
-
-
-    }
-    ,{
-        "id":"5",
-        "name":"French",
-    "value":"French"
-
-
-    }
-    ,{
-        "id":"6",
-        "name":"Portuguese(Portuguese)",
-    "value":"Portuguese(Portuguese)"
-
-
-    }
-  ]
-  
   return (
     <React.Fragment>
       <Button
@@ -161,7 +118,9 @@ export default function DialogBoxSurvey() {
               color: (theme) => theme.palette.grey[500],
             }}
             onClick={handleClose}
-          ></IconButton>
+          >
+            {/* <CloseIcon /> */}
+          </IconButton>
         </DialogTitle>
         <DialogContent>
           <Box
@@ -172,7 +131,6 @@ export default function DialogBoxSurvey() {
             }}
           >
             <Box>
-              {" "}
               <TextField
                 label="Survey Name"
                 variant="outlined"
@@ -180,7 +138,7 @@ export default function DialogBoxSurvey() {
                   width: "100%",
                 }}
                 value={name}
-                onChange={(e)=>set_name(e.target.value)}
+                onChange={(e) => set_name(e.target.value)}
               />
             </Box>
             <Box
@@ -195,36 +153,45 @@ export default function DialogBoxSurvey() {
                 value={abbr}
                 onChange={(e) => set_abbr(e.target.value)}
               />
-
               <DropDown
                 select_type="Survey Type"
-                options={question_type}
+                options={survey_type}
                 value={selected_question_type_id}
                 onChange={set_selected_question_type_id}
               />
             </Box>
-            <Box sx={{
-                display:"flex",
-                gap:"20px"
-
-            }}> 
-                <DropDownSurvey onChange={set_selected_modality} options={modalityy} select_type="Modality" customClassDrop={style.drop_down}/>
-                <DropDownSurvey onChange={set_language} options={language} select_type="Language" customClassDrop={style.drop_down}/>
+            <Box
+              sx={{
+                display: "flex",
+                gap: "20px",
+              }}
+            >
+              <DropDownForEditSurvey
+                value={modality}
+                onChange={(value: string) => set_modality(value)}
+                options={modalityy}
+                select_type="Modality"
+              />
+              <DropDownForEditSurvey
+                value={languages}
+                onChange={(value: string) => set_languages(value)}
+                options={language}
+                select_type="Language"
+              />
             </Box>
           </Box>
         </DialogContent>
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Box></Box>
-          <Box>
-            <Button autoFocus onClick={handleClose}>
-              Cancel
-            </Button>
-            <Button autoFocus onClick={handleClose}>
-              Create
-            </Button>
-          </Box>
-        </Box>
+        <DialogActions>
+          <Button autoFocus onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button autoFocus onClick={handleCreateSurvey}>
+            Create
+          </Button>
+        </DialogActions>
       </BootstrapDialog>
     </React.Fragment>
   );
-}
+};
+
+export default DialogBoxSurvey;

@@ -1,9 +1,16 @@
 .drawer.open{
-    width: 300px;
+    width: 450px;
     display: inline-flex ;
 }
 
 .drawer.closed{
     display: none;
     width: 0;
+}
+.drawer.tableClose{
+    width:65%;
+
+}
+.drawer.tableOpen{
+
 }

@@ -8,6 +8,7 @@ import get_survey_service from "@/services/survey_service/get_survey_service";
 import post_survey_service from "@/services/survey_service/post_survey_service";
 import put_survey_service from "@/services/survey_service/put_survey_service";
 import update_survey_service from "@/services/survey_service/update_survey_service";
+import axios from "axios";
 export const create_survey = createAsyncThunk(
  post_survey_type,
   async (survey:{name:string,abbr:string,survey_type_id:number,is_published:boolean,options:{modality:string,languages:string}}, { rejectWithValue }) => {
@@ -63,5 +64,22 @@ export const put_survey = createAsyncThunk(
           console.log(err);
           return rejectWithValue(err);
       }
+  }
+);
+
+export const delete_survey = createAsyncThunk(
+  'survey/deleteQuestionOfSurvey',
+  async ( survey_id:number, { rejectWithValue }) => {
+    try {
+      console.log(`Deleting question ${survey_id} f`);
+      const response = await axios.delete(
+        `http://localhost:4000/api/survey/${survey_id}`
+      );
+      console.log('Response from delete question:', response);
+      return {  survey_id };
+    } catch (err: any) {
+      console.error("Error in deleting question of survey");
+      return rejectWithValue(err.response.data);
+    }
   }
 );

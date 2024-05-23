@@ -4,7 +4,7 @@ import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { get_question } from "@/slice/question/question_action";
+import { delete_question, get_question } from "@/slice/question/question_action";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import EditQuestionDialogBox from "../editQuestionDialogBox/EditQuestionDialogBox";
 
@@ -64,6 +64,8 @@ const DataTable: React.FC = () => {
 
   const handleDelete = (id: number) => {
     console.log(`Delete row with id: ${id}`);
+    const question_id=id
+    dispatch(delete_question(question_id))
   };
 
   const columns: GridColDef[] = [

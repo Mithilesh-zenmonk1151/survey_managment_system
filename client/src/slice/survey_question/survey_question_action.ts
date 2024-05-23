@@ -3,6 +3,7 @@ import type { FieldValues } from "react-hook-form";
 import { get_survey_question_type, post_survey_question_type, put_survey_question_type } from "./survey_question_type";
 import post_survey_question_service from "@/services/survey_question_service/post_survey_question";
 import put_survey_question_service from "@/services/survey_question_service/put_survey_question";
+import axios from "axios";
 export const create_survey_question = createAsyncThunk(
  post_survey_question_type,
   async (survey_question:{survey_id:number,question_id:number[],order:number}, { rejectWithValue }) => {
@@ -60,3 +61,46 @@ export const update_survey_question = createAsyncThunk(
 //       }
 //   }
 // );
+
+// /page/${id1}/${id2}
+// export const get_question_for_survey = createAsyncThunk(
+//   'survey/getQuestionOfSurvey',
+//   async (survey_id: string , { rejectWithValue }) => {
+//     try {
+//       console.log("Survey ID of survey question$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$:", survey_id);
+//       const response= await axios.get(
+//         `http://localhost:4000/api/question/survey_question/${survey_id}`
+//       );
+//       // const response = await get_question_of_survey_service(survey_id);
+//       console.log('Response from Question70687689067890769077########## get:', response);
+//       console.log("464646565656556",response);
+//       const data=await response?.data
+//       return data; 
+//     } catch (err:any) {
+//       console.log("Error in getting questions of survey");
+//       return rejectWithValue(err.response.data); 
+//     }
+//   }
+// );
+interface DeleteQuestionParams {
+  survey_id: number;
+  question_id: number;
+}
+
+export const delete_question_of_survey = createAsyncThunk(
+  'survey/deleteQuestionOfSurvey',
+  async ({ survey_id, question_id }: DeleteQuestionParams, { rejectWithValue }) => {
+    try {
+      console.log(`Deleting question ${question_id} from survey ${survey_id}`);
+      const response = await axios.delete(
+        `http://localhost:4000/api/survey_question/${survey_id}/${question_id}`
+      );
+      console.log('Response from delete question:', response);
+      return { survey_id, question_id };
+    } catch (err: any) {
+      console.error("Error in deleting question of survey");
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+

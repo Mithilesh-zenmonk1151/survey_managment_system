@@ -1,50 +1,101 @@
- "use client"
-import { Box, Button, Typography } from '@mui/material'
-import React, { useState } from 'react'
-import style from "@/app/ui/auth.module.css"
-import TextFieldCompo from '@/components/textField/TextFieldCompo'
-import { useAppDispatch } from '@/store/hooks'
-import { register_users } from '@/slice/auth/auth_action'
-import toast from 'react-hot-toast'
-import CustomButton from '@/components/customButton/CustomButton'
+"use client"
+import axios from "axios";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-export default function SignUpPage() {
-  const [full_name,set_full_name]=useState("");
-    const [email,set_email]= useState("");
-    const [password,set_password]=useState("");
-    const [confirm_password,set_confirm_password]=useState("");
-    const [role,setRole]= useState("");
-    const user={full_name,email,password,confirm_password};
-    const dispatch= useAppDispatch();
-    console.log("useerrr===",user)
+import React, { useEffect, useState } from "react";
 
-    const handleOnClick=()=>{
-        try{
-          console.log("USSSSEEERRR===",user);
-          dispatch(register_users(user));
-          toast.success("User signup successfully")
-        }
-        catch(error){
-          console.log("error come while we are going to register new user");
-        }
+const Register = () => {
+
+  const [errMsg, setErrMsg] = useState("");
+  const router = useRouter()
+  const {data: session, status: sessionStatus} = useSession();
+
+  useEffect(() => {
+    if (sessionStatus === "authenticated") {
+      router.replace("/survey");
     }
+  }, [sessionStatus, router]);
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    return emailRegex.test(email)
+  }
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault()
+    const email = e.target[0].value
+    const password = e .target[1].value
+
+    if(!isValidEmail(email)){
+      setErrMsg("Email invalid")
+      return;
+    }
+
+    if(!password || password.length < 8) {
+      setErrMsg("Password must be 8 character long")
+      return;
+    }
+    const body = {
+      email, 
+      password
+    }
+    try{
+      const res = await axios.post("/api/register", body)
+      console.log(res)
+      if(res?.status === 201){
+        setErrMsg("")
+        router.push("/login")
+      }
+    }
+    catch(err: any){
+      console.log(err)
+      if(err?.response?.status === 400){
+        setErrMsg("Email already registered")
+      }else{
+        setErrMsg("Error, try again")
+      }
+    }
+  }
+  if(sessionStatus === 'loading'){
+    return <>Loading...</>
+  }
+
   return (
-   <Box className={style.main_body} >
-    <Typography>SignUp</Typography>
-    <Box sx={{
-      bgcolor:"white",
-      height:"470px",
-      width:"400px",
-    }}>
-      <Box>
-      <TextFieldCompo placeholder='Enter your full name' value={full_name} label='Full name' type='text' name='firstName' nameT='firstNamer' customClassName='' setValue={set_full_name}/>
-        <TextFieldCompo placeholder='Enter your email here' value={email} label='Email' type='email' name='email' nameT='email' customClassName='' setValue={set_email}/>
-        <TextFieldCompo placeholder='Enter Password eg:-abc@22' value={password} label='Password' type='password' name='password' nameT='password' customClassName='' setValue={set_password}/>
-        <TextFieldCompo placeholder='confirm Password' value={confirm_password} label="Confirm Passsword" type='text' name='lastName' nameT='lastName' customClassName='' setValue={set_confirm_password}/>
-        {/* <Button onClick={handleOnClick}>Signup</Button> */}
-        <CustomButton onClick={handleOnClick} text='Signup' />
-      </Box>
-    </Box>
-   </Box>
-  )
-}
+    sessionStatus !== "authenticated" && 
+    (<div className="flex min-h-screen flex-col items-center justify-between p-24">
+      <div className="bg-[#212121] p-8 rounded shadow-md w-96">
+        <h1 className="text-4xl text-center font-semibold mb-8">Register</h1>
+        <form onSubmit={(e) => handleSubmit(e)}>
+          <input
+            type="text"
+            className="w-full border border-gray-300 text-black rounded px-3 py-2 mb-4 focus:outline-none focus:border-blue-400 focus:text-black"
+            placeholder="Email"
+            required
+          />
+          <input
+            type="password"
+            className="w-full border border-gray-300 text-black rounded px-3 py-2 mb-4 focus:outline-none focus:border-blue-400 focus:text-black"
+            placeholder="Password"
+            required
+          />
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+          >
+            Register
+          </button>
+          <p className="text-red-600 text-[16px] mb-4">{errMsg && errMsg}</p>
+        </form>
+        <div className="text-center text-gray-500 mt-4">-OR-</div>
+        <Link 
+        className="block text-center text-blue-500 hover:undeline mt-2" 
+        href={"/login"}>
+          Login with existing account
+        </Link>
+      </div>
+    </div>)
+  );
+};
+
+export default Register;

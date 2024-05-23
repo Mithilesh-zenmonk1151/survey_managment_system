@@ -131,9 +131,26 @@ exports.get_question_for_survey = async (payload) => {
 };
 exports.delete_question = async (payload) => {
   try {
-    const { question_id } = payload.body;
+    const { question_id } = payload.params;
+    console.log("$%%$%%^^",payload.params);
     if (!question_id) {
       throw new CustomError("Question id required", 400);
+    }
+    const servey_qu = await survey_question.findAll({
+      where: { question_id: question_id },
+    });
+    const survey_ids = [...new Set(servey_qu.map((res) => res.survey_id))];
+    const published = await survey.findAll({
+      where: {
+        id: survey_ids,
+        is_published: true,
+      },
+    });
+    if (published.length > 0) {
+      throw new CustomError(
+        "Survey is published in which this question is added",
+        400
+      );
     }
     const delete_question = await question.destroy({
       where: { id: question_id },

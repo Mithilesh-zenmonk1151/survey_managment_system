@@ -120,15 +120,30 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     };
 
   return (
-    <TableHead>
-      <TableRow>
-        <TableCell padding="checkbox">
+    <TableHead sx={{
+      width:"100%",
+      bgcolor:"#efefef"    }}>
+      <TableRow sx={{
+         width:"100%",
+         bgcolor:"#efefef",
+         height:"39px"
+       
+      }}>
+        <TableCell padding="checkbox" sx={{
+          padding:0,
+
+        }}>
           <Checkbox
             color="primary"
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
             inputProps={{ "aria-label": "select all questions" }}
+            sx={{
+              padding:0,
+              margin:0,
+
+            }}
           />
         </TableCell>
         {headCells.map((headCell) => (
@@ -137,6 +152,10 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             align={headCell.numeric ? "right" : "left"}
             padding={headCell.disablePadding ? "none" : "normal"}
             sortDirection={orderBy === headCell.id ? order : false}
+            sx={{
+              padding:0,
+              margin:0
+            }}
           >
             <TableSortLabel
               active={orderBy === headCell.id}
@@ -329,14 +348,16 @@ export default function EnhancedTable({ survey }: InfoSurvey) {
   }
 
   return (
-    <Box sx={{ width: "100%", border:"2px solid #959595" }}>
-      <Paper sx={{ width: "100%", mb: 2,padding:"20px" }}>
+    <Box sx={{ width: "98%", border:"1px solid #e0e0e0" ,height:"100%"}}>
+      <Paper sx={{ width: "95%", mb: 2,padding:"20px" }}>
         {/* <EnhancedTableToolbar numSelected={selected.length} /> */}
         <TableContainer>
           <Table
-            sx={{ minWidth: 750 }}
+            sx={{ width: "100%" ,height:"100%"}}
             aria-labelledby="tableTitle"
             size={dense ? "small" : "medium"}
+
+
           >
             <EnhancedTableHead
               numSelected={selected.length}
@@ -345,8 +366,11 @@ export default function EnhancedTable({ survey }: InfoSurvey) {
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={stateRows ? stateRows.length : 0}
+            
             />
-            <TableBody>
+            <TableBody sx={{
+              padding:"10px"
+            }}>
               {visibleRows.map((row, index) => {
                 const isItemSelected = isSelected(row.id);
                 const labelId = `enhanced-table-checkbox-${index}`;
@@ -360,23 +384,36 @@ export default function EnhancedTable({ survey }: InfoSurvey) {
                     tabIndex={-1}
                     key={row.id}
                     selected={isItemSelected}
+                    sx={{
+                    height:"39px"
+                    }}
                   >
-                    <TableCell padding="checkbox">
+                    <TableCell padding="checkbox" sx={{
+                      width:"auto",
+                      height:"100%"
+                    }}>
                       <Checkbox
                         color="primary"
                         checked={isItemSelected}
                         inputProps={{ "aria-labelledby": labelId }}
+                        sx={{
+                          padding:"0px"
+                        }}
                       />
                     </TableCell>
                     <TableCell
                       component="th"
                       id={labelId}
                       scope="row"
-                      padding="none"
+                      sx={{
+                        padding:"0px"
+                      }}
                     >
                       {row.description}
-                    </TableCell>
-                    <TableCell>{row.id}</TableCell>
+                    </TableCell >
+                    <TableCell sx={{
+                        padding:"0px"
+                      }}>{row?.abbr}</TableCell>
                   </TableRow>
                 );
               })}
@@ -401,7 +438,7 @@ export default function EnhancedTable({ survey }: InfoSurvey) {
       <Box
         sx={{
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "space-around",
         }}
       >
         {/* <FormControlLabel

@@ -37,7 +37,6 @@ interface EditQuestionDialogBoxProps {
   onClose: () => void;
   question: DataRow | null;
 }
-
 const EditSurveyDialogBox: React.FC<EditQuestionDialogBoxProps> = ({ open, onClose, question }) => {
   const [selected_survey_type_id, set_selected_survey_type_id] = useState("");
   const [modality, set_selected_modality] = useState("");
@@ -46,30 +45,25 @@ const EditSurveyDialogBox: React.FC<EditQuestionDialogBoxProps> = ({ open, onClo
   const [abbr, set_abbr] = useState("");
   const dispatch = useAppDispatch();
   const [name, set_name] = useState(question?.name);
-
   useEffect(() => {
     if (question) {
       set_description(question.name);
       set_abbr(question.abbreviation);
     }
   }, [question]);
-
   useEffect(() => {
     dispatch(get_question_type());
   }, [dispatch]);
-
+  console.log("UIHIUOI(*(*^&^%&^*&*&*((*",question);
   const question_type = useAppSelector((state) => state.question_type?.content?.response);
   const sttt = useAppSelector((state) => state.survey_type?.content?.response);
-
   const options = { modality, languages };
   const is_published = false;
   const survey_type_id = parseInt(selected_survey_type_id);
-
   const modalityy = [
     { id: "1", name: "In Person", value: "In Person" },
     { id: "2", name: "In Value", value: "In Value" }
   ];
-
   const language = [
     { id: "1", name: "English", value: "English" },
     { id: "2", name: "Spanish", value: "Spanish" },
@@ -128,7 +122,7 @@ const EditSurveyDialogBox: React.FC<EditQuestionDialogBoxProps> = ({ open, onClo
             />
           </Box>
           <Box sx={{ display: "flex", gap: "30px" }}>
-            <DropDownForEditSurvey onChange={set_selected_modality} options={modalityy} select_type="Modality" />
+            <DropDownForEditSurvey onChange={(e:any)=>set_selected_modality(e.target.value)} options={modalityy} select_type="Modality" />
             <DropDownForEditSurvey onChange={set_language} options={language} select_type="Language" />
           </Box>
         </Box>

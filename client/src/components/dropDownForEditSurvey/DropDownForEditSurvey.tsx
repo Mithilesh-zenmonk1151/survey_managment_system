@@ -1,43 +1,46 @@
-// components/CustomDropdown.tsx
-import React from 'react';
-import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
+import React from "react";
+import MenuItem from "@mui/material/MenuItem";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
 
 interface Option {
+  id: string;
+  name: string;
   value: string;
-  label: string;
 }
 
-interface CustomDropdownProps {
+interface DropDownForEditSurveyProps {
   options: Option[];
   value: string;
-  handleChange?: (event: SelectChangeEvent<string>) => void;
+  onChange: (value: string) => void;
+  select_type: string;
 }
 
-const DropDownForEditSurvey: React.FC<CustomDropdownProps> = ({
+const DropDownForEditSurvey: React.FC<DropDownForEditSurveyProps> = ({
   options,
   value,
-  handleChange,
+  onChange,
+  select_type,
 }) => {
+  const handleChange = (event: SelectChangeEvent<string>) => {
+    onChange(event.target.value); // Directly pass the value from SelectChangeEvent
+  };
+
   return (
-    <FormControl  size="small" sx={{
-        width:"90%",
-        borderRadius:"80px"
-    }}>
-      <InputLabel id="dropdown-label">Select</InputLabel>
+    <FormControl size="small" sx={{ width: "90%", borderRadius: "80px" }}>
+      <InputLabel id={`${select_type}-label`}>{select_type}</InputLabel>
       <Select
-        labelId="dropdown-label"
-        id="dropdown"
+        labelId={`${select_type}-label`}
+        id={`${select_type}-dropdown`}
         value={value}
         onChange={handleChange}
-        label="Select"
-        sx={{ borderRadius: '8px' }} // Customize border radius here
+        label={select_type}
+        sx={{ borderRadius: "8px" }}
       >
-        {options.map(option => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.value}
+        {options.map((option) => (
+          <MenuItem key={option.id} value={option.value}>
+            {option.name}
           </MenuItem>
         ))}
       </Select>

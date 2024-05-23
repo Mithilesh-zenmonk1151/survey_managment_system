@@ -6,10 +6,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Switch } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { get_survey, update_survey } from '@/slice/survey/survey_action';
+import { delete_survey, get_survey, update_survey } from '@/slice/survey/survey_action';
 import EditSurveyDialogBox from '../dialogBoxEditSurvey/DialogBoxEditSurvey';
 import SurveyInfo from './SurveyInfo';
-import InsideSurveyTabTab from '../insideSurveytab/InsideSurveyTabTab';
+import toast from 'react-hot-toast';
 
 interface DataRow {
   id: number;
@@ -30,6 +30,7 @@ const DataTable: React.FC<DataTableProps> = ({ onAddTab }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedQuestion, setSelectedQuestion] = useState<DataRow | null>(null);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [deleteOptionId, setDeleteOptionId] = useState<number | null>(null); // Track which row's delete option is active
   const dispatch = useAppDispatch();
 
   const survey = useAppSelector((state) => state.survey?.content?.response?.data?.rows);
@@ -50,10 +51,10 @@ const DataTable: React.FC<DataTableProps> = ({ onAddTab }) => {
 
   useEffect(() => {
     if (survey) {
-      const mappedRows = survey.map((item: any) => ({
+      const mappedRows = survey.map((item: any, index: number) => ({
         id: item.id,
         name: item.name,
-        question: item.options.length,
+        question: item?.questions?.length,
         type: item.survey_type.name,
         abbreviation: item.abbr,
         modified: new Date(item.updatedAt).toISOString().split('T')[0],
@@ -68,19 +69,14 @@ const DataTable: React.FC<DataTableProps> = ({ onAddTab }) => {
     setDialogOpen(true);
   };
 
-  const handleDelete = (id: number) => {
-    console.log(`Delete row with id: ${id}`);
-  };
-
   const handleStatusChange = (id: number, status: boolean) => {
-    const is_published = status;
-    const survey = { id, is_published };
-    dispatch(update_survey(survey));
+    const updatedRows = rows.map(row => row.id === id ? { ...row, status } : row);
+    setRows(updatedRows);
+    dispatch(update_survey({ id, is_published: status }));
   };
 
   const handleEyeClick = (id: number) => {
     const selectedSurvey = survey.find((item: any) => item.id === id);
-    console.log("Iddd dsfefghfg",id)
     if (selectedSurvey) {
       onAddTab({
         id: `survey-${id}`,
@@ -88,6 +84,22 @@ const DataTable: React.FC<DataTableProps> = ({ onAddTab }) => {
         content: <SurveyInfo survey={selectedSurvey} />,
       });
     }
+  };
+
+  const handleMoreOptionsClick = (id: number | null) => {
+    setDeleteOptionId(id);
+    const survey_id=id;
+    dispatch(delete_survey(survey_id))
+    setRows((prevRows) => prevRows.filter((row) => row.id !== id));
+    toast.success("Survey deleted  Successfully");
+  };
+  console.log("Deleteee#####################OPPP",deleteOptionId);
+
+  const handleDelete = (id: number) => {
+    // Implement your delete logic here
+    console.log(`Deleting survey with ID: ${id}`);
+    // Example dispatch to delete survey:
+    // dispatch(delete_survey(id));
   };
 
   const columns: GridColDef[] = [
@@ -121,16 +133,21 @@ const DataTable: React.FC<DataTableProps> = ({ onAddTab }) => {
           <IconButton onClick={() => handleEdit(params.row as DataRow)}>
             <EditIcon />
           </IconButton>
-          <IconButton>
+          <IconButton onClick={() => handleMoreOptionsClick(params.row.id)}>
             <MoreVertIcon />
           </IconButton>
+          {deleteOptionId === params.row.id && (
+            <span onClick={() => handleDelete(params.row.id)} style={{ cursor: 'pointer', marginLeft: 10, color: 'red' }}>
+              Delete
+            </span>
+          )}
         </>
       ),
     },
   ];
 
   return (
-    <div style={{ height: 600, width: '100%' , background:"white" }} >
+    <div style={{ height: 600, width: '100%', background: "white" }}>
       <DataGrid
         rows={rows}
         columns={columns}

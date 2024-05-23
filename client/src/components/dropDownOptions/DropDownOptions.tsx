@@ -22,6 +22,7 @@ export default function SelectLabels() {
           value={age}
           label="Age"
           onChange={handleChange}
+          size='small'
         >
           <MenuItem value="">
             <em>None</em>

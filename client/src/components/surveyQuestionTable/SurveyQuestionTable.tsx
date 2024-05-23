@@ -11,6 +11,7 @@ import './SurveyQuestionTable.styles.css';
 import toast from "react-hot-toast";
 import EditSurveyDialogBox from "../dialogBoxEditSurvey/DialogBoxEditSurvey";
 import EditSurveyQuestionDialogBox from "../editSurveyQuestionDialogBox/EditSurveyQuetionDialogBox";
+import { delete_question_of_survey } from "@/slice/survey_question/survey_question_action";
 
 interface DataRow {
   id: number;
@@ -70,7 +71,7 @@ export default function SurveyQuestionTable({ survey }: SurveyInfo) {
         id: item?.id || index,
         name: item?.description || "",
         order:index+1|| "",
-       
+        type: item?.abbr || "",
         abbreviation: item?.abbr || "",
         modified: item?.createdAt || "",
       }));
@@ -84,7 +85,17 @@ export default function SurveyQuestionTable({ survey }: SurveyInfo) {
   };
 
   const handleDelete = (id: number) => {
+   try{
     console.log(`Delete row with id: ${id}`);
+    const question_id= id;
+    dispatch(delete_question_of_survey({survey_id,question_id}))
+    toast.success("Question removed from survey")
+
+   }
+   catch(error){
+    toast.error("Question Delation faled")
+
+   }
     
   };
 

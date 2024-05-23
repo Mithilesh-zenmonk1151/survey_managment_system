@@ -33,8 +33,18 @@ exports.update_survey = async (req, res) => {
 };
 exports.survey_update_at_publish = async (req, res) => {
   try {
-    console.log("PUBLISHCONTR")
+    console.log("PUBLISHCONTR");
     const response = await survey_service.survey_update_at_publish(req);
+    res.status(200).json({ response });
+  } catch (error) {
+    console.log(error);
+    res.status(error.code).json({ message: error.message, success: false });
+  }
+};
+
+exports.delete_survey = async (req, res) => {
+  try {
+    const response = await survey_service.delete_survey(req);
     res.status(200).json({ response });
   } catch (error) {
     console.log(error);

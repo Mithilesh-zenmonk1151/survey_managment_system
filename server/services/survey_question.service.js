@@ -84,9 +84,10 @@ exports.update_survey_question = async (payload) => {
 };
 exports.delete_survey_question = async (payload) => {
   try {
-    const { survey_question_id } = payload.body;
+    const { question_id,survey_id } = payload.params;
+    console.log("PAYYYLOAD",payload.params)
     const deleted_survey_question = await survey_question.destroy({
-      where: { id: survey_question_id },
+      where: { question_id:question_id, survey_id:survey_id },
     });
     return deleted_survey_question;
   } catch (error) {
