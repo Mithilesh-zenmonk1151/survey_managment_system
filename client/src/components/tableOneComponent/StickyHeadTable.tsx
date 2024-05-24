@@ -152,7 +152,7 @@ const DataTable: React.FC<DataTableProps> = ({ onAddTab }) => {
         rows={rows}
         columns={columns}
         pageSize={10}
-        rowsPerPageOptions={[10, 25, 100]}
+        rowsPerPageOptions={[5,10, 25, 100]}
         loading={loading}
       />
       <EditSurveyDialogBox

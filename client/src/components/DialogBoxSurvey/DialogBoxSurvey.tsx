@@ -1,40 +1,24 @@
 import React, { useState, useEffect } from "react";
-import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import IconButton from "@mui/material/IconButton";
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { Box, TextField } from "@mui/material";
 import DropDown from "../dropDown/DropDown";
 import DropDownForEditSurvey from "../dropDownForEditSurvey/DropDownForEditSurvey";
+import { create_survey, get_survey } from "@/slice/survey/survey_action";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { create_survey } from "@/slice/survey/survey_action";
 import { get_survey_type } from "@/slice/survey_type/survey_type_action";
-
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  "& .MuiDialogContent-root": {
-    padding: theme.spacing(2),
-  },
-  "& .MuiDialogActions-root": {
-    padding: theme.spacing(1),
-  },
-}));
-
-type QuestionType = {
-  response: Array<{ uuid: string; id: string; name: string; abb: string }>;
-};
 
 const DialogBoxSurvey: React.FC = () => {
   const [open, setOpen] = useState(false);
-  const [name, set_name] = useState("");
-  const [selected_question_type_id, set_selected_question_type_id] =useState("");
-  const [modality, set_modality] = useState("");
-  const [languages, set_languages] = useState("");
-  const [abbr, set_abbr] = useState("");
+  const [name, setName] = useState("");
+  const [selected_survey_type_id, set_selected_survey_type_id] = useState("");
+  const [modality, setModality] = useState("");
+  const [languages, setLanguages] = useState("");
+  const [abbr, setAbbr] = useState("");
   const dispatch = useAppDispatch();
+
+ 
+  const survey_types = useAppSelector((state) => state.survey_type?.content?.response || []);
+  const surveys = useAppSelector((state) => state.survey?.content?.response?.data?.rows || []);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -50,33 +34,15 @@ const DialogBoxSurvey: React.FC = () => {
       is_published: false,
       abbr,
       options: { modality, languages },
-      survey_type_id: parseInt(selected_question_type_id),
+      survey_type_id: parseInt(selected_survey_type_id),
     };
 
-    try {
-      dispatch(create_survey(survey));
-      console.log("Survey created:", survey);
-      setOpen(false); // Close dialog after creating survey
-    } catch (error) {
-      console.error("Error creating survey:", error);
-    }
+    dispatch(create_survey(survey));
+    setOpen(false);
   };
   
 
-  // useEffect(() => {
-  //  dispatch(get_survey_type())
-  // }, [dispatch]);
-  useEffect(()=>{
-    dispatch(get_survey_type());
-  },[dispatch])
-  const survey_type= useAppSelector((state)=>state.survey_type?.content?.response )
-  // console.log("safdssadsfsdkosuijisbfoisiofsioiofdsiofdsidfsifdsiodfsiio",survey_type)
-
-  const question_type = useAppSelector(
-    (state) => state.survey_type?.content?.response
-  );
-
-  const modalityy = [
+  const modalities = [
     { id: "1", name: "In Person", value: "In Person" },
     { id: "2", name: "Online", value: "Online" },
   ];
@@ -91,22 +57,21 @@ const DialogBoxSurvey: React.FC = () => {
   ];
 
   return (
-    <React.Fragment>
+    <>
       <Button
         variant="outlined"
         sx={{
-          bgcolor: "#153b6b",
+          bgcolor: "#1c5091",
           color: "white",
+          width: "83px",
+          height: "36px",
+          fontSize: "12px",
         }}
         onClick={handleClickOpen}
       >
         CREATE
       </Button>
-      <BootstrapDialog
-        onClose={handleClose}
-        aria-labelledby="customized-dialog-title"
-        open={open}
-      >
+      <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
           Create Survey
           <IconButton
@@ -119,62 +84,41 @@ const DialogBoxSurvey: React.FC = () => {
             }}
             onClick={handleClose}
           >
-            {/* <CloseIcon /> */}
+            <CloseIcon />
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "30px",
-            }}
-          >
-            <Box>
-              <TextField
-                label="Survey Name"
-                variant="outlined"
-                sx={{
-                  width: "100%",
-                }}
-                value={name}
-                onChange={(e) => set_name(e.target.value)}
-              />
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                gap: "30px",
-              }}
-            >
+          <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
+            <TextField
+              label="Survey Name"
+              variant="outlined"
+              sx={{ width: "100%" }}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <Box sx={{ display: "flex", justifyContent: "space-between", gap: "30px" }}>
               <TextField
                 placeholder="Abbreviation"
                 value={abbr}
-                onChange={(e) => set_abbr(e.target.value)}
+                onChange={(e) => setAbbr(e.target.value)}
               />
               <DropDown
                 select_type="Survey Type"
-                options={survey_type}
-                value={selected_question_type_id}
-                onChange={set_selected_question_type_id}
+                options={survey_types}
+                value={selected_survey_type_id}
+                onChange={(value: string) => set_selected_survey_type_id(value)}
               />
             </Box>
-            <Box
-              sx={{
-                display: "flex",
-                gap: "20px",
-              }}
-            >
+            <Box sx={{ display: "flex", gap: "20px" }}>
               <DropDownForEditSurvey
                 value={modality}
-                onChange={(value: string) => set_modality(value)}
-                options={modalityy}
+                onChange={(value: string) => setModality(value)}
+                options={modalities}
                 select_type="Modality"
               />
               <DropDownForEditSurvey
                 value={languages}
-                onChange={(value: string) => set_languages(value)}
+                onChange={(value: string) => setLanguages(value)}
                 options={language}
                 select_type="Language"
               />
@@ -189,8 +133,8 @@ const DialogBoxSurvey: React.FC = () => {
             Create
           </Button>
         </DialogActions>
-      </BootstrapDialog>
-    </React.Fragment>
+      </Dialog>
+    </>
   );
 };
 

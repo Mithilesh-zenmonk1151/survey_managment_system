@@ -49,7 +49,10 @@ export default function DialogBox() {
     setOpen(false);
     try{
       dispatch(create_question(question));
-
+      set_description("");
+      set_selected_question_type_id("");
+      set_abbr("");
+    
 
     }
     catch(error){

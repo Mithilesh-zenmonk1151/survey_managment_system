@@ -105,7 +105,9 @@ const DataTable: React.FC = () => {
         columns={columns}
         pageSize={5}
         loading={loading}
-        rowsPerPageOptions={[5]}
+        rowsPerPageOptions={[5,10,15,20,25,30,40,50]}
+
+
         sortingOrder={['desc', 'asc']}
         sortModel={[
           {

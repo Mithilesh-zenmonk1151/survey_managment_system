@@ -20,10 +20,15 @@ export default function Surveypage() {
     const question_type= useAppSelector((state)=>state.question_type.content);
     console.log("states",question_type);
   return (
-   <Box>
+   <Box sx={{
+    display:"flex",
+    flexDirection:"column",
+    gap:"24px"
+   }}>
     <Box sx={{
         display:"flex",
-        justifyContent:"space-between"
+        justifyContent:"space-between",
+        gap:"30px"
     }}>
         <Typography sx={{
             fontSize:"20px",

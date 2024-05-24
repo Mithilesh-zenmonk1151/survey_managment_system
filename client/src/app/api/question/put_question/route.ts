@@ -7,9 +7,10 @@ export async function PUT(request: NextRequest) {
         console.log(data);
         const res = await axios.put(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/question`, data);
         console.log(res);
+        console.log("##############&&&&&&&&",res)
 
         if (!res) {
-            return NextResponse.json({ error: "Updating Question failed" }, { status: 500 });
+            return NextResponse.json({ error:"sferg" }, { status: 500 });
         }
 
         return NextResponse.json(res.data);

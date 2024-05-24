@@ -6,7 +6,7 @@ type initialStateProps = {
   isLoggedIn: boolean;
   content: {
     message: string;
-    survey: {
+    survey: [ {
       name: string;
       id: number;
       abbr: string;
@@ -16,10 +16,13 @@ type initialStateProps = {
         modality:string;
         languages:string;
       }
-    };
+    }
+    ];
   };
   error: Object | null;
 };
+
+
 
 const initialState: initialStateProps = {
   isLoading: false,
@@ -27,8 +30,9 @@ const initialState: initialStateProps = {
   isLoggedIn: false,
   content: {
     message: "",
-    survey: {
-      name: "",
+    survey: [
+      {
+     name: "",
       id: 0,
       abbr: "",
       survey_type_id: 0,
@@ -37,12 +41,17 @@ const initialState: initialStateProps = {
         modality:"",
         languages:"",
       }
-    },
+      }
+    ],
   },
 };
 
+
+// state.content.response.data.rows = action.payload;
+// state.content.response.data.rows.push(action.payload);
+
 export const survey_slice = createSlice({
-  name: "question",
+  name: "survey",
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -63,6 +72,7 @@ export const survey_slice = createSlice({
     });
     builder.addCase(create_survey.fulfilled, (state, action) => {
       state.isLoading = false;
+     
     });
     builder.addCase(create_survey.rejected, (state, action) => {
       state.isLoading = false;

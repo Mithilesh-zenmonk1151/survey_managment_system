@@ -12,6 +12,7 @@ import CheckBoxDropDown from '@/components/checkBoxDropDown/CheckBoxDropDown'
 import DialogBox from '@/components/DialogBox/DialogBox'
 import QuestionTableComponent from '@/components/questionTableComponent/QuestionTableComponent'
 import DropDownQuest from '@/components/dropDownQuest/DropDownQuest'
+import SearchingDropDown from '@/components/searchingDropDown/SearchingDropDown'
 const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
 export default function QuestionPage() {
@@ -56,7 +57,7 @@ export default function QuestionPage() {
             }}>
             <SearchbarCompo />
             {/* <DropDown/> */}
-            <DropDownQuest options={dummyOptions} value={dummyOptions.value}/>
+            <SearchingDropDown options={dummyOptions} em_name='Type'/>
             <CheckBoxDropDown/>
             {/* <DropDown/> */}
             <Button>Clear</Button>

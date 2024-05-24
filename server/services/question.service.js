@@ -32,7 +32,7 @@ exports.create_question = async (payload) => {
 exports.get_question = async (payload) => {
   try {
     const page_number = payload.query.page_number || 1;
-    const limit = payload.query.limit || 3;
+    const limit = payload.query.limit || 50;
     console.log("PAGENUMER", page_number);
     console.log("PAGENUMER", limit);
     const search = payload.query.search || "";
@@ -136,7 +136,7 @@ exports.get_question_for_survey = async (payload) => {
 exports.delete_question = async (payload) => {
   try {
     const { question_id } = payload.params;
-    console.log("$%%$%%^^",payload.params);
+    console.log("$%%$%%^^",question_id);
     if (!question_id) {
       throw new CustomError("Question id required", 400);
     }

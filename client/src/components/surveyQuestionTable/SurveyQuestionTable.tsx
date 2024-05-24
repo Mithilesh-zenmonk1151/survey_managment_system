@@ -4,14 +4,13 @@ import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator'; // Import DragIndicatorIcon
 import { get_question_of_survey } from "@/slice/question/question_action";
 import { useAppDispatch } from "@/store/hooks";
-import EditQuestionDialogBox from "../editQuestionDialogBox/EditQuestionDialogBox";
-import './SurveyQuestionTable.styles.css';
-import toast from "react-hot-toast";
-import EditSurveyDialogBox from "../dialogBoxEditSurvey/DialogBoxEditSurvey";
 import EditSurveyQuestionDialogBox from "../editSurveyQuestionDialogBox/EditSurveyQuetionDialogBox";
+import toast from "react-hot-toast";
 import { delete_question_of_survey } from "@/slice/survey_question/survey_question_action";
+import './SurveyQuestionTable.styles.css';
 
 interface DataRow {
   id: number;
@@ -62,7 +61,6 @@ export default function SurveyQuestionTable({ survey }: SurveyInfo) {
 
     fetchData();
   }, [dispatch, survey_id]);
-  console.log("&&&&&&&&&&&&&&&asfhdfklgdfgl;dfg5645",response);
 
   useEffect(() => {
     if (response) {
@@ -84,22 +82,27 @@ export default function SurveyQuestionTable({ survey }: SurveyInfo) {
   };
 
   const handleDelete = (id: number) => {
-   try{
-    console.log(`Delete row with id: ${id}`);
-    const question_id= id;
-    dispatch(delete_question_of_survey({survey_id,question_id}))
-    toast.success("Question removed from survey")
-
-   }
-   catch(error){
-    toast.error("Question Delation faled")
-
-   }
-    
+    try {
+      console.log(`Delete row with id: ${id}`);
+      const question_id = id;
+      dispatch(delete_question_of_survey({ survey_id, question_id }))
+      toast.success("Question removed from survey")
+    } catch (error) {
+      toast.error("Question Deletion failed")
+    }
   };
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 150 },
+    {
+      field: "drag",
+      headerName: "",
+      width: 100,
+      sortable: false,
+      renderCell: () => <DragIndicatorIcon sx={{
+        marginLeft:"10px",
+        color:"#424242"
+      }}/>,
+    },
     { field: "name", headerName: "Name", width: 150 },
     { field: "type", headerName: "Type", width: 150 },
     { field: "abbreviation", headerName: "Abbreviation", width: 150 },
@@ -140,4 +143,4 @@ export default function SurveyQuestionTable({ survey }: SurveyInfo) {
       />
     </div>
   );
-};
+}

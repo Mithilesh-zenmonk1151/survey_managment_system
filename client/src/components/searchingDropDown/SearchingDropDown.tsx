@@ -4,9 +4,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Checkbox from '@mui/material/Checkbox';
-import ListItemText from '@mui/material/ListItemText';
-import "./CheckBoxDropDown.css";
+import "./SearchingDropDown.css";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -19,20 +17,33 @@ const MenuProps = {
   },
 };
 
+const names = [
+  'Oliver Hansen',
+  'Van Henry',
+  'April Tucker',
+  'Ralph Hubbard',
+  'Omar Alexander',
+  'Carlos Abbott',
+  'Miriam Wagner',
+  'Bradley Wilkerson',
+  'Virginia Andrews',
+  'Kelly Snyder',
+];
 interface Option {
-  id?: string;
-  name?: string;
-  value?: string;
-}
-
-interface CheckBoxDropDownProps {
-  options?: Option[];
-  value?: string[];
-  onChange: (value: string[]) => void;
-  select_type: string;
-  em?: string;
-  em_name?: string;
-}
+    id?: string;
+    name?: string;
+    value?: string;
+  }
+  
+  interface DropDownForEditSurveyProps {
+    options?: Option[];
+    value?: string;
+    onChange: (value: string) => void;
+    select_type: string;
+    em?:string;
+    em_name?:string;
+  }
+  
 
 function getStyles(name: string, personName: readonly string[], theme: Theme) {
   return {
@@ -42,24 +53,33 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
         : theme.typography.fontWeightMedium,
   };
 }
+// interface searchDropDown{
+//     em?:string
+// }
 
-export default function CheckBoxDropDown(props: CheckBoxDropDownProps) {
-  const { options = [], value = [], onChange, select_type, em, em_name } = props;
+export default function SearchingDropDown(props:DropDownForEditSurveyProps) {
+    const { options,
+        value,
+        onChange,
+        select_type,em,em_name}=props
   const theme = useTheme();
-  const [personName, setPersonName] = React.useState<string[]>(value);
+  const [personName, setPersonName] = React.useState<string[]>([]);
 
   const handleChange = (event: SelectChangeEvent<typeof personName>) => {
     const {
       target: { value },
     } = event;
-    const newValue = typeof value === 'string' ? value.split(',') : value;
-    setPersonName(newValue);
-    onChange(newValue);
+    setPersonName(
+      typeof value === 'string' ? value.split(',') : value,
+    );
   };
+// const handleChange = (event: SelectChangeEvent<string>) => {
+//     onChange(event.target.value); // Directly pass the value from SelectChangeEvent
+//   };
 
   return (
     <div>
-      <FormControl sx={{ mt: -1, width: 200, borderRadius: "300px" }}>
+      <FormControl sx={{ m: 1, width: 125, mt: 0 }}>
         <Select
           multiple
           displayEmpty
@@ -70,7 +90,8 @@ export default function CheckBoxDropDown(props: CheckBoxDropDownProps) {
             if (selected.length === 0) {
               return <em className='em-c'>{em_name}</em>;
             }
-            return selected.join(', ');
+
+            // return selected.join(', ');
           }}
           MenuProps={MenuProps}
           inputProps={{ 'aria-label': 'Without label' }}
@@ -93,16 +114,17 @@ export default function CheckBoxDropDown(props: CheckBoxDropDownProps) {
             },
           }}
           label={select_type}
+
+
         >
           <MenuItem disabled value="">
             <em>{em}</em>
           </MenuItem>
-          {options.map((option) => (
-            <MenuItem key={option.id} value={option.value}>
-              <Checkbox checked={personName.indexOf(option.value || '') > -1} />
-              <ListItemText primary={option.name} />
-            </MenuItem>
-          ))}
+          {options?.map((option) => (
+          <MenuItem key={option.id} value={option.value} >
+            {option.name}
+          </MenuItem>
+        ))}
         </Select>
       </FormControl>
     </div>

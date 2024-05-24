@@ -1,14 +1,26 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Tabs, Tab, Box } from "@mui/material";
+import { Tabs, Tab, Box, Button, Switch, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import DataTable from "../tableOneComponent/StickyHeadTable";
+import SearchbarCompo from "../searchBar/SearchBarCompo";
+import SearchingDropDown from "../searchingDropDown/SearchingDropDown";
+import CheckBoxDropDown from "../checkBoxDropDown/CheckBoxDropDown";
 
 interface TabContent {
   id: string;
   label: string;
   content: JSX.Element;
 }
+const names = [
+ {name:'Oliver Hansen'},
+ {name:'Oliver Hansen'},
+ {name:'Oliver Hansen'},
+ {name:'Oliver Hansen'},
+ {name:'Oliver Hansen'},
+ {name:'Oliver Hansen'},
+ 
+];
 const MyTabsComponent = () => {
   const handleAddTab = (newTab: TabContent) => {
     const newTabs = [...tabs, newTab];
@@ -36,11 +48,57 @@ const MyTabsComponent = () => {
 
   return (
     <Box>
-      <Tabs value={value} onChange={handleChange}>
+      <Tabs value={value} onChange={handleChange} sx={{
+        bgcolor:"white",
+        fontSize:"10px"
+      }}>
         {tabs.map((tab, index) => (
-          <Tab key={tab.id} label={tab.label} />
+          <Tab key={tab.id} label={tab.label} sx={{
+            bgcolor:"white",
+            fontSize:"14px",
+            padding:0
+          }}/>
         ))}
       </Tabs>
+      <Box sx={{
+        height:"1px",
+        width:"100%",
+        
+      }}>
+
+      </Box>
+      <Box sx={{
+        bgcolor:"white",
+      }}>
+        <Box sx={{
+          display:"flex",
+          justifyContent:"space-between",
+          // paddingRight:"24px",
+          // paddingLeft:"24px",
+          padding:"24px"
+
+        }}>
+       <Box sx={{
+        display:"flex",
+        alignItems:"center"
+       }}>
+       <SearchbarCompo/>
+        <SearchingDropDown options={names} em="Type" em_name="Type"/>
+        <CheckBoxDropDown em_name="Abbreviation" options={names}/>
+        <SearchingDropDown options={names} em="Status" em_name="Status"/>
+        <Button disabled>Clear</Button>
+       </Box>
+       <Box sx={{
+        display:"flex",
+        alignContent:"center",
+        alignItems:"center",
+        textAlign:"center"
+       }}>
+        <Switch/>
+        <Typography>Show deleted</Typography>
+       </Box>
+        </Box>
+
       {tabs.map((tab, index) => (
         <Box
           key={tab.id}
@@ -48,10 +106,13 @@ const MyTabsComponent = () => {
           hidden={value !== index}
           id={`simple-tabpanel-${index}`}
           aria-labelledby={`simple-tab-${index}`}
+
         >
           {value === index && <Box>{tab.content}</Box>}
         </Box>
       ))}
+            </Box>
+
     </Box>
   );
 };

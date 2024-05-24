@@ -11,7 +11,7 @@ interface SurveyInformationProps {
 }
 
 function SurveyInformation({ survey }: SurveyInformationProps) {
-  const dispatch= useAppDispatch();
+  // const dispatch= useAppDispatch();
   const languages = [
     { id: "1", name: "English", value: "English" },
     { id: "2", name: "Spanish", value: "Spanish" },
@@ -20,25 +20,26 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
     { id: "5", name: "French", value: "French" },
     { id: "6", name: "Portuguese", value: "Portuguese" }
   ];
-  console.log("*****************************%%%%%",survey?.options?.languages);
+  console.log("*****************************%%%%%",survey);
   const moda=survey?.options?.modality
   const sselle=survey?.survey_type?.name
   const lang=survey?.options?.languages
   const [selected_value_type,set_selected_value_type]=useState(sselle);
   const [selected_modality, set_selected_modality]=useState(moda);
   const [selected_language,set_selected_language]=useState(lang);
+  const dispatch= useAppDispatch();
 
   const surveyTypes = [
     { id: "1", name: "Student Satisfaction With The Content Of The Subject (SSAC)" },
     { id: "2", name: "Course Feedback" },
     { id: "3", name: "Instructor Evaluation" }
   ];
-  // useEffect(()=>{
-  //   dispatch(get_survey_type());
+  useEffect(()=>{
+    dispatch(get_survey_type());
 
-  // })
-  const survey_types= useAppSelector((state)=>state.survey_type?.content.response)
-  // console.log(";;;;;;;;;;;;;;;;;;;;;;;;",survey_types);
+  })
+  const survey_types= useAppSelector((state)=>state.survey_type?.content?.response)
+  console.log(";;;;;;;;;;;;;;;;;;;;;;;;",survey_types);
 
   const modalities = [
     { id: "1", name: "In Person" },
@@ -108,9 +109,9 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
           onChange={(e) => set_selected_value_type( e.target.value)} // Implement change handler as needed
           label="Type of Survey"
         >
-          {survey_types.map((type:any) => (
-            <MenuItem key={type.id} value={type.name}>
-              {type.name}
+          {survey_types?.map((type:any) => (
+            <MenuItem key={type?.id} value={type?.name}>
+              {type?.name}
             </MenuItem>
           ))}
         </Select>

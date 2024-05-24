@@ -1,0 +1,15 @@
+.em-c{
+    font-size: 12px;
+}
+.outlined-input-custom .MuiOutlinedInput-notchedOutline {
+    border: none;
+  }
+  
+  .outlined-input-custom.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border: none;
+  }
+  
+  .outlined-input-custom:hover .MuiOutlinedInput-notchedOutline {
+    border: none;
+  }
+  
