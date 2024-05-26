@@ -17,33 +17,20 @@ const MenuProps = {
   },
 };
 
-const names = [
-  'Oliver Hansen',
-  'Van Henry',
-  'April Tucker',
-  'Ralph Hubbard',
-  'Omar Alexander',
-  'Carlos Abbott',
-  'Miriam Wagner',
-  'Bradley Wilkerson',
-  'Virginia Andrews',
-  'Kelly Snyder',
-];
 interface Option {
-    id?: string;
-    name?: string;
-    value?: string;
-  }
-  
-  interface DropDownForEditSurveyProps {
-    options?: Option[];
-    value?: string;
-    onChange: (value: string) => void;
-    select_type: string;
-    em?:string;
-    em_name?:string;
-  }
-  
+  id?: string;
+  name?: string;
+  value?: string;
+}
+
+interface DropDownForEditSurveyProps {
+  options?: Option[];
+  value?: string;
+  onChange: (value: string) => void;
+  select_type: string;
+  em?: string;
+  em_name?: string;
+}
 
 function getStyles(name: string, personName: readonly string[], theme: Theme) {
   return {
@@ -53,29 +40,19 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
         : theme.typography.fontWeightMedium,
   };
 }
-// interface searchDropDown{
-//     em?:string
-// }
 
-export default function SearchingDropDown(props:DropDownForEditSurveyProps) {
-    const { options,
-        value,
-        onChange,
-        select_type,em,em_name}=props
+export default function SearchingDropDown(props: DropDownForEditSurveyProps) {
+  const { options, value, onChange, select_type, em, em_name } = props;
   const theme = useTheme();
-  const [personName, setPersonName] = React.useState<string[]>([]);
+  const [selectedValue, setSelectedValue] = React.useState<string[]>([]);
 
-  const handleChange = (event: SelectChangeEvent<typeof personName>) => {
+  const handleChange = (event: SelectChangeEvent<string[]>) => {
     const {
       target: { value },
     } = event;
-    setPersonName(
-      typeof value === 'string' ? value.split(',') : value,
-    );
+    setSelectedValue(typeof value === 'string' ? value.split(',') : value);
+    onChange(value as string); // Call onChange with the selected value
   };
-// const handleChange = (event: SelectChangeEvent<string>) => {
-//     onChange(event.target.value); // Directly pass the value from SelectChangeEvent
-//   };
 
   return (
     <div>
@@ -83,15 +60,14 @@ export default function SearchingDropDown(props:DropDownForEditSurveyProps) {
         <Select
           multiple
           displayEmpty
-          value={personName}
+          value={selectedValue}
           onChange={handleChange}
           input={<OutlinedInput className="outlined-input-custom" />}
           renderValue={(selected) => {
             if (selected.length === 0) {
               return <em className='em-c'>{em_name}</em>;
             }
-
-            // return selected.join(', ');
+            return selected.join(', '); // Display selected values
           }}
           MenuProps={MenuProps}
           inputProps={{ 'aria-label': 'Without label' }}
@@ -114,17 +90,15 @@ export default function SearchingDropDown(props:DropDownForEditSurveyProps) {
             },
           }}
           label={select_type}
-
-
         >
           <MenuItem disabled value="">
             <em>{em}</em>
           </MenuItem>
           {options?.map((option) => (
-          <MenuItem key={option.id} value={option.value} >
-            {option.name}
-          </MenuItem>
-        ))}
+            <MenuItem key={option.id} value={option.name} style={getStyles(option.name!, selectedValue, theme)}>
+              {option.name}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
     </div>

@@ -6,19 +6,23 @@ import DropDownForEditSurvey from "../dropDownForEditSurvey/DropDownForEditSurve
 import { create_survey, get_survey } from "@/slice/survey/survey_action";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { get_survey_type } from "@/slice/survey_type/survey_type_action";
+import toast from "react-hot-toast";
 
 const DialogBoxSurvey: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
-  const [selected_survey_type_id, set_selected_survey_type_id] = useState("");
+  const [selectedSurveyTypeId, setSelectedSurveyTypeId] = useState("");
   const [modality, setModality] = useState("");
   const [languages, setLanguages] = useState("");
   const [abbr, setAbbr] = useState("");
   const dispatch = useAppDispatch();
 
- 
-  const survey_types = useAppSelector((state) => state.survey_type?.content?.response || []);
+  const surveyTypes = useAppSelector((state) => state.survey_type?.content?.response || []);
   const surveys = useAppSelector((state) => state.survey?.content?.response?.data?.rows || []);
+
+  useEffect(() => {
+    dispatch(get_survey_type());
+  }, [dispatch]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -28,26 +32,32 @@ const DialogBoxSurvey: React.FC = () => {
     setOpen(false);
   };
 
-  const handleCreateSurvey = () => {
+  const handleCreateSurvey = async () => {
     const survey = {
       name,
       is_published: false,
       abbr,
       options: { modality, languages },
-      survey_type_id: parseInt(selected_survey_type_id),
+      survey_type_id: parseInt(selectedSurveyTypeId),
     };
 
-    dispatch(create_survey(survey));
-    setOpen(false);
+    try {
+      await dispatch(create_survey(survey));
+      dispatch(get_survey());
+      toast.success("Survey created successfully");
+      setOpen(false);
+    } catch (error) {
+      console.error("Error creating survey:", error);
+      toast.error("Failed to create survey");
+    }
   };
-  
 
   const modalities = [
     { id: "1", name: "In Person", value: "In Person" },
     { id: "2", name: "Online", value: "Online" },
   ];
 
-  const language = [
+  const languagesOptions = [
     { id: "1", name: "English", value: "English" },
     { id: "2", name: "Spanish", value: "Spanish" },
     { id: "3", name: "Chinese", value: "Chinese" },
@@ -104,9 +114,9 @@ const DialogBoxSurvey: React.FC = () => {
               />
               <DropDown
                 select_type="Survey Type"
-                options={survey_types}
-                value={selected_survey_type_id}
-                onChange={(value: string) => set_selected_survey_type_id(value)}
+                options={surveyTypes}
+                value={selectedSurveyTypeId}
+                onChange={(value: string) => setSelectedSurveyTypeId(value)}
               />
             </Box>
             <Box sx={{ display: "flex", gap: "20px" }}>
@@ -119,7 +129,7 @@ const DialogBoxSurvey: React.FC = () => {
               <DropDownForEditSurvey
                 value={languages}
                 onChange={(value: string) => setLanguages(value)}
-                options={language}
+                options={languagesOptions}
                 select_type="Language"
               />
             </Box>

@@ -45,14 +45,12 @@ export default function QuestionTab({survey}:surveyInfoProps) {
   ];
 
   return (
-    <Box display={"flex"} flexDirection={"row"} sx={{
-        display:"flex",
-    }}>
-    <Box flex={1}  className={`drawer ${drawerOpen ? 'tableClose' : 'tableOpen'}`}>
+    <Box display={"flex"} flexDirection={"row"}>
+    <Box flex={1}>
         <Box sx={{
             display: "flex",
             justifyContent: "space-between",
-        }}  >
+        }}>
             {/* <Typography sx={{
             fontSize: "22px",
             fontWeight: "600",
@@ -61,21 +59,15 @@ export default function QuestionTab({survey}:surveyInfoProps) {
             <Box> </Box>
             <Box sx={{
             display: "flex",
+            gap: "20px"
             }}>
             <Box  onClick={handleDrawer}>
                 {drawerOpen ? <ArrowForwardIcon sx={{
                     cursor:"pointer",
-                    borderRight:"1px solid white",
                   
-                    bgcolor:"white",
-                    position:"relative",
-                    top:"20px",
-                    left:"10px",
-                   
-                    borderRadius:"30x"
+                    border:"1px solid black"
                 }}/> : <Button variant='outline' sx={{
-                    bgcolor:"white",
-                    
+                    bgcolor:"white"
                 }}> Add</Button>}
             </Box>
             {drawerOpen ? ' ' : <DialogBox />}
@@ -84,15 +76,15 @@ export default function QuestionTab({survey}:surveyInfoProps) {
         <Box sx={{
             bgcolor: "white",
             borderRadius: "5px"
-        }} >
+        }}>
             <Box sx={{
-            marginTop: "10px"
-            }} >
+            padding: "30px",
+            marginTop: "20px"
+            }}>
             <Box sx={{
                 display: "flex",
-                justifyContent: "space-between",
-
-            }} >
+                justifyContent: "space-between"
+            }}>
                 <Box sx={{
                 display: "flex",
                 gap: "30px"

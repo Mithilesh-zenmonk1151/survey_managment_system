@@ -67,15 +67,12 @@ export const get_question_thr_id = createAsyncThunk(
 );
 export const get_question_of_survey = createAsyncThunk(
   'survey/getQuestionOfSurvey',
-  async (survey_id: string , { rejectWithValue }) => {
+  async (survey_id: number , { rejectWithValue }) => {
     try {
-      console.log("Survey ID of survey question$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$:", survey_id);
       const response= await axios.get(
         `http://localhost:4000/api/question/question_of_survey/${survey_id}`
       );
       // const response = await get_question_of_survey_service(survey_id);
-      console.log('Response from Question70687689067890769077########## get:', response);
-      console.log("464646565656556",response);
       const data=await response?.data
       return data; 
     } catch (err:any) {
@@ -88,12 +85,10 @@ export const get_question_for_survey = createAsyncThunk(
   'survey/getQuestionOfSurvey',
   async (survey_id: string , { rejectWithValue }) => {
     try {
-      console.log("Survey ID of survey question$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$:", survey_id);
       const response= await axios.get(
         `http://localhost:4000/api/question/survey_question/${survey_id}`
       );
       // const response = await get_question_of_survey_service(survey_id);
-      console.log('Response from Question70687689067890769077########## get:', response);
       console.log("464646565656556",response);
       const data=await response?.data
       return data; 

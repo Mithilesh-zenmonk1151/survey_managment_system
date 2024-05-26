@@ -13,17 +13,14 @@ import DialogBox from '@/components/DialogBox/DialogBox'
 import QuestionTableComponent from '@/components/questionTableComponent/QuestionTableComponent'
 import DropDownQuest from '@/components/dropDownQuest/DropDownQuest'
 import SearchingDropDown from '@/components/searchingDropDown/SearchingDropDown'
+import { useAppSelector } from '@/store/hooks'
 const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
 export default function QuestionPage() {
     // const handldeOnClick=()=>{
 
-    // }
-    const dummyOptions = [
-        { value: 'option1', label: 'Option 1' },
-        { value: 'option2', label: 'Option 2' },
-        { value: 'option3', label: 'Option 3' },
-      ];
+    
+      const question_type= useAppSelector((state)=>state.question_type?.content?.response);
   return (
     <Box>
     <Box sx={{
@@ -57,8 +54,9 @@ export default function QuestionPage() {
             }}>
             <SearchbarCompo />
             {/* <DropDown/> */}
-            <SearchingDropDown options={dummyOptions} em_name='Type'/>
+            <SearchingDropDown options={question_type} em_name='Type' em='Type'/>
             <CheckBoxDropDown/>
+
             {/* <DropDown/> */}
             <Button>Clear</Button>
 

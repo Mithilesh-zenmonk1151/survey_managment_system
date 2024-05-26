@@ -33,11 +33,15 @@ export default function OppositeContentTimeline({ survey }: SurveyInfoProps) {
           <TimelineDot sx={{ bgcolor: "#4d9f49" }} />
           <TimelineConnector />
         </TimelineSeparator>
-        <TimelineContent>{survey?.createdAt && formatDate(survey.createdAt)}</TimelineContent>
+        <TimelineContent>
+        {survey?.published_at ? formatDate(survey.published_at):"Not yet published"}
+
+          </TimelineContent>
       </TimelineItem>
       <TimelineItem>
         <TimelineOppositeContent color="text.secondary">
-          {survey?.publication_status_changed_at && formatDate(survey.publication_status_changed_at)}
+        {survey?.createdAt && formatDate(survey?.createdAt)}
+
         </TimelineOppositeContent>
         <TimelineSeparator>
           <TimelineDot sx={{ bgcolor: "#4471f4" }} />
@@ -53,7 +57,10 @@ export default function OppositeContentTimeline({ survey }: SurveyInfoProps) {
           <TimelineDot sx={{ bgcolor: "#f3901d" }} />
           <TimelineConnector />
         </TimelineSeparator>
-        <TimelineContent>{survey?.published_at && formatDate(survey.published_at)}</TimelineContent>
+        <TimelineContent>
+        
+        {survey?.publication_status_changed_at ? formatDate(survey.publication_status_changed_at):"Not yet changed"}
+</TimelineContent>
       </TimelineItem>
     </Timeline>
   );

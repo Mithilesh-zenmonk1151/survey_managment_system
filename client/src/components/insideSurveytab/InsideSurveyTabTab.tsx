@@ -8,6 +8,7 @@ import SurveyInformation from '../surveyInformation/SurveyInformation';
 import QuestionTab from '../questionTab/QuestionTab';
 import { useAppDispatch } from '@/store/hooks';
 import { update_survey } from '@/slice/survey/survey_action';
+import { get_question_of_survey } from '@/slice/question/question_action';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -63,19 +64,29 @@ export default function InsideSurveyTabTab({ survey }: InsideSurveyTabTabProps) 
     dispatch(update_survey(updatedSurvey));
   };
   const moda=survey?.options?.modality
+  const handleOnClickSave=()=>{
+    try{
+      get_question_of_survey(survey?.id);
+
+    }
+    catch(error){
+      console.log(error)
+
+    }
+  }
 
   return (
     <Box sx={{ width: '100%', bgcolor: 'white' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', padding: '30px' }}>
         <Typography sx={{ fontSize: '20px', fontWeight: '500' }}>
-          {survey.name} - {moda}
+          {survey.name} - {moda}  ({survey?.abbreviation})
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <Switch checked={survey.is_published} onChange={(event) => handleStatusChange(event.target.checked)} />
           <Typography>PUBLISH SURVEY</Typography>
           <Box sx={{ display: 'flex', gap: '10px' }}>
             <Button variant='outlined'>Preview</Button>
-            <Button variant='outlined' disabled>Save</Button>
+            <Button variant='outlined' onClick={handleOnClickSave}>Save</Button>
           </Box>
         </Box>
       </Box>

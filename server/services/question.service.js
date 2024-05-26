@@ -31,6 +31,7 @@ exports.create_question = async (payload) => {
 };
 exports.get_question = async (payload) => {
   try {
+    console.log("Payloadkak***************",payload.query);
     const page_number = payload.query.page_number || 1;
     const limit = payload.query.limit || 50;
     console.log("PAGENUMER", page_number);

@@ -29,12 +29,11 @@ const DataTable: React.FC = () => {
   const questiondata = useAppSelector(
     (state) => state.questions?.content?.response?.data.rows
   );
-  console.log("QQQUUUEEETTTIIOOODDDAATA===", questiondata);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await dispatch(get_question());
+         dispatch(get_question());
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
