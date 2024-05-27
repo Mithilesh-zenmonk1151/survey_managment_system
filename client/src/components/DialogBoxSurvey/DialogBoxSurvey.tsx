@@ -19,11 +19,13 @@ const DialogBoxSurvey: React.FC = () => {
 
   const surveyTypes = useAppSelector((state) => state.survey_type?.content?.response || []);
   const surveys = useAppSelector((state) => state.survey?.content?.response?.data?.rows || []);
+     
 
   useEffect(() => {
-    dispatch(get_survey_type());
-  }, [dispatch]);
-
+    if (!surveyTypes) {
+      dispatch(fetchSurveyType());
+    }
+  }, [dispatch, surveyType]);
   const handleClickOpen = () => {
     setOpen(true);
   };

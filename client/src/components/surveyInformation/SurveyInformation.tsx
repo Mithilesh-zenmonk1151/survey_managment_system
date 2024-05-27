@@ -34,10 +34,8 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
     { id: "2", name: "Course Feedback" },
     { id: "3", name: "Instructor Evaluation" }
   ];
-  useEffect(()=>{
-    dispatch(get_survey_type());
+    // dispatch(get_survey_type());
 
-  })
   const survey_types= useAppSelector((state)=>state.survey_type?.content?.response)
   console.log(";;;;;;;;;;;;;;;;;;;;;;;;",survey_types);
 

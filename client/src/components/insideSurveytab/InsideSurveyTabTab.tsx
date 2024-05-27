@@ -79,7 +79,7 @@ export default function InsideSurveyTabTab({ survey }: InsideSurveyTabTabProps) 
     <Box sx={{ width: '100%', bgcolor: 'white' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', padding: '30px' }}>
         <Typography sx={{ fontSize: '20px', fontWeight: '500' }}>
-          {survey.name} - {moda}  ({survey?.abbreviation})
+          {survey.name} - {moda}  ({survey?.abbr})
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <Switch checked={survey.is_published} onChange={(event) => handleStatusChange(event.target.checked)} />

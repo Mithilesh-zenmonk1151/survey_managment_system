@@ -10,21 +10,23 @@ type DropDownProps = {
   options: Array<{ uuid: string; id: string; name: string; abbr: string }>;
   value?: string;
   onChange: (value: string) => void;
-  id?:number,
-  customClassDrop?:string
+  id?: number;
+  customClassDrop?: string;
 };
 
 export default function DropDown(props: DropDownProps) {
-  const { select_type, options, value, onChange,customClassDrop} = props;
+  const { select_type, options, value, onChange, customClassDrop } = props;
 
   const handleChange = (event: SelectChangeEvent<string>) => {
     onChange(event.target.value);
   };
 
   return (
-    <FormControl sx={{ width: "400px", height: "40px" }} className={customClassDrop}>
+    <FormControl className={customClassDrop} sx={{ width: "400px", }}>
       <InputLabel>{select_type}</InputLabel>
       <Select
+       labelId={`${select_type}-label`}
+       id={`${select_type}-dropdown`}
         value={value || ""}
         onChange={handleChange}
       >
@@ -32,8 +34,8 @@ export default function DropDown(props: DropDownProps) {
           <em>{select_type}</em>
         </MenuItem>
         {options.map(option => (
-          <MenuItem key={option.id} value={option.id} >
-            {option.name}  {option.abbr}
+          <MenuItem key={option.id} value={option.id}>
+            {option.name} {option.abbr}
           </MenuItem>
         ))}
       </Select>

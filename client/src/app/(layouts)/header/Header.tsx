@@ -26,6 +26,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import QuizIcon from '@mui/icons-material/Quiz';
+import UserDropdown from "@/components/userDropDown/userDropDown";
 
 const drawerWidth = 240;
 
@@ -128,8 +129,12 @@ export default function SideBar({
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar  >
-        <Box sx={{display: 'flex', alignItems: 'center'}}>
-          <IconButton
+        <Box sx={{display: 'flex',width:"100%", alignItems: 'center',justifyContent:"space-between"}}>
+         <Box sx={{
+          display:"flex",
+          alignItems:"center"
+
+         }}> <IconButton
             color="inherit"
             aria-label="open drawer"
             onClick={handleDrawer}
@@ -142,7 +147,10 @@ export default function SideBar({
           </IconButton>
           <Typography variant="h6" noWrap component="div">
           Survey Management
-          </Typography>
+          </Typography></Box>
+          <Box>
+            <UserDropdown/>
+          </Box>
             </Box>
 
         </Toolbar>
