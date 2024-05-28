@@ -47,6 +47,7 @@ exports.get_survey = async (payload) => {
       // total_items: total_items,
       // total_pages: Math.ceil(total_items / limit),
       // current_page: page_number,
+      
     };
     return res;
   } catch (error) {

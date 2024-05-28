@@ -198,7 +198,7 @@ exports.get_question_of_survey = async (payload) => {
       where: { survey_id: survey_id },
     });
     if(!survey_id){
-      throw new CustomError("errroroor",4400)
+      throw new CustomError("errroroor",400)
     }
 
     const question_ids_in_table = await survey_data.map(
@@ -209,7 +209,7 @@ exports.get_question_of_survey = async (payload) => {
     });
     const questions = await question.findAll({
       where: {
-        id: question_ids_in_table,
+        id: question_ids_in_table
       },
       
       

@@ -36,6 +36,7 @@ module.exports = (sequelize, DataTypes) => {
     survey_id: {type:DataTypes.INTEGER,allowNull:false},
     question_id: {type:DataTypes.INTEGER,allowNull:false},
     order: DataTypes.INTEGER,
+    
     question_description: DataTypes.TEXT,
     deleted_at: DataTypes.TIME
   }, {

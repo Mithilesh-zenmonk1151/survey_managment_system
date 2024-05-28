@@ -67,19 +67,19 @@ const DataTable: React.FC<DataTableProps> = ({
 
   useEffect(() => {
     if (survey) {
-      let filteredRows = survey.map((item: any) => ({
-        id: item.id,
-        name: item.name,
+      let filteredRows = survey?.map((item: any) => ({
+        id: item?.id,
+        name: item?.name,
         question: item?.questions?.length,
-        type: item.survey_type.name,
-        abbreviation: item.abbr,
-        modified: new Date(item.updatedAt).toISOString().split("T")[0],
-        status: item.is_published,
+        type: item?.survey_type?.name,
+        abbreviation: item?.abbr,
+        modified: new Date(item?.updatedAt).toISOString().split("T")[0],
+        status: item?.is_published,
       }));
 
       // Filter by searchTerm
       if (searchTerm) {
-        filteredRows = filteredRows.filter(
+        filteredRows = filteredRows?.filter(
           (row) =>
             row.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             row.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -104,7 +104,7 @@ const DataTable: React.FC<DataTableProps> = ({
   };
 
   const handleStatusChange = (id: number, status: boolean) => {
-    const updatedRows = rows.map((row) =>
+    const updatedRows = rows?.map((row) =>
       row.id === id ? { ...row, status } : row
     );
     setRows(updatedRows);
@@ -112,11 +112,11 @@ const DataTable: React.FC<DataTableProps> = ({
   };
 
   const handleEyeClick = (id: number) => {
-    const selectedSurvey = survey.find((item: any) => item.id === id);
+    const selectedSurvey = survey?.find((item: any) => item.id === id);
     if (selectedSurvey) {
       onAddTab({
         id: `survey-${id}`,
-        label: selectedSurvey.name,
+        label: selectedSurvey?.name,
         content: <SurveyInfo survey={selectedSurvey} />,
       });
     }
@@ -126,7 +126,7 @@ const DataTable: React.FC<DataTableProps> = ({
     setDeleteOptionId(id);
     const survey_id = id;
     dispatch(delete_survey(survey_id));
-    setRows((prevRows) => prevRows.filter((row) => row.id !== id));
+    setRows((prevRows) => prevRows?.filter((row) => row?.id !== id));
     toast.success("Survey deleted Successfully");
   };
 

@@ -54,8 +54,8 @@ const MyTabsComponent = () => {
         bgcolor:"white",
         fontSize:"10px"
       }}>
-        {tabs.map((tab, index) => (
-          <Tab key={tab.id} label={tab.label} sx={{
+        {tabs?.map((tab, index) => (
+          <Tab key={tab?.id} label={tab?.label} sx={{
             bgcolor:"white",
             fontSize:"14px",
             padding:0
@@ -101,16 +101,16 @@ const MyTabsComponent = () => {
        </Box>
         </Box>
 
-      {tabs.map((tab, index) => (
+      {tabs?.map((tab, index) => (
         <Box
-          key={tab.id}
+          key={tab?.id}
           role="tabpanel"
           hidden={value !== index}
           id={`simple-tabpanel-${index}`}
           aria-labelledby={`simple-tab-${index}`}
 
         >
-          {value === index && <Box>{tab.content}</Box>}
+          {value === index && <Box>{tab?.content}</Box>}
         </Box>
       ))}
             </Box>

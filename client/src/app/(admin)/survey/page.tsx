@@ -17,7 +17,7 @@ export default function Surveypage() {
     useEffect(()=>{
         dispatch(get_question_type());
     },[dispatch]);
-    const question_type= useAppSelector((state)=>state.question_type.content);
+    const question_type= useAppSelector((state)=>state.question_type?.content);
     console.log("states",question_type);
   return (
    <Box sx={{
