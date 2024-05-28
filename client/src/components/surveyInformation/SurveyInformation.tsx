@@ -11,7 +11,6 @@ interface SurveyInformationProps {
 }
 
 function SurveyInformation({ survey }: SurveyInformationProps) {
-  // const dispatch= useAppDispatch();
   const languages = [
     { id: "1", name: "English", value: "English" },
     { id: "2", name: "Spanish", value: "Spanish" },
@@ -20,6 +19,7 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
     { id: "5", name: "French", value: "French" },
     { id: "6", name: "Portuguese", value: "Portuguese" }
   ];
+
   console.log("*****************************%%%%%",survey);
   const moda=survey?.options?.modality
   const sselle=survey?.survey_type?.name
@@ -35,7 +35,6 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
     { id: "3", name: "Instructor Evaluation" }
   ];
     // dispatch(get_survey_type());
-
   const survey_types= useAppSelector((state)=>state.survey_type?.content?.response)
   console.log(";;;;;;;;;;;;;;;;;;;;;;;;",survey_types);
 
@@ -56,8 +55,6 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
   //   useEffect(()=>{
   //       dispatch(get_question_of_survey(survey_id))
   //   },[dispatch])
-
-
 // const fetchSurveyQuestions = ({surveyId}:number) => {
 //   dispatch(get_question_of_survey({ survey_id: surveyId }))
 //     .unwrap()
@@ -68,11 +65,8 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
 //       console.error("Error fetching survey questions:", error);
 //     });
 // };
-
 // Call the function with the desired survey ID
 // fetchSurveyQuestions(1); // Replace 1 with the actual survey ID
-
-
   return (
     <Box>
       <Box sx={{ display: "flex" }}>
@@ -94,8 +88,6 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
             value={survey?.abbr || ''}
             disabled
           />
-         
-
           <FormControl fullWidth variant="outlined" sx={{
             width:"90%"
           }}>
@@ -127,8 +119,8 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
           label="Type of Survey"
         >
           {modalities.map((type:any) => (
-            <MenuItem key={type.id} value={type.name}>
-              {type.name}
+            <MenuItem key={type?.id} value={type?.name}>
+              {type?.name}
             </MenuItem>
           ))}
         </Select>
@@ -142,7 +134,7 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
               value={selected_language}
               onChange={(e) => set_selected_language( e.target.value)} 
             >
-              {languages.map((lang) => (
+              {languages?.map((lang) => (
                 <MenuItem key={lang.id} value={lang.value}>
                   {lang.name}
                 </MenuItem>

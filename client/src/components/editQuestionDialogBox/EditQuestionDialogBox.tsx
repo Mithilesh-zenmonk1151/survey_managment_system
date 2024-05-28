@@ -11,7 +11,11 @@ import { Box, TextField } from "@mui/material";
 import Textarea from "@mui/joy/Textarea";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { get_question_type } from "@/slice/question_type/question_type_action";
-import { update_question } from "@/slice/question/question_action";
+import {
+  get_question,
+  update_question,
+} from "@/slice/question/question_action";
+import toast from "react-hot-toast";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -43,12 +47,17 @@ interface EditQuestionDialogBoxProps {
   question: DataRow | null;
 }
 
-const EditQuestionDialogBox: React.FC<EditQuestionDialogBoxProps> = ({ open, onClose, question }) => {
-  const [selected_question_type_id, set_selected_question_type_id] = useState("");
+const EditQuestionDialogBox: React.FC<EditQuestionDialogBoxProps> = ({
+  open,
+  onClose,
+  question,
+}) => {
+  const [selected_question_type_id, set_selected_question_type_id] =
+    useState("");
   const [description, set_description] = useState(question?.name);
   const [abbr, set_abbr] = useState("");
   const dispatch = useAppDispatch();
-  console.log("QQQQQUUUEEESSSSSS",question);
+  console.log("QQQQQUUUEEESSSSSS", question);
 
   useEffect(() => {
     if (question) {
@@ -63,22 +72,30 @@ const EditQuestionDialogBox: React.FC<EditQuestionDialogBoxProps> = ({ open, onC
     dispatch(get_question_type());
   }, [dispatch]);
 
-  const question_type = useAppSelector((state) => state.question_type?.content?.response);
+  const question_type = useAppSelector(
+    (state) => state.question_type?.content?.response
+  );
 
   const handleSave = () => {
     if (question) {
       const updatedQuestion = {
         id: question.id,
-        description:description,
-        
+        description: description,
       };
+
       dispatch(update_question(updatedQuestion));
+      
+      dispatch(get_question());
     }
     onClose();
   };
-
+  
   return (
-    <BootstrapDialog onClose={onClose} aria-labelledby="customized-dialog-title" open={open}>
+    <BootstrapDialog
+      onClose={onClose}
+      aria-labelledby="customized-dialog-title"
+      open={open}
+    >
       <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
         Edit Question
         <IconButton
@@ -96,14 +113,19 @@ const EditQuestionDialogBox: React.FC<EditQuestionDialogBoxProps> = ({ open, onC
       </DialogTitle>
       <DialogContent>
         <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between", gap: "30px" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: "30px",
+            }}
+          >
             <TextField
               placeholder="Question Type"
               value={question?.type}
               disabled
             />
             <TextField
-              
               value={question?.abbreviation}
               // onChange={(e) => set_abbr(e.target.value)}
               disabled

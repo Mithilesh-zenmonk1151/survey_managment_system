@@ -22,10 +22,9 @@ const DialogBoxSurvey: React.FC = () => {
      
 
   useEffect(() => {
-    if (!surveyTypes) {
-      dispatch(fetchSurveyType());
-    }
-  }, [dispatch, surveyType]);
+   
+      dispatch(get_survey_type());
+  }, [dispatch]);
   const handleClickOpen = () => {
     setOpen(true);
   };

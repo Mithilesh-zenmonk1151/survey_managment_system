@@ -1,0 +1,9 @@
+.custom-data-grid .MuiDataGrid-root .MuiDataGrid-columnsContainer .MuiDataGrid-colCell {
+    background-color: #262323;
+    height: 39px;
+  }
+  .custom-data-grid .MuiDataGrid-colCell {
+    background-color: #efefef; /* Set your desired background color */
+    height: 39px; /* Set the height of the header */
+  }
+  

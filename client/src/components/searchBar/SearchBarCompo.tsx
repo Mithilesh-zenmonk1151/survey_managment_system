@@ -3,16 +3,20 @@ import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
-type SearchProp={
-  customPlaceHolder?:string,
-  customClassForSearchBar?:string
 
-}
+type SearchProp = {
+  customPlaceHolder?: string;
+  customClassForSearchBar?: string;
+  value: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+};
+
 export default function SearchbarCompo(props: SearchProp) {
-  const {customPlaceHolder,customClassForSearchBar}= props
+  const { customPlaceHolder, customClassForSearchBar, value, onChange } = props;
+
   return (
     <Paper
-    className={customClassForSearchBar}
+      className={customClassForSearchBar}
       component="form"
       sx={{
         display: "flex",
@@ -23,19 +27,22 @@ export default function SearchbarCompo(props: SearchProp) {
         borderBottom: "white",
         boxShadow: "none",
         marginBottom: "10px",
-        border:"1px solid #cccccc"
+        border: "1px solid #cccccc",
       }}
-    >        <SearchIcon  sx={{
-        color:"#cccccc",
-        paddingLeft:"2px"
-    }}/>
-
-      <InputBase
-        sx={{ ml: 1, flex: 1, }}
-        placeholder={customPlaceHolder}
-        inputProps={{ "aria-label": "search google maps" }}
+    >
+      <SearchIcon
+        sx={{
+          color: "#cccccc",
+          paddingLeft: "2px",
+        }}
       />
-      
+      <InputBase
+        sx={{ ml: 1, flex: 1 }}
+        placeholder={customPlaceHolder}
+        inputProps={{ "aria-label": customPlaceHolder }}
+        value={value}
+        onChange={onChange}
+      />
       <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
       </IconButton>
     </Paper>

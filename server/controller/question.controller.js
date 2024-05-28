@@ -25,7 +25,8 @@ exports.update_question = async (req, res) => {
     res.status(200).json({ response });
   } catch (error) {
     console.log(error);
-   return res.status(error.code).json({ message: error.message, success: false });
+    console.log("SFEGERTRTYTRYRT",error.code)
+    res.status(error.code).json({ message: error.message, success: false });
   }
 };
 exports.get_question_for_survey = async (req, res) => {

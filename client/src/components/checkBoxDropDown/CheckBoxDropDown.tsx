@@ -23,6 +23,7 @@ interface Option {
   id?: string;
   name?: string;
   value?: string;
+  abbr?: string;
 }
 
 interface CheckBoxDropDownProps {
@@ -70,7 +71,7 @@ export default function CheckBoxDropDown(props: CheckBoxDropDownProps) {
             if (selected.length === 0) {
               return <em className='em-c'>{em_name}</em>;
             }
-            return selected.join(', ');
+            return `${selected.length} selected`;
           }}
           MenuProps={MenuProps}
           inputProps={{ 'aria-label': 'Without label' }}
@@ -98,9 +99,9 @@ export default function CheckBoxDropDown(props: CheckBoxDropDownProps) {
             <em>{em}</em>
           </MenuItem>
           {options.map((option) => (
-            <MenuItem key={option.id} value={option.value}>
-              <Checkbox checked={personName.indexOf(option.value || '') > -1} />
-              <ListItemText primary={option.name} />
+            <MenuItem key={option.id} value={option.abbr}>
+              <Checkbox checked={personName.indexOf(option.abbr || '') > -1} />
+              <ListItemText primary={option.abbr} />
             </MenuItem>
           ))}
         </Select>

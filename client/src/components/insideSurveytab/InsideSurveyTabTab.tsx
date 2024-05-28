@@ -39,26 +39,21 @@ function CustomTabPanel(props: TabPanelProps) {
     </div>
   );
 }
-
 function a11yProps(index: number) {
   return {
     id: `simple-tab-${index}`,
     'aria-controls': `simple-tabpanel-${index}`,
   };
 }
-
 export default function InsideSurveyTabTab({ survey }: InsideSurveyTabTabProps) {
   const [value, setValue] = React.useState(0);
   const dispatch = useAppDispatch();
-
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-
   if (!survey) {
     return <div>Loading...</div>;
   }
-
   const handleStatusChange = (status: boolean) => {
     const updatedSurvey = { id: survey.id, is_published: status };
     dispatch(update_survey(updatedSurvey));
@@ -74,7 +69,6 @@ export default function InsideSurveyTabTab({ survey }: InsideSurveyTabTabProps) 
 
     }
   }
-
   return (
     <Box sx={{ width: '100%', bgcolor: 'white' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', padding: '30px' }}>

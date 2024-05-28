@@ -1,0 +1,11 @@
+
+.custom-cell {
+    font-size: 10px; /* Adjust the font size as needed */
+  }
+  
+  .custom-header-cell {
+    font-size: px; /* Adjust the font size as needed */
+    font-weight: bold;
+    background-color: #e15252; /* Change this to your desired background color */
+  }
+  

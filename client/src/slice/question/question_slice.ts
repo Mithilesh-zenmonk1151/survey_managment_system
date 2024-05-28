@@ -93,13 +93,14 @@ export const question_slice = createSlice({
   builder.addCase(update_question.fulfilled, (state, action) => {
     state.isLoading = false;
     const updatedQuestion = action.payload;
-    if (state.content.question.id === updatedQuestion.id) {
+    if (state.content.questions?.id === updatedQuestion.id) {
       state.content.question = updatedQuestion;
     }
   });
   builder.addCase(update_question.rejected, (state, action) => {
     state.isLoading = false;
-    state.error = action.error;
+    state.error= action.payload;
+    
   });
 },
 });

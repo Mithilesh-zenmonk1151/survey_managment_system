@@ -58,7 +58,6 @@ export default function SearchingDropDown(props: DropDownForEditSurveyProps) {
     <div>
       <FormControl sx={{ m: 1, width: 125, mt: 0 }}>
         <Select
-          multiple
           displayEmpty
           value={selectedValue}
           onChange={handleChange}
@@ -104,3 +103,6 @@ export default function SearchingDropDown(props: DropDownForEditSurveyProps) {
     </div>
   );
 }
+
+
+

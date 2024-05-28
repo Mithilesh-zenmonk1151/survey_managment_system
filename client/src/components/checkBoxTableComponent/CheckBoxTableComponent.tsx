@@ -26,6 +26,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { get_question, get_question_for_survey, get_question_of_survey } from "@/slice/question/question_action";
 import { create_survey_question } from "@/slice/survey_question/survey_question_action";
 import toast from "react-hot-toast";
+import { addQuestion } from "@/slice/question_reducers/question_reducer";
 
 interface Data {
   id: number;

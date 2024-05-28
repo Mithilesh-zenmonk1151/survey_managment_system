@@ -22,6 +22,8 @@ const names = [
  
 ];
 const MyTabsComponent = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedType, setSelectedType] = useState("");
   const handleAddTab = (newTab: TabContent) => {
     const newTabs = [...tabs, newTab];
     if (newTabs.length > 3) {
@@ -35,7 +37,7 @@ const MyTabsComponent = () => {
     {
       id: "main",
       label: "Surveys",
-      content: <DataTable onAddTab={handleAddTab} />,
+      content: <DataTable onAddTab={handleAddTab} searchTerm={searchTerm} selectedType={selectedType} />,
     },
   ]);
   const [value, setValue] = useState(0);
@@ -82,7 +84,7 @@ const MyTabsComponent = () => {
         display:"flex",
         alignItems:"center"
        }}>
-       <SearchbarCompo/>
+       <SearchbarCompo customPlaceHolder="Search......" value={searchTerm} onChange={(e)=>setSearchTerm(e.target.value)}/>
         <SearchingDropDown options={names} em="Type" em_name="Type"/>
         <CheckBoxDropDown em_name="Abbreviation" options={names}/>
         <SearchingDropDown options={names} em="Status" em_name="Status"/>

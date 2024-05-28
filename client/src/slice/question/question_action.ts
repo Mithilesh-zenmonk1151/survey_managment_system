@@ -43,12 +43,13 @@ export const update_question = createAsyncThunk(
   async ( question : { id: number, description:string}, { rejectWithValue }) => {
       try {
           const response = await put_question_service( question);
-          const data = response?.data;
-          // console.log("data car updated from slice===", data);
+          const data = response;
+          console.log("uuuuuuuuuuuuuuuuuuuuuuuuuuuuu QQQQQQQQQQQQUECSOI from slice===", data);
           return data;
-      } catch (err) {
-          console.log(err);
-          return rejectWithValue(err);
+      } catch (err:any) {
+          console.log(err?.response?.data?.error);
+          console.log("(*&^^%TF%defedfefe^^%&**(",err);
+          return rejectWithValue(err?.response?.data?.error);
       }
   }
 );
@@ -81,9 +82,25 @@ export const get_question_of_survey = createAsyncThunk(
     }
   }
 );
+export const delete_question_of_survey = createAsyncThunk(
+  'survey/getQuestionOfSurvey',
+  async (survey_id: number , { rejectWithValue }) => {
+    try {
+      const response= await axios.get(
+        `http://localhost:4000/api/question/question_of_survey/${survey_id}`
+      );
+      // const response = await get_question_of_survey_service(survey_id);
+      const data=await response?.data
+      return data; 
+    } catch (err:any) {
+      console.log("Error in getting questions of survey");
+      return rejectWithValue(err.response.data); 
+    }
+  }
+);
 export const get_question_for_survey = createAsyncThunk(
   'survey/getQuestionOfSurvey',
-  async (survey_id: string , { rejectWithValue }) => {
+  async (survey_id: number , { rejectWithValue }) => {
     try {
       const response= await axios.get(
         `http://localhost:4000/api/question/survey_question/${survey_id}`

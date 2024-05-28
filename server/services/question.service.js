@@ -84,7 +84,7 @@ exports.update_question = async (payload) => {
     });
     if (published.length > 0) {
       throw new CustomError(
-        "Survey is published in which this question is added",
+        "The question cannot be edited because it is in one or more published surveys",
         400
       );
     }
