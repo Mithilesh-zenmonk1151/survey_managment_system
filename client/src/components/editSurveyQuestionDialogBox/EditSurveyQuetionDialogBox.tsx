@@ -66,6 +66,7 @@ const EditSurveyQuestionDialogBox: React.FC<EditQuestionDialogBoxProps> = ({open
   const handleSave = () => {
     try{
         dispatch(update_survey_question(survey_question));
+        
 
     }
     catch(error){

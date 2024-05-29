@@ -31,9 +31,10 @@ interface SurveyInfo {
   searchTerm: string;
   selectedType: string;
   checkSelectedType:string;
+  selecttedQuestions:any []
 }
 
-const SurveyQuestionTable: React.FC<SurveyInfo> = ({ survey ,searchTerm,selectedType,checkSelectedType}) => {
+const SurveyQuestionTable: React.FC<SurveyInfo> = ({ survey ,searchTerm,selectedType,checkSelectedType,selecttedQuestions}) => {
   const [rows, setRows] = useState<DataRow[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedQuestion, setSelectedQuestion] = useState<DataRow | null>(null);
@@ -41,6 +42,7 @@ const SurveyQuestionTable: React.FC<SurveyInfo> = ({ survey ,searchTerm,selected
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const survey_id = survey.id;
+  console.log("UUY%%%%%%%%%%%%%%%%%%%%%%%%%%%5",selecttedQuestions);
 
   useEffect(() => {
     const fetchData = async () => {

@@ -1,42 +1,58 @@
 import React, { useState } from 'react';
 import { Box, Button, Typography, Switch, Stack } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { get_question_of_survey } from '@/slice/question/question_action';
+import { useAppSelector } from '@/store/hooks';
 import CustomButton from '@/components/customButton/CustomButton';
 import SearchbarCompo from '@/components/searchBar/SearchBarCompo';
-import DropDownQuest from '../dropDownQuest/DropDownQuest';
 import CheckBoxDropDown from '@/components/checkBoxDropDown/CheckBoxDropDown';
 import DialogBox from '@/components/DialogBox/DialogBox';
 import SurveyQuestionTable from '../surveyQuestionTable/SurveyQuestionTable';
 import EnhancedTable from '../checkBoxTableComponent/CheckBoxTableComponent';
 import './QuestionTab.styles.css';
 import SearchingDropDown from '../searchingDropDown/SearchingDropDown';
+
 interface SurveyInfoProps {
   survey: any;
 }
+interface DataRow {
+  id: number;
+  name: string;
+  type: string;
+  abbreviation: string;
+  modified: string;
+}
+interface Question {
+  id: number;
+  description: string;
+  question_type: {
+    name: string;
+  };
+  abbr: string;
+  createdAt: string;
+}
 const QuestionTab: React.FC<SurveyInfoProps> = ({ survey }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [searchTerm,setSearchTerm]= useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("");
-  const [checkSelectedType,setCheckSelectedType]=useState("");
+  const [checkSelectedType, setCheckSelectedType] = useState("");
+  const [selectedQuestions, setSelectedQuestions] = useState<Question[]>([]);
+
+// Define a callback function to receive the selected question IDs
+const handleSelectedQuestions = (selected:  Question[]) => {
+  setSelectedQuestions(selected);
+  console.log("!!!!!!!!!!!!!!!!!",selected);
+};
+
   const question_type = useAppSelector((state) => state.question_type?.content?.response) || [];
-  const abbr= useAppSelector((state)=>state.questions?.content?.response?.data?.rows);
-  const dummyOptions = [
-    { value: 'option1', label: 'Option 1' },
-    { value: 'option2', label: 'Option 2' },
-    { value: 'option3', label: 'Option 3' },
-  ];
+  const abbr = useAppSelector((state) => state.questions?.content?.response?.data?.rows);
+
   const handleDrawerToggle = () => {
     setDrawerOpen((prev) => !prev);
   };
+
   return (
     <Box display="flex" flexDirection="row" height="100vh" overflow="hidden">
-      <Box
-        flex={drawerOpen ? 1 : 2}
-        transition="flex 0.3s"
-        overflow="auto"
-      >
+      <Box flex={drawerOpen ? 1 : 2} transition="flex 0.3s" overflow="auto">
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Box> </Box>
           <Box sx={{ display: 'flex', gap: '20px' }}>
@@ -46,10 +62,7 @@ const QuestionTab: React.FC<SurveyInfoProps> = ({ survey }) => {
                   sx={{ cursor: 'pointer', border: '1px solid black' }}
                 />
               ) : (
-                <Button
-                  variant="outlined"
-                  sx={{ bgcolor: 'white' }}
-                >
+                <Button variant="outlined" sx={{ bgcolor: 'white' }}>
                   Add
                 </Button>
               )}
@@ -60,16 +73,27 @@ const QuestionTab: React.FC<SurveyInfoProps> = ({ survey }) => {
         <Box sx={{ bgcolor: 'white', borderRadius: '5px' }}>
           <Box sx={{ padding: '30px', marginTop: '20px' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Box sx={{ display: 'flex', gap: '30px',alignItems:"center" }}>
-                <SearchbarCompo value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-                customPlaceHolder="Search..."/>
-                <SearchingDropDown   options={question_type} 
-                em_name="Type" 
-                em="Type" 
-                value={selectedType}
-                select_type=""
-                onChange={(value) => setSelectedType(value)} />
-                <CheckBoxDropDown  select_type="abbriviation" options={abbr} em_name="Abbriviation" em="Abbriviation" onChange={(value)=>setCheckSelectedType(value)} />
+              <Box sx={{ display: 'flex', gap: '30px', alignItems: 'center' }}>
+                <SearchbarCompo 
+                  value={searchTerm} 
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  customPlaceHolder="Search..."
+                />
+                <SearchingDropDown
+                  options={question_type}
+                  em_name="Type"
+                  em="Type"
+                  value={selectedType}
+                  select_type=""
+                  onChange={(value) => setSelectedType(value)}
+                />
+                <CheckBoxDropDown 
+                  select_type="abbreviation" 
+                  options={abbr} 
+                  em_name="Abbreviation" 
+                  em="Abbreviation" 
+                  onChange={(value) => setCheckSelectedType(value)} 
+                />
                 <Button>Clear</Button>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -77,7 +101,13 @@ const QuestionTab: React.FC<SurveyInfoProps> = ({ survey }) => {
                 <Typography>Show deleted</Typography>
               </Box>
             </Box>
-            <SurveyQuestionTable survey={survey} searchTerm={searchTerm} selectedType={selectedType} checkSelectedType={checkSelectedType} />
+            <SurveyQuestionTable 
+              survey={survey} 
+              searchTerm={searchTerm} 
+              selectedType={selectedType} 
+              checkSelectedType={checkSelectedType} 
+              selecttedQuestions={selectedQuestions}
+            />
           </Box>
         </Box>
       </Box>
@@ -87,7 +117,7 @@ const QuestionTab: React.FC<SurveyInfoProps> = ({ survey }) => {
         className={`drawer ${drawerOpen ? 'open' : 'closed'}`}
         overflow="auto"
       >
-        <EnhancedTable survey={survey} />
+        <EnhancedTable survey={survey} onSelectedQuestions={handleSelectedQuestions}/>
       </Stack>
     </Box>
   );

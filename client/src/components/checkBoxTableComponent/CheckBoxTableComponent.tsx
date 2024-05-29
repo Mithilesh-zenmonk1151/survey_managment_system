@@ -217,6 +217,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 
 interface InfoSurvey {
   survey: any;
+  onSelectedQuestions?: Question[]
 }
 interface Question {
   id: number;
@@ -228,7 +229,7 @@ interface Question {
   createdAt: string;
 }
 
-export default function EnhancedTable({ survey }: InfoSurvey) {
+export default function EnhancedTable({ survey,onSelectedQuestions}: InfoSurvey) {
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<keyof Data>("name");
   const [selected, setSelected] = React.useState<readonly number[]>([]);
@@ -243,6 +244,7 @@ export default function EnhancedTable({ survey }: InfoSurvey) {
     dispatch(get_question());
   }, [dispatch]);
   const survey_id = survey.id;
+  console.log("#################################",onSelectedQuestions)
 
 
   // const stateRows = useAppSelector((state) => state.questions?.content?.response?.data?.rows);
@@ -338,9 +340,10 @@ export default function EnhancedTable({ survey }: InfoSurvey) {
   // const order=104;
   const num=123;
   const survey_question={survey_id,question_id,num}
-  const handleAddQuestiontoSurvey=()=>{
+  const handleAddQuestiontoSurvey=async()=>{
     try{
-      dispatch(create_survey_question({survey_question}));
+      await dispatch(create_survey_question({survey_question}));
+      dispatch(get_question_of_survey(survey_id));
       console.log("ADDDDADADADDAAD,",survey_question);
 
     }
