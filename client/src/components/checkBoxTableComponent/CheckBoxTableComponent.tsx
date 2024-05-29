@@ -348,7 +348,7 @@ export default function EnhancedTable({ survey,onSelectedQuestions}: InfoSurvey)
 
     }
     catch(error){
-      console.log(error)
+      console.log(error);
     }
   }
 
