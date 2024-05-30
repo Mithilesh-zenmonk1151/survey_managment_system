@@ -16,6 +16,7 @@ import SurveyInfo from "./SurveyInfo";
 import toast from "react-hot-toast";
 
 import "./DataTable.css"; 
+import AlertDialog from "../confirmationnDialogBox/ConfirmationDialogBox";
 
 interface DataRow {
   id: number;
@@ -148,12 +149,14 @@ const DataTable: React.FC<DataTableProps> = ({
       headerName: "Status",
       width: 200,
       renderCell: (params: GridRenderCellParams) => (
-        <Switch
-          checked={params.value as boolean}
-          onChange={(event) =>
-            handleStatusChange(params.row.id, event.target.checked)
-          }
-        />
+        // <Switch
+        //   checked={params.value as boolean}
+        //   onChange={(event) =>
+        //     handleStatusChange(params.row.id, event.target.checked)
+        //   }
+        // />
+        <AlertDialog/>
+
       ),
     },
     {

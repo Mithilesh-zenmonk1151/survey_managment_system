@@ -37,7 +37,7 @@ export default function Surveypage() {
         }}>Surveys List</Typography>
        <Box> <DialogBoxSurvey/></Box>
     </Box>
-    <Box>
+    <Box >
         {/* <BasicTabs/> */}
         {/* <MyTabsComponent/> */}
         {/* <DataTable/> */}

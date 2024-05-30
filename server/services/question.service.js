@@ -221,3 +221,13 @@ exports.get_question_of_survey = async (payload) => {
 
   }
 }
+exports.create_question_survey_inside_survey=async(payload)=>{
+  try{
+    const { question_type_id, description, abbr, active,survey_id } = payload.body;
+
+
+  }
+  catch(error){
+
+  }
+}

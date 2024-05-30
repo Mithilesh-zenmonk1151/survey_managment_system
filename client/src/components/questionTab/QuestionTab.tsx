@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Button, Typography, Switch, Stack } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { useAppSelector } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import CustomButton from '@/components/customButton/CustomButton';
 import SearchbarCompo from '@/components/searchBar/SearchBarCompo';
 import CheckBoxDropDown from '@/components/checkBoxDropDown/CheckBoxDropDown';
@@ -10,6 +10,7 @@ import SurveyQuestionTable from '../surveyQuestionTable/SurveyQuestionTable';
 import EnhancedTable from '../checkBoxTableComponent/CheckBoxTableComponent';
 import './QuestionTab.styles.css';
 import SearchingDropDown from '../searchingDropDown/SearchingDropDown';
+import { get_question_of_survey } from '@/slice/question/question_action';
 
 interface SurveyInfoProps {
   survey: any;
@@ -36,12 +37,13 @@ const QuestionTab: React.FC<SurveyInfoProps> = ({ survey }) => {
   const [selectedType, setSelectedType] = useState("");
   const [checkSelectedType, setCheckSelectedType] = useState("");
   const [selectedQuestions, setSelectedQuestions] = useState<Question[]>([]);
-
+const  dispatch=useAppDispatch();
 // Define a callback function to receive the selected question IDs
 const handleSelectedQuestions = (selected:  Question[]) => {
   setSelectedQuestions(selected);
   console.log("!!!!!!!!!!!!!!!!!",selected);
 };
+const survey_id= survey?.id;
 
   const question_type = useAppSelector((state) => state.question_type?.content?.response) || [];
   const abbr = useAppSelector((state) => state.questions?.content?.response?.data?.rows);
@@ -49,6 +51,12 @@ const handleSelectedQuestions = (selected:  Question[]) => {
   const handleDrawerToggle = () => {
     setDrawerOpen((prev) => !prev);
   };
+  const handleClearClick =async()=>{
+    setSearchTerm("");
+    setSelectedType("");
+    setCheckSelectedType("");
+    dispatch(get_question_of_survey(survey_id));
+  }
 
   return (
     <Box display="flex" flexDirection="row" height="100vh" overflow="hidden">
@@ -94,7 +102,7 @@ const handleSelectedQuestions = (selected:  Question[]) => {
                   em="Abbreviation" 
                   onChange={(value) => setCheckSelectedType(value)} 
                 />
-                <Button>Clear</Button>
+                <Button onClick={handleClearClick}>Clear</Button>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Switch aria-label="Show deleted" />

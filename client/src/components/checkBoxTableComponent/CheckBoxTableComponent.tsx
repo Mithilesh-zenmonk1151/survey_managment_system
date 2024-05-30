@@ -343,14 +343,19 @@ export default function EnhancedTable({ survey,onSelectedQuestions}: InfoSurvey)
   const handleAddQuestiontoSurvey=async()=>{
     try{
       await dispatch(create_survey_question({survey_question}));
-      dispatch(get_question_of_survey(survey_id));
+      await dispatch(get_question_of_survey(survey_id));
       console.log("ADDDDADADADDAAD,",survey_question);
+    
 
     }
     catch(error){
       console.log(error);
     }
   }
+  React.useEffect(()=>{
+     dispatch(get_question_of_survey(survey_id)) 
+        
+  },[dispatch,survey_id])
 
   return (
     <Box sx={{ width: "98%", border:"1px solid #e0e0e0" ,height:"100%"}}>
