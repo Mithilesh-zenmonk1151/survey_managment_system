@@ -20,7 +20,6 @@ const surveyQuestionsSlice = createSlice({
   initialState,
   reducers: {
     addSurveyQuestion(state, action: PayloadAction<SurveyQuestion>) {
-      console.log("AASDFFGGH",action.payload);
         state.surveyQuestions.push(action.payload);
     },
    

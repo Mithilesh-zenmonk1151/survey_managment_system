@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useAppDispatch } from "@/store/hooks";
-import { get_question_of_survey, delete_question_of_survey } from "@/slice/question/question_action";
+import { get_question_of_survey} from "@/slice/question/question_action";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import EditSurveyQuestionDialogBox from "../editSurveyQuestionDialogBox/EditSurveyQuetionDialogBox";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import toast from "react-hot-toast";
-
+import { delete_question_of_survey } from "@/slice/survey_question/survey_question_action";
+import { useAppSelector } from "@/store/hooks";
 interface DataRow {
   id: number;
   name: string;
@@ -32,9 +33,10 @@ interface SurveyInfo {
   selectedType: string;
   checkSelectedType:string;
   selecttedQuestions:any []
+  questionss: any;
 }
 
-const SurveyQuestionTable: React.FC<SurveyInfo> = ({ survey ,searchTerm,selectedType,checkSelectedType,selecttedQuestions}) => {
+const SurveyQuestionTable: React.FC<SurveyInfo> = ({ survey ,searchTerm,selectedType,checkSelectedType,selecttedQuestions, questionss}) => {
   const [rows, setRows] = useState<DataRow[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedQuestion, setSelectedQuestion] = useState<DataRow | null>(null);
@@ -42,27 +44,29 @@ const SurveyQuestionTable: React.FC<SurveyInfo> = ({ survey ,searchTerm,selected
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const survey_id = survey.id;
-  console.log("UUY%%%%%%%%%%%%%%%%%%%%%%%%%%%5",selecttedQuestions);
+  const {content} = useAppSelector((state) => state.questions)
+
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const data = await dispatch(get_question_of_survey(survey_id));
+  //       const respo: Question[] = data?.payload?.response;
+  //       setResponse(respo);
+  //       setLoading(false);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //       setLoading(false);
+  //     }
+  //     fetchData();
+  //   };
+  // }
+  // )
+
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await dispatch(get_question_of_survey(survey_id));
-        const respo: Question[] = data?.payload?.response;
-        setResponse(respo);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [dispatch, survey_id]);
-
-  useEffect(() => {
-    if (response) {
-      const mappedRows = response.map((item,index) => ({
+    if (content?.response?.length) {
+      const mappedRows = content?.response.map((item,index) => ({
         id: item.id,
         name: item.description,
         type: item.abbr,
@@ -71,8 +75,11 @@ const SurveyQuestionTable: React.FC<SurveyInfo> = ({ survey ,searchTerm,selected
         modified: item.createdAt,
       }));
       setRows(mappedRows);
+    } else{
+      setRows([])
     }
-  }, [response]);
+  }, [ content?.response?.length]);
+  console.log('questionssasdasdasdasdasd123234234', questionss)
 
   const handleEdit = (row: DataRow) => {
     setSelectedQuestion(row);
@@ -135,7 +142,6 @@ const SurveyQuestionTable: React.FC<SurveyInfo> = ({ survey ,searchTerm,selected
         rows={filteredQuestions}
         columns={columns}
         pageSize={5}
-        loading={loading}
         rowsPerPageOptions={[5]}
       />
       {selectedQuestion && (

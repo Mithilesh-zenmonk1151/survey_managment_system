@@ -14,9 +14,10 @@ import {
 import EditSurveyDialogBox from "../dialogBoxEditSurvey/DialogBoxEditSurvey";
 import SurveyInfo from "./SurveyInfo";
 import toast from "react-hot-toast";
+import AlertDialog from "../confirmationnDialogBox/ConfirmationDialogBox";
+import CloseIcon from '@mui/icons-material/Close';
 
 import "./DataTable.css"; 
-import AlertDialog from "../confirmationnDialogBox/ConfirmationDialogBox";
 
 interface DataRow {
   id: number;
@@ -26,6 +27,8 @@ interface DataRow {
   abbreviation: string;
   modified: string;
   status: boolean;
+  options:any[];
+  survey_type:any[];
 }
 
 interface DataTableProps {
@@ -46,9 +49,15 @@ const DataTable: React.FC<DataTableProps> = ({
   );
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [deleteOptionId, setDeleteOptionId] = useState<number | null>(null); // Track which row's delete option is active
+  const [statusDialogOpen, setStatusDialogOpen] = useState<boolean>(false);
+  const [currentStatus, setCurrentStatus] = useState<boolean>(false);
+  const [currentStatusId, setCurrentStatusId] = useState<number | null>(null);
   const dispatch = useAppDispatch();
 
   const survey = useAppSelector(
+    (state) => state.survey?.content?.response?.data?.rows
+  );
+  const surveyy = useAppSelector(
     (state) => state.survey?.content?.response?.data?.rows
   );
 
@@ -76,6 +85,9 @@ const DataTable: React.FC<DataTableProps> = ({
         abbreviation: item?.abbr,
         modified: new Date(item?.updatedAt).toISOString().split("T")[0],
         status: item?.is_published,
+        options:item?. options,
+        survey_type:item?.survey_type,
+
       }));
 
       // Filter by searchTerm
@@ -110,6 +122,40 @@ const DataTable: React.FC<DataTableProps> = ({
     );
     setRows(updatedRows);
     dispatch(update_survey({ id, is_published: status }));
+    const CustomToast = () => {
+      const handleCloseToast = () => {
+        toast.dismiss(); // Dismiss the toast when close icon is clicked
+      };
+
+      return (
+        <div
+          className="custom-toast"
+          style={{
+            background: "#4d9f49",
+            color: "#ffffff",
+            transition: "all 0.5s ease",
+            height: "50px",
+            width: "800px",
+            alignItems: "center",
+            padding: "10px",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <p> 
+          {status
+            ? "Survey Published Successfully"
+            : "Survey Unpublished Successfully"} 
+          </p>
+          <CloseIcon sx={{
+            cursor:"pointer"
+          }} onClick={handleCloseToast} />
+        </div>
+      );
+    };
+
+    // Usage example:
+    toast.custom(() => <CustomToast />);
   };
 
   const handleEyeClick = (id: number) => {
@@ -132,13 +178,27 @@ const DataTable: React.FC<DataTableProps> = ({
   };
 
   const handleDelete = (id: number) => {
-    // Implement your delete logic here
-    console.log(`Deleting survey with ID: ${id}`);
     dispatch(delete_survey(id));
   };
 
+  const openStatusDialog = (id: number, status: boolean) => {
+    setCurrentStatusId(id);
+    setCurrentStatus(!status); // Toggle the status for the dialog
+    setStatusDialogOpen(true);
+  };
+
+  const closeStatusDialog = () => {
+    setStatusDialogOpen(false);
+  };
+
+  const agreeStatusChange = () => {
+    if (currentStatusId !== null) {
+      handleStatusChange(currentStatusId, currentStatus);
+    }
+    setStatusDialogOpen(false);
+  };
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 90, },
+    { field: "id", headerName: "ID", width: 90 },
     { field: "name", headerName: "Name", width: 350 },
     { field: "question", headerName: "Question", width: 80 },
     { field: "type", headerName: "Type of Survey", width: 200 },
@@ -149,14 +209,10 @@ const DataTable: React.FC<DataTableProps> = ({
       headerName: "Status",
       width: 200,
       renderCell: (params: GridRenderCellParams) => (
-        // <Switch
-        //   checked={params.value as boolean}
-        //   onChange={(event) =>
-        //     handleStatusChange(params.row.id, event.target.checked)
-        //   }
-        // />
-        <AlertDialog/>
-
+        <Switch
+          checked={params.value as boolean}
+          onChange={() => openStatusDialog(params.row.id, params.value as boolean)}
+        />
       ),
     },
     {
@@ -204,6 +260,13 @@ const DataTable: React.FC<DataTableProps> = ({
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         question={selectedQuestion}
+      />
+
+      <AlertDialog
+        open={statusDialogOpen}
+        onClose={closeStatusDialog}
+        onAgree={agreeStatusChange}
+        status={currentStatus}
       />
     </div>
   );

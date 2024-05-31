@@ -37,11 +37,11 @@ const QuestionTab: React.FC<SurveyInfoProps> = ({ survey }) => {
   const [selectedType, setSelectedType] = useState("");
   const [checkSelectedType, setCheckSelectedType] = useState("");
   const [selectedQuestions, setSelectedQuestions] = useState<Question[]>([]);
+  
 const  dispatch=useAppDispatch();
 // Define a callback function to receive the selected question IDs
 const handleSelectedQuestions = (selected:  Question[]) => {
   setSelectedQuestions(selected);
-  console.log("!!!!!!!!!!!!!!!!!",selected);
 };
 const survey_id= survey?.id;
 
@@ -56,7 +56,10 @@ const survey_id= survey?.id;
     setSelectedType("");
     setCheckSelectedType("");
     dispatch(get_question_of_survey(survey_id));
+    // const {reee}=await dispatch(get_question_of_survey(survey_id));
   }
+
+  const {content} = useAppSelector((state) => state.questions)
 
   return (
     <Box display="flex" flexDirection="row" height="100vh" overflow="hidden">
@@ -115,6 +118,7 @@ const survey_id= survey?.id;
               selectedType={selectedType} 
               checkSelectedType={checkSelectedType} 
               selecttedQuestions={selectedQuestions}
+              questionss={content}
             />
           </Box>
         </Box>

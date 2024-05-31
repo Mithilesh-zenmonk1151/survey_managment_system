@@ -11,7 +11,7 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
+  TableHead,                                                                                            
   TablePagination,
   TableRow,
   TableSortLabel,
@@ -27,7 +27,7 @@ import { get_question, get_question_for_survey, get_question_of_survey } from "@
 import { create_survey_question } from "@/slice/survey_question/survey_question_action";
 import toast from "react-hot-toast";
 import { addQuestion } from "@/slice/question_reducers/question_reducer";
-
+import CloseIcon from '@mui/icons-material/Close';
 interface Data {
   id: number;
   name: string;
@@ -244,12 +244,10 @@ export default function EnhancedTable({ survey,onSelectedQuestions}: InfoSurvey)
     dispatch(get_question());
   }, [dispatch]);
   const survey_id = survey.id;
-  console.log("#################################",onSelectedQuestions)
 
 
   // const stateRows = useAppSelector((state) => state.questions?.content?.response?.data?.rows);
   // const stateTy = useAppSelector((state) => state.questions?.content?.response?.data?.rows);
-  // console.log("QYUESTIONTYEPE",stateTy);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -259,9 +257,7 @@ export default function EnhancedTable({ survey,onSelectedQuestions}: InfoSurvey)
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
-  console.log("SSEEELLLCTEDD======",selected);
   const question_id=selected;
-  console.log("SUrveyyyId==========",survey_id);
   React.useEffect(() => {
     const fetchData = async () => {
       try {
@@ -278,7 +274,6 @@ export default function EnhancedTable({ survey,onSelectedQuestions}: InfoSurvey)
 
     fetchData();
   }, [dispatch, survey_id]);
-  console.log("&&&&&&&&&&&&&&&asfhdfklgdfgl;dfg5645",stateRows);
 
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -344,14 +339,50 @@ export default function EnhancedTable({ survey,onSelectedQuestions}: InfoSurvey)
     try{
       await dispatch(create_survey_question({survey_question}));
       await dispatch(get_question_of_survey(survey_id));
-      console.log("ADDDDADADADDAAD,",survey_question);
-    
+      const CustomToast = () => {
+        const handleCloseToast = () => {
+          toast.dismiss(); // Dismiss the toast when close icon is clicked
+        };
 
+        return (
+          <div
+            className="custom-toast"
+            style={{
+              background: "#4d9f49",
+              color: "#ffffff",
+              transition: "all 0.5s ease",
+              height: "50px",
+              width: "800px",
+              alignItems: "center",
+              padding: "10px",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <p>
+              {/* {survey?.is_published
+                ? "Survey Unpublished Successfully"
+                : "Survey Published Successfully"} */}
+                Question added successfully
+            </p>
+            <CloseIcon
+              sx={{
+                cursor: "pointer",
+              }}
+              onClick={handleCloseToast}
+            />
+          </div>
+        );
+      };
+
+      // Usage example:
+      toast.custom(() => <CustomToast />);
     }
     catch(error){
       console.log(error);
     }
   }
+
   React.useEffect(()=>{
      dispatch(get_question_of_survey(survey_id)) 
         

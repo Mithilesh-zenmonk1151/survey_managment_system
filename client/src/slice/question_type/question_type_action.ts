@@ -12,7 +12,6 @@ export const create_question_type = createAsyncThunk(
       // console.log("Slice wala teststssss",test);
       const response = await post_question_type_service(question_type);
       const data = response?.data;
-      console.log("data car added from slice===",data);
       return data;
     } catch (err) {
       console.log(err);
@@ -26,10 +25,8 @@ export const get_question_type = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await get_question_type_service();
-      console.log('Response===========slice Question',response);
       return response;
     } catch (err) {
-      console.log("error In getting  question Yype")
       return rejectWithValue(err);
     }
   }

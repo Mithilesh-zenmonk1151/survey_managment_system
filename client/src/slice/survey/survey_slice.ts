@@ -61,7 +61,6 @@ export const survey_slice = createSlice({
     builder.addCase(get_survey.fulfilled, (state, action) => {
       state.isLoading = false;
       state.content = action.payload;
-      console.log("action.payload", action.payload);
     });
     builder.addCase(get_survey.rejected, (state, action) => {
       state.isLoading = false;

@@ -24,7 +24,6 @@ const questionsSlice = createSlice({
       state.questions = action.payload;
     },
     addQuestion(state, action: PayloadAction<Question>) {
-        console.log("safdgdfgfdkg",action.payload);
       state.questions.push(action.payload);
     },
     deleteQuestion(state, action: PayloadAction<number>) {

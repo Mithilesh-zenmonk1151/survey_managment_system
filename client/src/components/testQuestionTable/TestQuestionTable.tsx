@@ -28,7 +28,6 @@ const DataTable: React.FC = () => {
   const questiondata = useAppSelector(
     (state) => state.questions?.content?.response?.data.rows
   );
-  console.log("QQQUUUEEETTTIIOOODDDAATA===", questiondata);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,7 +62,6 @@ const DataTable: React.FC = () => {
   };
 
   const handleDelete = (id: number) => {
-    console.log(`Delete row with id: ${id}`);
     const question_id=id
     dispatch(delete_question(question_id))
   };

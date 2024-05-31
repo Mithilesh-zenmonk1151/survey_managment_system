@@ -20,7 +20,6 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
     { id: "6", name: "Portuguese", value: "Portuguese" }
   ];
 
-  console.log("*****************************%%%%%",survey);
   const moda=survey?.options?.modality
   const sselle=survey?.survey_type?.name
   const lang=survey?.options?.languages
@@ -36,7 +35,6 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
   ];
     // dispatch(get_survey_type());
   const survey_types= useAppSelector((state)=>state.survey_type?.content?.response)
-  console.log(";;;;;;;;;;;;;;;;;;;;;;;;",survey_types);
 
   const modalities = [
     { id: "1", name: "In Person" },
@@ -48,9 +46,7 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
     return <div>Loading...</div>;
   }
 
-  console.log("Survey data:", survey);
   const survey_id=survey?.id;
-  console.log("SSSUUURRRVVVVEEEYYYYIIID",survey_id)
   // const dispatch= useAppDispatch();
   //   useEffect(()=>{
   //       dispatch(get_question_of_survey(survey_id))
@@ -78,7 +74,7 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
             variant="outlined"
             sx={{ width: "90%" }}
             value={survey?.name || ''}
-            onChange={(e) => console.log('Name changed:', e.target.value)} // Implement change handler as needed
+            onChange={(e) => console.log( e.target.value)} // Implement change handler as needed
           />
           <TextField
             id="outlined-abbr"
@@ -96,7 +92,7 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
           labelId="type-of-survey-label"
           id="type-of-survey"
           value={selected_value_type}
-          onChange={(e) => set_selected_value_type( e.target.value)} // Implement change handler as needed
+          onChange={(e) => set_selected_value_type( e.target.value)} 
           label="Type of Survey"
         >
           {survey_types?.map((type:any) => (

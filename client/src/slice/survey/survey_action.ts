@@ -16,10 +16,8 @@ export const create_survey = createAsyncThunk(
       // console.log("Slice wala teststssss",test);
       const response = await post_survey_service(survey);
       const data = response?.data;
-      console.log("data survey added from slice===",data);
       return data;
     } catch (err) {
-      console.log(err);
       return rejectWithValue(err);
     }
   }
@@ -30,10 +28,8 @@ export const get_survey = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await get_survey_service();
-      console.log('Response===========slice Question',response);
       return response;
     } catch (err) {
-      console.log("error In getting  question Yype")
       return rejectWithValue(err);
     }
   }
@@ -44,7 +40,6 @@ export const update_survey = createAsyncThunk(
       try {
           const response = await put_survey_service(survey);
           const data = response?.data;
-          console.log("data survey updated from slice===", data);
           return data;
       } catch (err) {
           console.log(err);
@@ -58,10 +53,8 @@ export const put_survey = createAsyncThunk(
       try {
           const response = await update_survey_service(survey);
           const data = response?.data;
-          console.log("data survey updated from slice===", data);
           return data;
       } catch (err) {
-          console.log(err);
           return rejectWithValue(err);
       }
   }
@@ -71,11 +64,9 @@ export const delete_survey = createAsyncThunk(
   'survey/deleteQuestionOfSurvey',
   async ( survey_id:number, { rejectWithValue }) => {
     try {
-      console.log(`Deleting question ${survey_id} f`);
       const response = await axios.delete(
         `http://localhost:4000/api/survey/${survey_id}`
       );
-      console.log('Response from delete question:', response);
       return {  survey_id };
     } catch (err: any) {
       console.error("Error in deleting question of survey");

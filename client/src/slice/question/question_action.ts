@@ -44,11 +44,9 @@ export const update_question = createAsyncThunk(
       try {
           const response = await put_question_service( question);
           const data = response;
-          console.log("uuuuuuuuuuuuuuuuuuuuuuuuuuuuu QQQQQQQQQQQQUECSOI from slice===", data);
           return data;
       } catch (err:any) {
           console.log(err?.response?.data?.error);
-          console.log("(*&^^%TF%defedfefe^^%&**(",err);
           return rejectWithValue(err?.response?.data?.error);
       }
   }
@@ -61,7 +59,6 @@ export const get_question_thr_id = createAsyncThunk(
       // console.log('Response===========slice Question',response);
       return response;
     } catch (err) {
-      console.log("error In getting  question Yype")
       return rejectWithValue(err);
     }
   }
@@ -77,7 +74,6 @@ export const get_question_of_survey = createAsyncThunk(
       const data=await response?.data
       return data; 
     } catch (err:any) {
-      console.log("Error in getting questions of survey");
       return rejectWithValue(err.response.data); 
     }
   }
@@ -93,7 +89,6 @@ export const delete_question_of_survey = createAsyncThunk(
       const data=await response?.data
       return data; 
     } catch (err:any) {
-      console.log("Error in getting questions of survey");
       return rejectWithValue(err.response.data); 
     }
   }
@@ -106,11 +101,9 @@ export const get_question_for_survey = createAsyncThunk(
         `http://localhost:4000/api/question/survey_question/${survey_id}`
       );
       // const response = await get_question_of_survey_service(survey_id);
-      console.log("464646565656556",response);
       const data=await response?.data
       return data; 
     } catch (err:any) {
-      console.log("Error in getting questions of survey");
       return rejectWithValue(err.response.data); 
     }
   }
@@ -120,11 +113,9 @@ export const delete_question = createAsyncThunk(
   'survey/deleteQuestionOfSurvey',
   async ( question_id:number, { rejectWithValue }) => {
     try {
-      console.log(`Deleting question ${question_id} f`);
       const response = await axios.delete(
         `http://localhost:4000/api/question/${question_id}`
       );
-      console.log('Response from delete question:', response);
       return {  question_id };
     } catch (err: any) {
       console.error("Error in deleting question of survey");

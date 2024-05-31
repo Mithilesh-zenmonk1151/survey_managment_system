@@ -44,8 +44,35 @@ const DialogBoxSurvey: React.FC = () => {
 
     try {
       await dispatch(create_survey(survey));
+      const CustomToast = () => {
+        const handleCloseToast = () => {
+          toast.dismiss(); 
+        };
+
+        return (
+          <div
+            className="custom-toast"
+            style={{
+              background: "#4d9f49",
+              color: "#ffffff",
+              transition: "all 0.5s ease",
+              height: "50px",
+              width: "800px",
+              alignItems: "center",
+              padding: "10px",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <p>Survey Created Successfully</p>
+            <CloseIcon sx={{
+              cursor:"pointer"
+            }} onClick={handleCloseToast} />
+          </div>
+        );
+      };
+      toast.custom(() => <CustomToast />);
       dispatch(get_survey());
-      toast.success("Survey created successfully");
       setOpen(false);
     } catch (error) {
       console.error("Error creating survey:", error);

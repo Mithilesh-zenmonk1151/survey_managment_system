@@ -70,8 +70,7 @@ const DataTable: React.FC<DataTableProps> = ({ searchTerm, selectedType,checkSel
       // Clear previous toast if it's still displayed
       // if (displayedToastId.current) {
       //   toast.dismiss(displayedToastId.current);
-      toast.error(error);
-      toast.error(error);
+      
       }
 
       // Show new toast for the error

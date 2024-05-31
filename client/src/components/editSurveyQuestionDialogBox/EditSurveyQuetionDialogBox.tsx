@@ -60,7 +60,6 @@ const EditSurveyQuestionDialogBox: React.FC<EditQuestionDialogBoxProps> = ({open
   const survey_id=survey?.id
   const survey_question= {question_id,survey_id,question_description}
 
-   console.log("$$$$$$$$$$$$$$QUUEESSSTTTIIOOONNIIIDDD",question?.id,survey?.id)
 // const questionType = useAppSelector((state) => state.question_type?.content?.response);
 
   const handleSave = () => {

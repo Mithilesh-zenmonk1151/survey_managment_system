@@ -2,7 +2,6 @@ import axios from 'axios';
 
 const get_question_of_survey_service = async (survey_id: string) => {
   try {
-    console.log("00000000000000000000000000000",survey_id);
     const response = await axios.get(`http://localhost:3000/api/question/question_of_survey/${survey_id}`);
     return response.data;
   } catch (error) {

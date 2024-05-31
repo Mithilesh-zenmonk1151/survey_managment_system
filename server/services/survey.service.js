@@ -59,12 +59,17 @@ exports.update_survey = async (payload) => {
     const { name, survey_type_id, options } = payload.body;
     console.log("Surve^%%^&&yiiiddd",payload.body)
     const survey_id = payload.body.id;
-    if(!survey_type_id){
+    console.log("survey_IIIIIIIIIIIII",survey_id)
+    if(!survey_type_id ){
+      throw new CustomError("Survey type Id not found",400);
+    }
+    if(!survey_id ){
       throw new CustomError("Survey Id not found",400);
     }
     const check_is_survey_exists = await survey.findOne({
       where: { id: survey_id },
     });
+    console.log("NNAAMMAM",name);
 
     if (!check_is_survey_exists) {
       throw new CustomError("Survey is not exists", 404);

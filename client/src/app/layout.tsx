@@ -21,7 +21,7 @@ export default async function RootLayout({
   const session = await getServerSession();
   return (
     <html lang="en">
-      <body className={inter.className}><SessionProvider session={session}> <ReduxProvider> {children}  <Toaster position="top-center" /></ReduxProvider></SessionProvider></body>
+      <body className={inter.className}><SessionProvider session={session}> <ReduxProvider> {children}  <Toaster position="bottom-left" /></ReduxProvider></SessionProvider></body>
     </html>
   );
 }

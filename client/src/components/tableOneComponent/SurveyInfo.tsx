@@ -10,7 +10,6 @@ const SurveyInfo: React.FC<SurveyInfoProps> = ({ survey }) => {
   if (!survey) {
     return <div>Loading...</div>;
   }
-  console.log("Survey=========INFO TABBB",survey.abbr)
 
   return (
     <div>

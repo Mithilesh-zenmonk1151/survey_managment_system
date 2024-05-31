@@ -24,7 +24,6 @@ const QuestionPage: React.FC = () => {
     setSelectedType("");
     setCheckSelectedType("");
   }
-  console.log("chhheheheheeheh",checkSelectedType);
 
   return (
     <Box>

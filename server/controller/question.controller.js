@@ -63,7 +63,6 @@ exports.get_question_thr_id =async (req, res) => {
 
 exports.get_question_of_survey=async(req,res)=> {
   try {
-    console.log("ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp");
     const response = await question_service.get_question_of_survey(req);
     res.status(200).json({ response });
   } catch (error) {

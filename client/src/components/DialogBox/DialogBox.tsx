@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField, styled } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  Box,
+  TextField,
+  styled,
+} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import DropDown from "../dropDown/DropDown";
 import Textarea from "@mui/joy/Textarea";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { get_question_type } from "@/slice/question_type/question_type_action";
-import { create_question, get_question } from "@/slice/question/question_action";
+import {
+  create_question,
+  get_question,
+} from "@/slice/question/question_action";
 import toast from "react-hot-toast";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -24,7 +37,9 @@ const DialogBox: React.FC = () => {
   const [abbr, setAbbr] = useState("");
   const dispatch = useAppDispatch();
 
-  const questionTypes = useAppSelector((state) => state.question_type?.content?.response || []);
+  const questionTypes = useAppSelector(
+    (state) => state.question_type?.content?.response || []
+  );
 
   useEffect(() => {
     dispatch(get_question_type());
@@ -48,8 +63,34 @@ const DialogBox: React.FC = () => {
 
     try {
       await dispatch(create_question(question));
-      dispatch(get_question());
-      toast.success("Question created successfully");
+      const CustomToast = () => {
+        const handleCloseToast = () => {
+          toast.dismiss(); 
+        };
+
+        return (
+          <div
+            className="custom-toast"
+            style={{
+              background: "#4d9f49",
+              color: "#ffffff",
+              transition: "all 0.5s ease",
+              height: "50px",
+              width: "300px",
+              alignItems: "center",
+              padding: "10px",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <p>Question Created Successfully</p>
+            <CloseIcon sx={{
+              cursor:"pointer"
+            }} onClick={handleCloseToast} />
+          </div>
+        );
+      };
+      toast.custom(() => <CustomToast />);      dispatch(get_question());
       setDescription("");
       setSelectedQuestionTypeId("");
       setAbbr("");
@@ -72,7 +113,11 @@ const DialogBox: React.FC = () => {
       >
         CREATE
       </Button>
-      <BootstrapDialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
+      <BootstrapDialog
+        onClose={handleClose}
+        aria-labelledby="customized-dialog-title"
+        open={open}
+      >
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
           Create Question
           <IconButton
@@ -90,7 +135,13 @@ const DialogBox: React.FC = () => {
         </DialogTitle>
         <DialogContent>
           <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
-            <Box sx={{ display: "flex", justifyContent: "space-between", gap: "30px" }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: "30px",
+              }}
+            >
               <DropDown
                 select_type="Question Type"
                 options={questionTypes}

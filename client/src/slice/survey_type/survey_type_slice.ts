@@ -42,7 +42,6 @@ export const survey_type_slice = createSlice({
         builder.addCase(get_survey_type.fulfilled, (state, action) => {
             state.isLoading = false
             state.content = action.payload
-            console.log("action.payload",action.payload)
 
         })
         builder.addCase(get_survey_type.rejected, (state, action) => {

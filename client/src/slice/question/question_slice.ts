@@ -4,16 +4,17 @@ import { create_question, get_question, get_question_for_survey, get_question_of
 type initialStateProps = {
   isLoading: boolean;
   isLoggedIn: boolean;
-  content: {
-    message: string;
-    question: {
-      description: string;
-      id: number;
-      abbr: string;
-      question_type_id: number;
-      active: boolean;
-    };
-  };
+  content: any;
+  // {
+  //   message: string;
+  //   question: {
+  //     description: string;
+  //     id: number;
+  //     abbr: string;
+  //     question_type_id: number;
+  //     active: boolean;
+  //   };
+  // };
   error: Object | null;
 };
 
@@ -44,7 +45,6 @@ export const question_slice = createSlice({
     builder.addCase(get_question.fulfilled, (state, action) => {
       state.isLoading = false;
       state.content = action.payload;
-      console.log("action.payload", action.payload);
     });
     builder.addCase(get_question.rejected, (state, action) => {
       state.isLoading = false;
@@ -56,7 +56,6 @@ export const question_slice = createSlice({
     builder.addCase(get_question_for_survey.fulfilled, (state, action) => {
       state.isLoading = false;
       state.content = action.payload;
-      console.log("action.payload", action.payload);
     });
     builder.addCase(get_question_for_survey.rejected, (state, action) => {
       state.isLoading = false;

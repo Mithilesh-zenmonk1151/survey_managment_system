@@ -22,7 +22,6 @@ const formatDate = (dateString: string) => {
 };
 
 export default function OppositeContentTimeline({ survey }: SurveyInfoProps) {
-  console.log("$%$@@$%%&*&SSSSUUURRVVVEYY", survey);
   return (
     <Timeline position="alternate">
       <TimelineItem>

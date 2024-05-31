@@ -7,13 +7,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import { Box, TextField } from "@mui/material";
+import { Box, Switch, TextField, Typography, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { get_question_type } from "@/slice/question_type/question_type_action";
 import { update_question } from "@/slice/question/question_action";
-import DropDown from "../dropDown/DropDown";
-import DropDownForEditSurvey from "../dropDownForEditSurvey/DropDownForEditSurvey";
-import { put_survey } from "@/slice/survey/survey_action";
+import { get_survey, put_survey } from "@/slice/survey/survey_action";
+import { get_survey_type } from "@/slice/survey_type/survey_type_action";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -30,62 +29,84 @@ interface DataRow {
   type: string;
   abbreviation: string;
   modified: string;
+  survey_type: any[];
+  options: any[];
 }
 
-interface EditQuestionDialogBoxProps {
+interface EditSurveyDialogBoxProps {
   open: boolean;
   onClose: () => void;
   question: DataRow | null;
 }
-const EditSurveyDialogBox: React.FC<EditQuestionDialogBoxProps> = ({ open, onClose, question }) => {
-  const [selected_survey_type_id, set_selected_survey_type_id] = useState("");
-  const [modality, set_selected_modality] = useState("");
-  const [languages, set_language] = useState("");
-  const [description, set_description] = useState("");
-  const [abbr, set_abbr] = useState("");
+
+const EditSurveyDialogBox: React.FC<EditSurveyDialogBoxProps> = ({ open, onClose, question }) => {
+  const [selectedSurveyTypeId, setSelectedSurveyTypeId] = useState<string>("");
+  // const [languages, setLanguages] = useState<string>("");
+  const [description, setDescription] = useState(question?.name);
+  const [abbr, setAbbr] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [selectedValueType, setSelectedValueType] = useState<string>("");
+  const [selectedModality, setSelectedModality] = useState<string>("");
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("");
+  const [isMandatory, setIsMandatory] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-  const [name, set_name] = useState(question?.name);
+
   useEffect(() => {
     if (question) {
-      set_description(question.name);
-      set_abbr(question.abbreviation);
+      // setDescription(question.name);
+      setAbbr(question.abbreviation);
+      setName(question.name);
+      setSelectedValueType(question.survey_type?.name || "");
+      setSelectedModality(question.options?.modality || "");
+      setSelectedLanguage(question.options?.languages || "");
+      setIsMandatory(question.options?.mandatory || false);
+      setSelectedSurveyTypeId(question.survey_type?.id.toString() || "");
     }
   }, [question]);
+
   useEffect(() => {
     dispatch(get_question_type());
+    dispatch(get_survey_type());
   }, [dispatch]);
-  console.log("UIHIUOI(*(*^&^%&^*&*&*((*",question);
-  const question_type = useAppSelector((state) => state.question_type?.content?.response);
-  const sttt = useAppSelector((state) => state.survey_type?.content?.response);
+
+  const questionType = useAppSelector((state) => state.question_type?.content?.response);
+  const surveyTypes = useAppSelector((state) => state.survey_type?.content?.response || []);
+const modality=selectedModality;
+const languages =selectedLanguage;
   const options = { modality, languages };
-  const is_published = false;
-  const survey_type_id = parseInt(selected_survey_type_id);
-  const modalityy = [
+  const survey_type_id = selectedSurveyTypeId ? parseInt(selectedSurveyTypeId) : 0;
+
+  const modalities = [
     { id: "1", name: "In Person", value: "In Person" },
-    { id: "2", name: "In Value", value: "In Value" }
+    { id: "2", name: "Virtual", value: "Virtual" },
   ];
-  const language = [
+
+  const languageOptions = [
     { id: "1", name: "English", value: "English" },
     { id: "2", name: "Spanish", value: "Spanish" },
     { id: "3", name: "Chinese", value: "Chinese" },
     { id: "4", name: "Italian", value: "Italian" },
     { id: "5", name: "French", value: "French" },
-    { id: "6", name: "Portuguese", value: "Portuguese" }
+    { id: "6", name: "Portuguese", value: "Portuguese" },
   ];
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const id = question?.id;
-    const survey = { name, options, survey_type_id, id };
-    console.log("Survetegprtkhoireudofiuwerioufgior",survey);
-    dispatch(put_survey(survey));
+    const survey = {name, options, survey_type_id, id };
+    await dispatch(put_survey(survey));
+    dispatch(get_survey());
     onClose();
   };
 
   return (
-    <BootstrapDialog onClose={onClose} aria-labelledby="customized-dialog-title" open={open}>
+    <BootstrapDialog
+      sx={{ minWidth: "448px" }}
+      onClose={onClose}
+      aria-labelledby="customized-dialog-title"
+      open={open}
+    >
       <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
         Edit Survey
-        
         <IconButton
           aria-label="close"
           sx={{
@@ -96,34 +117,87 @@ const EditSurveyDialogBox: React.FC<EditQuestionDialogBoxProps> = ({ open, onClo
           }}
           onClick={onClose}
         >
-          <CloseIcon />
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between", gap: "30px" }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <TextField
+            id="outlined-name"
+            label="Survey Name"
+            variant="outlined"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            fullWidth
+          />
+          <Box sx={{ display: "flex", gap: "16px" }}>
             <TextField
-              value={name}
-              onChange={(e) => set_name(e.target.value)}
-              placeholder="Name"
-            />
-          </Box>
-          <Box sx={{ display: "flex", gap: "20px" }}>
-            <TextField
+              id="outlined-abbreviation"
+              label="Abbreviation"
+              variant="outlined"
               value={abbr}
-              onChange={(e) => set_abbr(e.target.value)}
-              placeholder="Abbreviation"
+              onChange={(e) => setAbbr(e.target.value)}
+              sx={{ width: "50%" }}
+              disabled
             />
-            <DropDown
-              select_type="Survey Type"
-              options={sttt}
-              value={selected_survey_type_id}
-              onChange={set_selected_survey_type_id}
-            />
+            <FormControl fullWidth variant="outlined" sx={{ width: "50%" }}>
+              <InputLabel id="type-of-survey-label">Type of Survey</InputLabel>
+              <Select
+                labelId="type-of-survey-label"
+                id="type-of-survey"
+                variant="outlined"
+                value={selectedSurveyTypeId}
+                onChange={(e) => setSelectedSurveyTypeId(e.target.value)}
+                label="Type of Survey"
+              >
+                {surveyTypes.map((type: any) => (
+                  <MenuItem key={type.id} value={type.id.toString()}>
+                    {type.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Box>
-          <Box sx={{ display: "flex", gap: "30px" }}>
-            <DropDownForEditSurvey onChange={(e:any)=>set_selected_modality(e.target.value)} options={modalityy} select_type="Modality" />
-            <DropDownForEditSurvey onChange={set_language} options={language} select_type="Language" />
+          <Box sx={{ display: "flex", gap: "16px" }}>
+            <FormControl fullWidth variant="outlined" sx={{ width: "50%" }}>
+              <InputLabel id="modality-label">Modality</InputLabel>
+              <Select
+                labelId="modality-label"
+                id="modality"
+                value={selectedModality}
+                onChange={(e) => setSelectedModality(e.target.value)}
+                label="Modality"
+              >
+                {modalities.map((type: any) => (
+                  <MenuItem key={type.id} value={type.value}>
+                    {type.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl fullWidth variant="outlined" sx={{ width: "50%" }}>
+              <InputLabel id="language-label">Language</InputLabel>
+              <Select
+                labelId="language-label"
+                id="language"
+                value={selectedLanguage}
+                onChange={(e) => setSelectedLanguage(e.target.value)}
+                label="Language"
+              >
+                {languageOptions.map((lang) => (
+                  <MenuItem key={lang.id} value={lang.value}>
+                    {lang.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <Typography>Mandatory</Typography>
+            <Switch
+              checked={isMandatory}
+              onChange={(e) => setIsMandatory(e.target.checked)}
+              color="primary"
+            />
           </Box>
         </Box>
       </DialogContent>

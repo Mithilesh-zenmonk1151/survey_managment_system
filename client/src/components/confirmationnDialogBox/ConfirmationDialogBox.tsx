@@ -1,55 +1,56 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import React from "react";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import { Switch } from "@mui/material";
 
-export default function AlertDialog() {
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  return (
-    <React.Fragment>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Open alert dialog
-        {/* <Switch
-          checked={params.value as boolean}
-          onChange={(event) =>
-            handleStatusChange(params.row.id, event.target.checked)
-          }
-        /> */}
-      </Button>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Use Google's location service?"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending anonymous
-            location data to Google, even when no apps are running.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={handleClose} autoFocus>
-            Agree
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </React.Fragment>
-  );
+interface AlertDialogProps {
+  open: boolean;
+  onClose: () => void;
+  onAgree: () => void;
+  status: boolean;
 }
+  ``
+const AlertDialog: React.FC<AlertDialogProps> = ({
+  open,
+  onClose,
+  onAgree,
+  status,
+}) => {
+  return (
+    <Dialog
+      open={open}
+      onClose={onClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">
+      {status
+            ? "Publish Survey"
+            : "Unpublish Survey"} 
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+        {status
+            ? "Are you sure you want to publish this survey?"
+            : "Are you sure you want to unpublish this survey?"}        </DialogContentText>
+        {/* <Switch checked={status} disabled /> */}
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>cancel</Button>
+        <Button onClick={onAgree} autoFocus>
+        {status
+            ? " publish"
+            : "unpublish"}
+
+
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+export default AlertDialog;

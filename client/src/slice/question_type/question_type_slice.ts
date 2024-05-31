@@ -43,7 +43,6 @@ export const question_type_slice = createSlice({
         builder.addCase(get_question_type.fulfilled, (state, action) => {
             state.isLoading = false
             state.content = action.payload
-            console.log("action.payload",action.payload)
 
         })
         builder.addCase(get_question_type.rejected, (state, action) => {

@@ -9,10 +9,8 @@ export const post_survey_type = createAsyncThunk(
     try {
       const response = await post_survey_type_service(survey_type);
       const data = response?.data;
-      console.log("data car added from slice===",data);
       return data;
     } catch (err) {
-      console.log(err);
       return rejectWithValue(err);
     }
   }
@@ -23,10 +21,8 @@ export const get_survey_type = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await get_survey_type_service();
-      console.log('Response===========slice Question',response);
       return response;
     } catch (err) {
-      console.log("error In getting  question Yype")
       return rejectWithValue(err);
     }
   }

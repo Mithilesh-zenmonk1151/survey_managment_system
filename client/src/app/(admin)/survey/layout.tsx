@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>   <ReduxProvider> <SideBar> {children} </SideBar> <Toaster position="top-center" /></ReduxProvider></body>
+      <body className={inter.className}>   <ReduxProvider> <SideBar> {children} </SideBar> </ReduxProvider></body>
     </html>
   );
 }
