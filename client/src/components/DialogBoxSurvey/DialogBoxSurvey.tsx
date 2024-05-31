@@ -62,6 +62,7 @@ const DialogBoxSurvey: React.FC = () => {
               padding: "10px",
               display: "flex",
               justifyContent: "space-between",
+              
             }}
           >
             <p>Survey Created Successfully</p>
