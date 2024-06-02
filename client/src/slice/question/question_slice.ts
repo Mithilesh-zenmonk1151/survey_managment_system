@@ -1,20 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { create_question, get_question, get_question_for_survey, get_question_of_survey, get_question_thr_id,  update_question } from "./question_action";
+import { create_question, get_question, get_question_for_survey, get_question_of_survey, get_question_thr_id, update_question } from "./question_action";
 
 type initialStateProps = {
   isLoading: boolean;
   isLoggedIn: boolean;
   content: any;
-  // {
-  //   message: string;
-  //   question: {
-  //     description: string;
-  //     id: number;
-  //     abbr: string;
-  //     question_type_id: number;
-  //     active: boolean;
-  //   };
-  // };
+  pageNumber:number;
+  pageLimit:number;
+
   error: Object | null;
 };
 
@@ -32,6 +25,8 @@ const initialState: initialStateProps = {
       active: false,
     },
   },
+  pageNumber: 1,
+  pageLimit: 10,
 };
 
 export const question_slice = createSlice({
@@ -61,20 +56,6 @@ export const question_slice = createSlice({
       state.isLoading = false;
       state.error = action.error;
     });
-    // builder.addCase(get_question_of_survey.pending, (state) => {
-    //   state.isLoading = true;
-    // });
-    // builder.addCase(get_question_of_survey.fulfilled, (state, action) => {
-    //   state.isLoading = false;
-    //   state.content = action.payload;
-    //   console.log("action.payload", action.payload);
-    // });
-    // builder.addCase(get_question_of_survey.rejected, (state, action) => {
-    //   state.isLoading = false;
-    //   state.error = action.error;
-    // });
-    
-    
     builder.addCase(create_question.pending, (state) => {
       state.isLoading = true;
     });
@@ -85,23 +66,21 @@ export const question_slice = createSlice({
       state.isLoading = false;
       state.error = action.error;
     });
-  
-  builder.addCase(update_question.pending, (state) => {
-    state.isLoading = true;
-  });
-  builder.addCase(update_question.fulfilled, (state, action) => {
-    state.isLoading = false;
-    const updatedQuestion = action.payload;
-    if (state.content.questions?.id === updatedQuestion.id) {
-      state.content.question = updatedQuestion;
-    }
-  });
-  builder.addCase(update_question.rejected, (state, action) => {
-    state.isLoading = false;
-    state.error= action.payload;
-    
-  });
-},
+    builder.addCase(update_question.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(update_question.fulfilled, (state, action) => {
+      state.isLoading = false;
+      const updatedQuestion = action.payload;
+      if (state.content.questions?.id === updatedQuestion.id) {
+        state.content.question = updatedQuestion;
+      }
+    });
+    builder.addCase(update_question.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    });
+  },
 });
 
 export default question_slice.reducer;

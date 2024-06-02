@@ -31,9 +31,9 @@ exports.create_question = async (payload) => {
 };
 exports.get_question = async (payload) => {
   try {
-    console.log("Payloadkak***************",payload.query);
-    const page_number = payload.query.page_number || 1;
-    const limit = payload.query.limit || 50;
+    console.log("QUERY@@@@@***************",payload.query);
+    const page_number = payload.query.pageNumber || 1;
+    const limit = payload.query.PageSi || 50;
     console.log("PAGENUMER", page_number);
     console.log("PAGENUMER", limit);
     const search = payload.query.search || "";
@@ -42,10 +42,11 @@ exports.get_question = async (payload) => {
     console.log("LIMIT&&&&OFerde",limit,offset);
     console.log("PAYload.Query", payload.query.search);
     const surveyes = await question.findAndCountAll({
-      include: [{ model: question_type, as: "question_type" }],
+      include: [{ model: question_type, as: "question_type" }],order: [['createdAt', 'ASC']],
       limit: limit,
       offset: offset,
     });
+    
     if (!surveyes) {
       throw new CustomError("Survey not found", 404);
     }

@@ -57,7 +57,7 @@ const DialogBoxSurvey: React.FC = () => {
               color: "#ffffff",
               transition: "all 0.5s ease",
               height: "50px",
-              width: "800px",
+              width: "400px",
               alignItems: "center",
               padding: "10px",
               display: "flex",
@@ -130,8 +130,7 @@ const DialogBoxSurvey: React.FC = () => {
           <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
             <TextField
               label="Survey Name"
-              variant="outlined"
-              sx={{ width: "100%" }}
+              sx={{ width: "100%"}}
               value={name}
               onChange={(e) => setName(e.target.value)}
             />

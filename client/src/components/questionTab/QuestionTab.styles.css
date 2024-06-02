@@ -1,11 +1,15 @@
 .drawer.open{
     width: 450px;
     display: inline-flex ;
+    transition: "all 0.5s ease",
+
 }
 
 .drawer.closed{
     display: none;
     width: 0;
+    transition: "all 0.5s ease",
+
 }
 .drawer.tableClose{
     width:65%;

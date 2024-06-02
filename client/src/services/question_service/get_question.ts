@@ -1,13 +1,18 @@
 import axios from "axios";
-import type { FieldValues } from "react-hook-form";
-const get_question_service = async () => {
-    try {
-        // console.log("IIINNNPPUUUTT", inputs);
-        const response = await axios.get("api/question/get_question",);
-        return response.data;
-    } catch (error) {
-        console.error("Error fetching tests:", error);
-        return null;
-    }
+
+const get_question_service = async (pageLimit: number, pageNumber: number) => {
+  try {
+    const response = await axios.get(`/api/question/get_question`, {
+      params: {
+        pageLimit,
+        pageNumber,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching questions:", error);
+    return null;
+  }
 };
+
 export default get_question_service;

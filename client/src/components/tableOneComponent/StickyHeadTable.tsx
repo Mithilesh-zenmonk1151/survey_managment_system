@@ -27,8 +27,8 @@ interface DataRow {
   abbreviation: string;
   modified: string;
   status: boolean;
-  options:any[];
-  survey_type:any[];
+  options: any[];
+  survey_type: any[];
 }
 
 interface DataTableProps {
@@ -48,16 +48,13 @@ const DataTable: React.FC<DataTableProps> = ({
     null
   );
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  const [deleteOptionId, setDeleteOptionId] = useState<number | null>(null); // Track which row's delete option is active
+  const [deleteOptionId, setDeleteOptionId] = useState<number | null>(null);
   const [statusDialogOpen, setStatusDialogOpen] = useState<boolean>(false);
   const [currentStatus, setCurrentStatus] = useState<boolean>(false);
   const [currentStatusId, setCurrentStatusId] = useState<number | null>(null);
   const dispatch = useAppDispatch();
 
   const survey = useAppSelector(
-    (state) => state.survey?.content?.response?.data?.rows
-  );
-  const surveyy = useAppSelector(
     (state) => state.survey?.content?.response?.data?.rows
   );
 
@@ -85,12 +82,10 @@ const DataTable: React.FC<DataTableProps> = ({
         abbreviation: item?.abbr,
         modified: new Date(item?.updatedAt).toISOString().split("T")[0],
         status: item?.is_published,
-        options:item?. options,
-        survey_type:item?.survey_type,
-
+        options: item?.options,
+        survey_type: item?.survey_type,
       }));
 
-      // Filter by searchTerm
       if (searchTerm) {
         filteredRows = filteredRows?.filter(
           (row) =>
@@ -100,7 +95,6 @@ const DataTable: React.FC<DataTableProps> = ({
         );
       }
 
-      // Filter by selectedType
       if (selectedType) {
         filteredRows = filteredRows.filter(
           (row) => row.type.toLowerCase() === selectedType.toLowerCase()
@@ -122,9 +116,10 @@ const DataTable: React.FC<DataTableProps> = ({
     );
     setRows(updatedRows);
     dispatch(update_survey({ id, is_published: status }));
+
     const CustomToast = () => {
       const handleCloseToast = () => {
-        toast.dismiss(); // Dismiss the toast when close icon is clicked
+        toast.dismiss();
       };
 
       return (
@@ -135,26 +130,23 @@ const DataTable: React.FC<DataTableProps> = ({
             color: "#ffffff",
             transition: "all 0.5s ease",
             height: "50px",
-            width: "800px",
+            width: "400px",
             alignItems: "center",
             padding: "10px",
             display: "flex",
             justifyContent: "space-between",
           }}
         >
-          <p> 
-          {status
-            ? "Survey Published Successfully"
-            : "Survey Unpublished Successfully"} 
+          <p>
+            {status
+              ? "Survey Published Successfully"
+              : "Survey Unpublished Successfully"}
           </p>
-          <CloseIcon sx={{
-            cursor:"pointer"
-          }} onClick={handleCloseToast} />
+          <CloseIcon sx={{ cursor: "pointer" }} onClick={handleCloseToast} />
         </div>
       );
     };
 
-    // Usage example:
     toast.custom(() => <CustomToast />);
   };
 
@@ -162,7 +154,7 @@ const DataTable: React.FC<DataTableProps> = ({
     const selectedSurvey = survey?.find((item: any) => item.id === id);
     if (selectedSurvey) {
       onAddTab({
-        id: `survey-${id}`,
+        id: `${id}`,
         label: selectedSurvey?.name,
         content: <SurveyInfo survey={selectedSurvey} />,
       });
@@ -183,7 +175,7 @@ const DataTable: React.FC<DataTableProps> = ({
 
   const openStatusDialog = (id: number, status: boolean) => {
     setCurrentStatusId(id);
-    setCurrentStatus(!status); // Toggle the status for the dialog
+    setCurrentStatus(!status);
     setStatusDialogOpen(true);
   };
 
@@ -197,6 +189,7 @@ const DataTable: React.FC<DataTableProps> = ({
     }
     setStatusDialogOpen(false);
   };
+
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width: 90 },
     { field: "name", headerName: "Name", width: 350 },

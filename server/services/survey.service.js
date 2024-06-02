@@ -34,7 +34,7 @@ exports.get_survey = async (payload) => {
       include: [
         { model: survey_type, as: "survey_type" },
         { model: question, as: "questions" }, // Include the 'question' model
-      ],
+      ],order: [['createdAt', 'ASC']],
       // limit: limit,
       // offset: offset,
     });

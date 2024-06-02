@@ -352,7 +352,7 @@ export default function EnhancedTable({ survey,onSelectedQuestions}: InfoSurvey)
               color: "#ffffff",
               transition: "all 0.5s ease",
               height: "50px",
-              width: "800px",
+              width: "400px",
               alignItems: "center",
               padding: "10px",
               display: "flex",
@@ -489,7 +489,7 @@ export default function EnhancedTable({ survey,onSelectedQuestions}: InfoSurvey)
         <Box></Box>
         <Box>
           <Button disabled>Cancel</Button>
-          <Button onClick={handleAddQuestiontoSurvey}>Add</Button>
+          <Button disabled={selected.length === 0} onClick={handleAddQuestiontoSurvey}>Add</Button>
         </Box>
       </Box>
     </Box>

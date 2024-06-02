@@ -93,7 +93,7 @@ export default function InsideSurveyTabTab({
               color: "#ffffff",
               transition: "all 0.5s ease",
               height: "50px",
-              width: "800px",
+              width: "400px",
               alignItems: "center",
               padding: "10px",
               display: "flex",
