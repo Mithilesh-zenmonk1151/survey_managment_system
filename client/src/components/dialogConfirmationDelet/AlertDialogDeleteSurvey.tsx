@@ -12,6 +12,8 @@ interface AlertDialogProps {
   onClose: () => void;
   onAgree: () => void;
   status?: boolean;
+  modelHeading?:string;
+  modelBody?:string;
 }
   ``
 const AlertDialogConfirmationDeleteSurvey: React.FC<AlertDialogProps> = ({
@@ -19,6 +21,8 @@ const AlertDialogConfirmationDeleteSurvey: React.FC<AlertDialogProps> = ({
   onClose,
   onAgree,
   status,
+  modelHeading,
+  modelBody
 }) => {
   return (
     <Dialog
@@ -28,11 +32,11 @@ const AlertDialogConfirmationDeleteSurvey: React.FC<AlertDialogProps> = ({
       aria-describedby="alert-dialog-description"
     >
       <DialogTitle id="alert-dialog-title">
-      Delete Survey
+       {modelHeading}
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-        Are you sure you want to delete this survey?       </DialogContentText>
+          {modelBody}     </DialogContentText>
         
       </DialogContent>
       <DialogActions>

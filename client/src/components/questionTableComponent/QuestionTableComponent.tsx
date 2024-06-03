@@ -9,7 +9,8 @@ import {
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
+import Tooltip from "@mui/material/Tooltip";
 import {
   delete_question,
   get_question,
@@ -19,7 +20,7 @@ import EditQuestionDialogBox from "../editQuestionDialogBox/EditQuestionDialogBo
 import toast from "react-hot-toast";
 import { format } from "date-fns";
 import "./styles.css"; 
-import { useSelector } from "react-redux";
+import AlertDialogConfirmationDeleteSurvey from "../dialogConfirmationDelet/AlertDialogDeleteSurvey";
 
 interface DataRow {
   id: number;
@@ -32,23 +33,20 @@ interface DataRow {
 interface DataTableProps {
   searchTerm: string;
   selectedType: string;
-  checkSelectedType:string;
+  checkSelectedType: string;
 }
 
-const DataTable: React.FC<DataTableProps> = ({ searchTerm, selectedType,checkSelectedType }) => {
+const DataTable: React.FC<DataTableProps> = ({ searchTerm, selectedType, checkSelectedType }) => {
   const [rows, setRows] = useState<DataRow[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [selectedQuestion, setSelectedQuestion] = useState<DataRow | null>(
-    null
-  );
+  const [selectedQuestion, setSelectedQuestion] = useState<DataRow | null>(null);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [deleteConfirmDialogOpen, setDeleteConfirmDialogOpen] = useState<boolean>(false);
+  const [questionToDelete, setQuestionToDelete] = useState<number | null>(null);
   const dispatch = useAppDispatch();
 
-  const questiondata = useAppSelector(
-    (state) => state.questions?.content?.response?.data
-  );
- console.log("QUESIIOP__________",questiondata);
-  
+  const questiondata = useAppSelector((state) => state.questions?.content?.response?.data);
+  console.log("QUESIIOP__________", questiondata);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,29 +61,20 @@ const DataTable: React.FC<DataTableProps> = ({ searchTerm, selectedType,checkSel
 
     fetchData();
   }, [dispatch]);
+
   const error = useAppSelector((state) => state.questions?.error);
   const displayedToastId = React.useRef(null); // useRef to track the current displayed toast
 
   useEffect(() => {
     if (error) {
-      // Clear previous toast if it's still displayed
-      // if (displayedToastId.current) {
-      //   toast.dismiss(displayedToastId.current);
-      
-      }
+      // Handle error toast
+    }
+  }, [error]);
 
-      // Show new toast for the error
-      // displayedToastId.current = toast.error(error, {
-      //   onClose: () => {
-      //     displayedToastId.current = null; // Reset the current toast ID after it's closed
-      //   }
-      // });
-    
-  }, [error]); // Tri
   useEffect(() => {
     if (questiondata) {
       const mappedRows = questiondata.map((item: any, index: number) => ({
-        id: item?.id|| index,
+        id: item?.id || index,
         name: item?.description || "",
         type: item?.question_type?.abbr || "",
         abbreviation: item?.abbr || "",
@@ -102,50 +91,61 @@ const DataTable: React.FC<DataTableProps> = ({ searchTerm, selectedType,checkSel
     setDialogOpen(true);
   };
 
-  const handleDelete = async (id: number) => {
-    try {
-      console.log("IIIIAA",id)
-      await dispatch(delete_question(id));
-      setRows((prevRows) => prevRows.filter((row) => row.id !== id));
-      const CustomToast = () => {
-        const handleCloseToast = () => {
-          toast.dismiss();
+  const handleDelete = (id: number) => {
+    setQuestionToDelete(id);
+    setDeleteConfirmDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (questionToDelete !== null) {
+      try {
+        await dispatch(delete_question(questionToDelete));
+        setRows((prevRows) => prevRows.filter((row) => row.id !== questionToDelete));
+        const CustomToast = () => {
+          const handleCloseToast = () => {
+            toast.dismiss();
+          };
+
+          return (
+            <div
+              className="custom-toast"
+              style={{
+                background: "#4d9f49",
+                color: "#ffffff",
+                transition: "all 0.5s ease",
+                height: "50px",
+                width: "400px",
+                alignItems: "center",
+                padding: "10px",
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <p>Question deleted successfully</p>
+              <CloseIcon sx={{ cursor: "pointer" }} onClick={handleCloseToast} />
+            </div>
+          );
         };
-  
-        return (
-          <div
-            className="custom-toast"
-            style={{
-              background: "#4d9f49",
-              color: "#ffffff",
-              transition: "all 0.5s ease",
-              height: "50px",
-              width: "400px",
-              alignItems: "center",
-              padding: "10px",
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            <p>
-              Question deleted Successfuly
-            </p>
-            <CloseIcon sx={{ cursor: "pointer" }} onClick={handleCloseToast} />
-          </div>
-        );
-      };
-  
-      toast.custom(() => <CustomToast />);
-    } catch (error) {
-      toast.error("Failed to delete question");
-      console.error("Error deleting question:", error);
+
+        toast.custom(() => <CustomToast />);
+      } catch (error) {
+        toast.error("Failed to delete question");
+        console.error("Error deleting question:", error);
+      } finally {
+        setDeleteConfirmDialogOpen(false);
+        setQuestionToDelete(null);
+      }
     }
+  };
+
+  const closeDeleteConfirmDialog = () => {
+    setDeleteConfirmDialogOpen(false);
+    setQuestionToDelete(null);
   };
 
   const filteredQuestions = rows.filter((question) => {
     const matchesType =
       checkSelectedType.length > 0 ? checkSelectedType.includes(question.abbreviation) : true;
-      
     const matchesSelectedType =
       selectedType.length > 0 ? selectedType.includes(question.type) : true;
     const matchesSearch = searchTerm
@@ -168,12 +168,16 @@ const DataTable: React.FC<DataTableProps> = ({ searchTerm, selectedType,checkSel
       sortable: false,
       renderCell: (params: GridRenderCellParams) => (
         <>
-          <IconButton onClick={() => handleEdit(params.row as DataRow)}>
-            <EditIcon />
-          </IconButton>
-          <IconButton onClick={() => handleDelete(params.row.id)}>
-            <DeleteIcon />
-          </IconButton>
+          <Tooltip title="Edit">
+            <IconButton onClick={() => handleEdit(params.row as DataRow)}>
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete">
+            <IconButton onClick={() => handleDelete(params.row.id)}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
         </>
       ),
     },
@@ -187,7 +191,7 @@ const DataTable: React.FC<DataTableProps> = ({ searchTerm, selectedType,checkSel
         pageSize={10}
         loading={loading}
         sortingOrder={["desc", "asc"]}
-        pageSizeOptions={[5, 10,15,20,25,30,50,100,150]}
+        pageSizeOptions={[5, 10, 15, 20, 25, 30, 50, 100, 150]}
         sortModel={[
           {
             field: "id",
@@ -212,6 +216,13 @@ const DataTable: React.FC<DataTableProps> = ({ searchTerm, selectedType,checkSel
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         question={selectedQuestion}
+      />
+      <AlertDialogConfirmationDeleteSurvey
+        open={deleteConfirmDialogOpen}
+        onClose={closeDeleteConfirmDialog}
+        onAgree={confirmDelete}
+        modelHeading="Delete Question"
+        modelBody="Are you sure you want to delete this question?"
       />
     </div>
   );

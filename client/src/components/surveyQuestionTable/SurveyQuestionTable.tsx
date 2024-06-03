@@ -45,13 +45,14 @@ const SurveyQuestionTable: React.FC<SurveyInfo> = ({ survey ,searchTerm,selected
   const dispatch = useAppDispatch();
   const survey_id = survey.id;
   const {content} = useAppSelector((state) => state.questions)
+  const resss=content?.response;
 
 
   // useEffect(() => {
   //   const fetchData = async () => {
   //     try {
   //       const data = await dispatch(get_question_of_survey(survey_id));
-  //       const respo: Question[] = data?.payload?.response;
+  //       const respo: resss[] = data?.payload?.response;
   //       setResponse(respo);
   //       setLoading(false);
   //     } catch (error) {

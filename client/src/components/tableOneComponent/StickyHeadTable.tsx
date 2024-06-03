@@ -342,6 +342,8 @@ const DataTable: React.FC<DataTableProps> = ({
         open={deleteConfirmDialogOpen}
         onClose={closeDeleteConfirmDialog}
         onAgree={confirmDelete}
+        modelHeading="Delete Survey"
+        modelBody="Are you sure you want to delete this survey?"
       />
     </div>
   );
