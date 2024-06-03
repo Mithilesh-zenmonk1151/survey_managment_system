@@ -78,7 +78,7 @@ export default function CheckBoxDropDown(props: CheckBoxDropDownProps) {
           sx={{
             bgcolor: "#f5f5f5",
             width: "fit-content",
-            height: "32px",
+            height: "38px",
             border: "none",
             borderRadius: "40px",
             '& .MuiOutlinedInput-root': {
@@ -98,10 +98,10 @@ export default function CheckBoxDropDown(props: CheckBoxDropDownProps) {
           <MenuItem disabled value="">
             <em>{em}</em>
           </MenuItem>
-          {options.map((option) => (
-            <MenuItem key={option.id} value={option.abbr}>
-              <Checkbox checked={personName.indexOf(option.abbr || '') > -1} />
-              <ListItemText primary={option.abbr} />
+          {options?.map((option) => (
+            <MenuItem key={option?.id} value={option?.abbr}>
+              <Checkbox checked={personName.indexOf(option?.abbr || '') > -1} />
+              <ListItemText primary={option?.abbr} />
             </MenuItem>
           ))}
         </Select>

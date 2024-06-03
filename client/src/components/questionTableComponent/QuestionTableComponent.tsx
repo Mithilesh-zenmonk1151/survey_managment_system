@@ -9,6 +9,7 @@ import {
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import CloseIcon from '@mui/icons-material/Close';
 import {
   delete_question,
   get_question,
@@ -44,9 +45,9 @@ const DataTable: React.FC<DataTableProps> = ({ searchTerm, selectedType,checkSel
   const dispatch = useAppDispatch();
 
   const questiondata = useAppSelector(
-    (state) => state.questions?.content?.response?.data.rows
+    (state) => state.questions?.content?.response?.data
   );
- 
+ console.log("QUESIIOP__________",questiondata);
   
 
   useEffect(() => {
@@ -84,9 +85,9 @@ const DataTable: React.FC<DataTableProps> = ({ searchTerm, selectedType,checkSel
   useEffect(() => {
     if (questiondata) {
       const mappedRows = questiondata.map((item: any, index: number) => ({
-        id: item?.id || index,
+        id: item?.id|| index,
         name: item?.description || "",
-        type: item?.question_type.name || "",
+        type: item?.question_type?.abbr || "",
         abbreviation: item?.abbr || "",
         modified: item?.createdAt
           ? format(new Date(item.createdAt), "yyyy-MM-dd HH:mm:ss")
@@ -103,9 +104,38 @@ const DataTable: React.FC<DataTableProps> = ({ searchTerm, selectedType,checkSel
 
   const handleDelete = async (id: number) => {
     try {
+      console.log("IIIIAA",id)
       await dispatch(delete_question(id));
       setRows((prevRows) => prevRows.filter((row) => row.id !== id));
-      toast.success("Question deleted");
+      const CustomToast = () => {
+        const handleCloseToast = () => {
+          toast.dismiss();
+        };
+  
+        return (
+          <div
+            className="custom-toast"
+            style={{
+              background: "#4d9f49",
+              color: "#ffffff",
+              transition: "all 0.5s ease",
+              height: "50px",
+              width: "400px",
+              alignItems: "center",
+              padding: "10px",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <p>
+              Question deleted Successfuly
+            </p>
+            <CloseIcon sx={{ cursor: "pointer" }} onClick={handleCloseToast} />
+          </div>
+        );
+      };
+  
+      toast.custom(() => <CustomToast />);
     } catch (error) {
       toast.error("Failed to delete question");
       console.error("Error deleting question:", error);
@@ -125,11 +155,12 @@ const DataTable: React.FC<DataTableProps> = ({ searchTerm, selectedType,checkSel
   });
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 75 },
-    { field: "name", headerName: "Name", width: 275 },
-    { field: "type", headerName: "Type", width: 250 },
-    { field: "abbreviation", headerName: "Abbreviation", width: 200 },
-    { field: "modified", headerName: "Modified", width: 250 },
+    { field: " ", headerName: " ", width: 35 },
+    { field: "id", headerName: "ID", width: 90 },
+    { field: "name", headerName: "Name", width: 400 },
+    { field: "type", headerName: "Type", width: 350 },
+    { field: "abbreviation", headerName: "Abbreviation", width: 250 },
+    { field: "modified", headerName: "Modified", width: 350 },
     {
       field: "action",
       headerName: "",
@@ -153,10 +184,10 @@ const DataTable: React.FC<DataTableProps> = ({ searchTerm, selectedType,checkSel
       <DataGrid
         rows={filteredQuestions}
         columns={columns}
-        pageSize={5}
+        pageSize={10}
         loading={loading}
-        rowsPerPageOptions={[5, 10, 15, 20, 25, 30, 40, 50]}
         sortingOrder={["desc", "asc"]}
+        pageSizeOptions={[5, 10,15,20,25,30,50,100,150]}
         sortModel={[
           {
             field: "id",
@@ -174,7 +205,7 @@ const DataTable: React.FC<DataTableProps> = ({ searchTerm, selectedType,checkSel
         sx={{
           fontSize: "14px",
           fontWeight: "500",
-          fontFamily: "Intter",
+          fontFamily: "Poppins",
         }}
       />
       <EditQuestionDialogBox

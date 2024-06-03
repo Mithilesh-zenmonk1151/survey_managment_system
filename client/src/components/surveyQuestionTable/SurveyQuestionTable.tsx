@@ -66,7 +66,7 @@ const SurveyQuestionTable: React.FC<SurveyInfo> = ({ survey ,searchTerm,selected
 
   useEffect(() => {
     if (content?.response?.length) {
-      const mappedRows = content?.response.map((item,index) => ({
+      const mappedRows = content?.response?.map((item,index) => ({
         id: item.id,
         name: item.description,
         type: item.abbr,
@@ -143,6 +143,8 @@ const SurveyQuestionTable: React.FC<SurveyInfo> = ({ survey ,searchTerm,selected
         columns={columns}
         pageSize={5}
         rowsPerPageOptions={[5]}
+        pageSizeOptions={[5, 10, 15, 20, 25, 30, 50, 100, 150]}
+
       />
       {selectedQuestion && (
         <EditSurveyQuestionDialogBox

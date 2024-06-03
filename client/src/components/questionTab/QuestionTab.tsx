@@ -70,7 +70,7 @@ const survey_id= survey?.id;
             <Box onClick={handleDrawerToggle}>
               {drawerOpen ? (
                 <ArrowForwardIcon
-                  sx={{ cursor: 'pointer', border: '1px solid black' }}
+                  sx={{ cursor: 'pointer', borderLeft: '2px solid black',borderRadius:"20px",bgcolor:"white",marginLeft:"30px" }}
                 />
               ) : (
                 <Button variant="outlined" sx={{ bgcolor: 'white' }}>

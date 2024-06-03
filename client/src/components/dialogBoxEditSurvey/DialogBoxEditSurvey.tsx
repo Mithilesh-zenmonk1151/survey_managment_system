@@ -1,18 +1,27 @@
 import React, { useState, useEffect } from "react";
-import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import IconButton from "@mui/material/IconButton";
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  Box,
+  Switch,
+  TextField,
+  Typography,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  styled,
+} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { Box, Switch, TextField, Typography, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { get_question_type } from "@/slice/question_type/question_type_action";
-import { update_question } from "@/slice/question/question_action";
 import { get_survey, put_survey } from "@/slice/survey/survey_action";
 import { get_survey_type } from "@/slice/survey_type/survey_type_action";
+import toast from "react-hot-toast";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -41,11 +50,8 @@ interface EditSurveyDialogBoxProps {
 
 const EditSurveyDialogBox: React.FC<EditSurveyDialogBoxProps> = ({ open, onClose, question }) => {
   const [selectedSurveyTypeId, setSelectedSurveyTypeId] = useState<string>("");
-  // const [languages, setLanguages] = useState<string>("");
-  const [description, setDescription] = useState(question?.name);
-  const [abbr, setAbbr] = useState<string>("");
   const [name, setName] = useState<string>("");
-  const [selectedValueType, setSelectedValueType] = useState<string>("");
+  const [abbr, setAbbr] = useState<string>("");
   const [selectedModality, setSelectedModality] = useState<string>("");
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
   const [isMandatory, setIsMandatory] = useState<boolean>(false);
@@ -53,14 +59,12 @@ const EditSurveyDialogBox: React.FC<EditSurveyDialogBoxProps> = ({ open, onClose
 
   useEffect(() => {
     if (question) {
-      // setDescription(question.name);
       setAbbr(question.abbreviation);
       setName(question.name);
-      setSelectedValueType(question.survey_type?.name || "");
+      setSelectedSurveyTypeId(question.survey_type?.id.toString() || "");
       setSelectedModality(question.options?.modality || "");
       setSelectedLanguage(question.options?.languages || "");
       setIsMandatory(question.options?.mandatory || false);
-      setSelectedSurveyTypeId(question.survey_type?.id.toString() || "");
     }
   }, [question]);
 
@@ -69,12 +73,7 @@ const EditSurveyDialogBox: React.FC<EditSurveyDialogBoxProps> = ({ open, onClose
     dispatch(get_survey_type());
   }, [dispatch]);
 
-  const questionType = useAppSelector((state) => state.question_type?.content?.response);
   const surveyTypes = useAppSelector((state) => state.survey_type?.content?.response || []);
-const modality=selectedModality;
-const languages =selectedLanguage;
-  const options = { modality, languages };
-  const survey_type_id = selectedSurveyTypeId ? parseInt(selectedSurveyTypeId) : 0;
 
   const modalities = [
     { id: "1", name: "In Person", value: "In Person" },
@@ -91,11 +90,86 @@ const languages =selectedLanguage;
   ];
 
   const handleSave = async () => {
-    const id = question?.id;
-    const survey = {name, options, survey_type_id, id };
-    await dispatch(put_survey(survey));
-    dispatch(get_survey());
-    onClose();
+    if (!question) return;
+
+    const survey = {
+      id: question.id,
+      name,
+      abbr,
+      options: {
+        modality: selectedModality,
+        languages: selectedLanguage,
+        mandatory: isMandatory,
+      },
+      survey_type_id: selectedSurveyTypeId ? parseInt(selectedSurveyTypeId) : 0,
+    };
+
+    try {
+      await dispatch(put_survey(survey)).unwrap();
+      const CustomToast = () => {
+      const handleCloseToast = () => {
+        toast.dismiss();
+      };
+
+      return (
+        <div
+          className="custom-toast"
+          style={{
+            background: "#4d9f49",
+            color: "#ffffff",
+            transition: "all 0.5s ease",
+            height: "50px",
+            width: "300px",
+            alignItems: "center",
+            padding: "10px",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <p> Survey Updated Successfully</p>
+          <CloseIcon
+            sx={{ cursor: "pointer" }}
+            onClick={handleCloseToast}
+          />
+        </div>
+      );
+    };
+
+    toast.custom(() => <CustomToast />);
+      dispatch(get_survey());
+      onClose();
+    } catch (error) {
+      const CustomToast = () => {
+        const handleCloseToast = () => {
+          toast.dismiss();
+        };
+
+        return (
+          <div
+            className="custom-toast"
+            style={{
+              background: "red",
+              color: "#ffffff",
+              transition: "all 0.5s ease",
+              height: "50px",
+              width: "300px",
+              alignItems: "center",
+              padding: "10px",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <p>Failed to update survey</p>
+            <CloseIcon
+              sx={{ cursor: "pointer" }}
+              onClick={handleCloseToast}
+            />
+          </div>
+        );
+      };
+
+      toast.custom(() => <CustomToast />);
+    }
   };
 
   return (

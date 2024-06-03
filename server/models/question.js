@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
     question_type_id: {type:DataTypes.INTEGER,allowNull:false},
     description: {type:DataTypes.TEXT,allowNull:false},
     abbr: {type:DataTypes.STRING,allowNull:false},
-    active: {type:DataTypes.BOOLEAN,allowNull:false},
+    active: {type:DataTypes.BOOLEAN,allowNull:false,defaultValue:true},
     deleted_at: DataTypes.DATE
   }, {
     sequelize,

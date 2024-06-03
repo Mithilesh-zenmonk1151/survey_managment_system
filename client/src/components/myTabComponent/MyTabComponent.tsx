@@ -6,6 +6,7 @@ import DataTable from "../tableOneComponent/StickyHeadTable";
 import SearchbarCompo from "../searchBar/SearchBarCompo";
 import SearchingDropDown from "../searchingDropDown/SearchingDropDown";
 import CheckBoxDropDown from "../checkBoxDropDown/CheckBoxDropDown";
+import { useAppSelector } from "@/store/hooks";
 
 interface TabContent {
   id: string;
@@ -26,22 +27,25 @@ const MyTabsComponent = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const router = useRouter();
+  const [checkSelectedType, setCheckSelectedType] = useState("");
 
   const [additionalTabs, setAdditionalTabs] = useState<TabContent[]>([]);
   const [value, setValue] = useState(0);
+  const survey_type = useAppSelector((state) => state.survey_type?.content?.response) || [];
+  const abbr = useAppSelector((state) => state.survey?.content?.response?.data?.rows);
 
   const handleAddTab = (newTab: TabContent) => {
     setAdditionalTabs((prevTabs) => {
       const isDuplicate = prevTabs.some((tab) => tab.id === newTab.id);
       if (isDuplicate) {
-        return prevTabs; // If the tab is a duplicate, do not add it
+        return prevTabs; 
       }
 
       const updatedTabs = [...prevTabs, newTab];
       if (updatedTabs.length > 3) {
-        updatedTabs.shift(); // Remove the oldest tab if more than three additional tabs
+        updatedTabs.shift(); 
       }
-      setValue(updatedTabs.length); // Set the new tab as active
+      setValue(updatedTabs.length); 
       router.push(`?${newTab.id}`);
       return updatedTabs;
     });
@@ -59,7 +63,7 @@ const MyTabsComponent = () => {
     {
       id: "main",
       label: "Surveys",
-      content: <DataTable onAddTab={handleAddTab} searchTerm={searchTerm} selectedType={selectedType} />,
+      content: <DataTable onAddTab={handleAddTab} checkSelectedType={checkSelectedType} searchTerm={searchTerm} selectedType={selectedType} />,
     },
     ...additionalTabs,
   ];
@@ -69,14 +73,20 @@ const MyTabsComponent = () => {
     router.push(`?${tabs[newValue].id}`);
   };
 
+  const handleOnClearClick = () => {
+    setSearchTerm("");
+    setSelectedType("");
+    setCheckSelectedType("");
+  };
+
   return (
     <Box sx={{}}>
-      <Tabs value={value} onChange={handleChange} sx={{ bgcolor: "white", fontSize: "50px", display: "flex", gap: "20px", fontFamily: "Arial, sans-serif" }}>
+      <Tabs value={value} onChange={handleChange} sx={{ bgcolor: "white", fontSize: "50px", display: "flex", gap: "20px", fontFamily: "Poppins",fontWeight:"800" }}>
         {tabs.map((tab, index) => (
           <Tab
             key={tab.id}
             label={
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center' ,fontSize:"17px", paddingLeft:"20px",fontWeight:"900",fontFamily:"Poppins"}}>
                 {tab.label}
                 {tab.id !== "main" && (
                   <IconButton
@@ -84,6 +94,9 @@ const MyTabsComponent = () => {
                     onClick={(e) => {
                       e.stopPropagation();
                       handleRemoveTab(index - 1);
+                    }}
+                    sx={{
+
                     }}
                   >
                     <CloseIcon fontSize="small" />
@@ -97,19 +110,21 @@ const MyTabsComponent = () => {
       </Tabs>
       <Box sx={{ height: "1px", width: "100%" }}></Box>
       <Box sx={{ bgcolor: "white" }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", padding: "24px" }}>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <SearchbarCompo customPlaceHolder="Search......" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-            <SearchingDropDown options={names} em="Type" em_name="Type" />
-            <CheckBoxDropDown em_name="Abbreviation" options={names} />
-            <SearchingDropDown options={names} em="Status" em_name="Status" />
-            <Button disabled>Clear</Button>
+        {value === 0 && (
+          <Box sx={{ display: "flex", justifyContent: "space-between", padding: "24px" }}>
+            <Box sx={{ display: "flex", alignItems: "center",paddingLeft:"20px" }}>
+              <SearchbarCompo customPlaceHolder="Search......" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+              <SearchingDropDown select_type="" value={selectedType} onChange={(value) => setSelectedType(value)} options={survey_type} em="Type" em_name="Type" />
+              <CheckBoxDropDown select_type="abbriviation" options={abbr} em_name="Abbriviation" em="Abbriviation" onChange={(value) => setCheckSelectedType(value)} />
+              <SearchingDropDown options={names} em="Status" em_name="Status" />
+              <Button onClick={handleOnClearClick}>Clear</Button>
+            </Box>
+            <Box sx={{ display: "flex", alignContent: "center", alignItems: "center", textAlign: "center" }}>
+              <Switch />
+              <Typography>Show deleted</Typography>
+            </Box>
           </Box>
-          <Box sx={{ display: "flex", alignContent: "center", alignItems: "center", textAlign: "center" }}>
-            <Switch />
-            <Typography>Show deleted</Typography>
-          </Box>
-        </Box>
+        )}
 
         {tabs.map((tab, index) => (
           <Box
@@ -119,7 +134,7 @@ const MyTabsComponent = () => {
             id={`simple-tabpanel-${index}`}
             aria-labelledby={`simple-tab-${index}`}
             sx={{
-              // marginLeft:"50px"
+              marginLeft: "50px"
             }}
           >
             {value === index && <Box>{tab.content}</Box>}

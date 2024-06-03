@@ -1,5 +1,6 @@
 "use client"
 import React, { useState, useEffect } from "react";
+import CloseIcon from '@mui/icons-material/Close';
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
@@ -7,7 +8,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
 import { Box, TextField } from "@mui/material";
 import Textarea from "@mui/joy/Textarea";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -50,11 +50,11 @@ const EditQuestionDialogBox: React.FC<EditQuestionDialogBoxProps> = ({
   onClose,
   question,
 }) => {
-  const [selected_question_type_id, set_selected_question_type_id] =
-    useState("");
+  const [selected_question_type_id, set_selected_question_type_id] = useState("");
   const [description, set_description] = useState(question?.name || "");
   const [abbr, set_abbr] = useState(question?.abbreviation || "");
   const dispatch = useAppDispatch();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (question) {
@@ -72,10 +72,9 @@ const EditQuestionDialogBox: React.FC<EditQuestionDialogBoxProps> = ({
   const question_type = useAppSelector(
     (state) => state.question_type?.content?.response
   );
-  const eeerrr = useAppSelector((state) => state.questions?.error);
-
 
   const handleSave = async () => {
+    setError(null);
     try {
       if (question) {
         const updatedQuestion = {
@@ -84,48 +83,57 @@ const EditQuestionDialogBox: React.FC<EditQuestionDialogBoxProps> = ({
         };
 
         await dispatch(update_question(updatedQuestion)).unwrap();
+        
+        const CustomToast = () => (
+          <div
+            className="custom-toast"
+            style={{
+              background: "#4d9f49",
+              color: "#ffffff",
+              transition: "all 0.5s ease",
+              height: "50px",
+              width: "400px",
+              alignItems: "center",
+              padding: "10px",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <p>Question updated successfully</p>
+            <CloseIcon sx={{ cursor: "pointer" }} onClick={() => toast.dismiss()} />
+          </div>
+        );
+
+        toast.custom(() => <CustomToast />);
+
         await dispatch(get_question());
+        onClose();
       }
     } catch (err) {
-      // Error handling is done via useEffect below
-      
-    if (eeerrr) {
-      // Optionally reset the error state here if needed
-      // dispatch(resetQuestionError());
-     
-    }
-    }
-    if (eeerrr) {
-      // Optionally reset the error state here if needed
-      // dispatch(resetQuestionError());
-      toast.custom((t) => (
+      setError(err || "Failed to update question");
+
+      toast.custom(() => (
         <div
           className="custom-toast"
           style={{
             background: "#ff5252",
             color: "#ffffff",
             transition: "all 0.5s ease",
-            height:"50px",
-            width:"800px",
-            alignItems:"center",
-            padding:"10px",
-            display:"flex",
-            justifyContent:"space-between"
+            height: "50px",
+            width: "800px",
+            alignItems: "center",
+            padding: "10px",
+            display: "flex",
+            justifyContent: "space-between",
           }}
         >
-          {eeerrr || "Failed to update question"}
-          <CloseIcon/>
+          {err || "Failed to update question"}
+          <CloseIcon sx={{ cursor: "pointer" }} onClick={() => toast.dismiss()} />
         </div>
       ));
     }
-
     onClose();
-
   };
-
-
-  
- 
 
   return (
     <BootstrapDialog
@@ -164,7 +172,6 @@ const EditQuestionDialogBox: React.FC<EditQuestionDialogBoxProps> = ({
             />
             <TextField
               value={question?.abbreviation}
-              // onChange={(e) => set_abbr(e.target.value)}
               disabled
             />
           </Box>

@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  Box,
+  TextField,
+} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import DropDown from "../dropDown/DropDown";
 import DropDownForEditSurvey from "../dropDownForEditSurvey/DropDownForEditSurvey";
@@ -17,14 +26,14 @@ const DialogBoxSurvey: React.FC = () => {
   const [abbr, setAbbr] = useState("");
   const dispatch = useAppDispatch();
 
-  const surveyTypes = useAppSelector((state) => state.survey_type?.content?.response || []);
-  const surveys = useAppSelector((state) => state.survey?.content?.response?.data?.rows || []);
-     
+  const surveyTypes = useAppSelector(
+    (state) => state.survey_type?.content?.response || []
+  );
 
   useEffect(() => {
-   
-      dispatch(get_survey_type());
+    dispatch(get_survey_type());
   }, [dispatch]);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -43,42 +52,44 @@ const DialogBoxSurvey: React.FC = () => {
     };
 
     try {
-      await dispatch(create_survey(survey));
-      const CustomToast = () => {
-        const handleCloseToast = () => {
-          toast.dismiss(); 
-        };
+      await dispatch(create_survey(survey)).unwrap();
 
-        return (
-          <div
-            className="custom-toast"
-            style={{
-              background: "#4d9f49",
-              color: "#ffffff",
-              transition: "all 0.5s ease",
-              height: "50px",
-              width: "400px",
-              alignItems: "center",
-              padding: "10px",
-              display: "flex",
-              justifyContent: "space-between",
-              
-            }}
-          >
-            <p>Survey Created Successfully</p>
-            <CloseIcon sx={{
-              cursor:"pointer"
-            }} onClick={handleCloseToast} />
-          </div>
-        );
-      };
+      const CustomToast = () => (
+        <div
+          className="custom-toast"
+          style={{
+            background: "#4d9f49",
+            color: "#ffffff",
+            transition: "all 0.5s ease",
+            height: "50px",
+            width: "400px",
+            alignItems: "center",
+            padding: "10px",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <p>Survey Created Successfully</p>
+          <CloseIcon
+            sx={{ cursor: "pointer" }}
+            onClick={() => toast.dismiss()}
+          />
+        </div>
+      );
+
       toast.custom(() => <CustomToast />);
-      dispatch(get_survey());
+      await dispatch(get_survey());
+
       setOpen(false);
+      setName("");
+      setAbbr("");
+      setModality("");
+      setLanguages("");
+      setSelectedSurveyTypeId("");
     } catch (error) {
-      console.error("Error creating survey:", error);
       toast.error("Failed to create survey");
     }
+    setOpen(false);
   };
 
   const modalities = [
@@ -110,7 +121,11 @@ const DialogBoxSurvey: React.FC = () => {
       >
         CREATE
       </Button>
-      <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
+      <Dialog
+        onClose={handleClose}
+        aria-labelledby="customized-dialog-title"
+        open={open}
+      >
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
           Create Survey
           <IconButton
@@ -123,18 +138,23 @@ const DialogBoxSurvey: React.FC = () => {
             }}
             onClick={handleClose}
           >
-            <CloseIcon />
           </IconButton>
         </DialogTitle>
         <DialogContent>
           <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
             <TextField
               label="Survey Name"
-              sx={{ width: "100%"}}
+              sx={{ width: "100%" }}
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-            <Box sx={{ display: "flex", justifyContent: "space-between", gap: "30px" }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: "30px",
+              }}
+            >
               <TextField
                 placeholder="Abbreviation"
                 value={abbr}

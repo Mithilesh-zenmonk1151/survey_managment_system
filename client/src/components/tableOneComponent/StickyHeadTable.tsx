@@ -4,7 +4,7 @@ import IconButton from "@mui/material/IconButton";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { Switch } from "@mui/material";
+import { Switch, Popover, Typography, Tooltip } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   delete_survey,
@@ -15,9 +15,9 @@ import EditSurveyDialogBox from "../dialogBoxEditSurvey/DialogBoxEditSurvey";
 import SurveyInfo from "./SurveyInfo";
 import toast from "react-hot-toast";
 import AlertDialog from "../confirmationnDialogBox/ConfirmationDialogBox";
-import CloseIcon from '@mui/icons-material/Close';
-
-import "./DataTable.css"; 
+import CloseIcon from "@mui/icons-material/Close";
+import AlertDialogConfirmationDeleteSurvey from "../dialogConfirmationDelet/AlertDialogDeleteSurvey";
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 interface DataRow {
   id: number;
@@ -35,12 +35,14 @@ interface DataTableProps {
   onAddTab: (tab: { id: string; label: string; content: JSX.Element }) => void;
   searchTerm: string;
   selectedType: string;
+  checkSelectedType: string;
 }
 
 const DataTable: React.FC<DataTableProps> = ({
   onAddTab,
   searchTerm,
   selectedType,
+  checkSelectedType,
 }) => {
   const [rows, setRows] = useState<DataRow[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -52,6 +54,10 @@ const DataTable: React.FC<DataTableProps> = ({
   const [statusDialogOpen, setStatusDialogOpen] = useState<boolean>(false);
   const [currentStatus, setCurrentStatus] = useState<boolean>(false);
   const [currentStatusId, setCurrentStatusId] = useState<number | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
+  const [deleteConfirmDialogOpen, setDeleteConfirmDialogOpen] = useState<boolean>(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
   const dispatch = useAppDispatch();
 
   const survey = useAppSelector(
@@ -78,7 +84,7 @@ const DataTable: React.FC<DataTableProps> = ({
         id: item?.id,
         name: item?.name,
         question: item?.questions?.length,
-        type: item?.survey_type?.name,
+        type: item?.survey_type?.abbr,
         abbreviation: item?.abbr,
         modified: new Date(item?.updatedAt).toISOString().split("T")[0],
         status: item?.is_published,
@@ -86,29 +92,26 @@ const DataTable: React.FC<DataTableProps> = ({
         survey_type: item?.survey_type,
       }));
 
-      if (searchTerm) {
-        filteredRows = filteredRows?.filter(
-          (row) =>
-            row.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            row.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            row.abbreviation.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-      }
-
-      if (selectedType) {
-        filteredRows = filteredRows.filter(
-          (row) => row.type.toLowerCase() === selectedType.toLowerCase()
-        );
-      }
-
       setRows(filteredRows);
     }
-  }, [survey, searchTerm, selectedType]);
+  }, [survey]);
 
   const handleEdit = (row: DataRow) => {
     setSelectedQuestion(row);
     setDialogOpen(true);
   };
+
+  const filteredSurvey = rows.filter((survey) => {
+    const matchesType =
+      checkSelectedType.length > 0 ? checkSelectedType.includes(survey.abbreviation) : true;
+
+    const matchesSelectedType =
+      selectedType.length > 0 ? selectedType.includes(survey.type) : true;
+    const matchesSearch = searchTerm
+      ? survey.name.toLowerCase().includes(searchTerm.toLowerCase())
+      : true;
+    return matchesType && matchesSearch && matchesSelectedType;
+  });
 
   const handleStatusChange = (id: number, status: boolean) => {
     const updatedRows = rows?.map((row) =>
@@ -161,16 +164,54 @@ const DataTable: React.FC<DataTableProps> = ({
     }
   };
 
-  const handleMoreOptionsClick = (id: number | null) => {
+  const handleMoreOptionsClick = (event: React.MouseEvent<HTMLElement>, id: number) => {
     setDeleteOptionId(id);
-    const survey_id = id;
-    dispatch(delete_survey(survey_id));
-    setRows((prevRows) => prevRows?.filter((row) => row?.id !== id));
-    toast.success("Survey deleted Successfully");
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClosePopover = () => {
+    setAnchorEl(null);
+    setDeleteOptionId(null);
   };
 
   const handleDelete = (id: number) => {
-    dispatch(delete_survey(id));
+    setDeleteConfirmDialogOpen(true);
+    setConfirmDeleteId(id);
+  };
+
+  const confirmDelete = () => {
+    if (confirmDeleteId !== null) {
+      dispatch(delete_survey(confirmDeleteId));
+      setRows((prevRows) => prevRows?.filter((row) => row?.id !== confirmDeleteId));
+      const CustomToast = () => {
+        const handleCloseToast = () => {
+          toast.dismiss();
+        };
+
+        return (
+          <div
+            className="custom-toast"
+            style={{
+              background: "#4d9f49",
+              color: "#ffffff",
+              transition: "all 0.5s ease",
+              height: "50px",
+              width: "400px",
+              alignItems: "center",
+              padding: "10px",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <p>Survey deleted Successfully</p>
+            <CloseIcon sx={{ cursor: "pointer" }} onClick={handleCloseToast} />
+          </div>
+        );
+      };
+
+      toast.custom(() => <CustomToast />);
+    }
+    setDeleteConfirmDialogOpen(false);
   };
 
   const openStatusDialog = (id: number, status: boolean) => {
@@ -190,17 +231,22 @@ const DataTable: React.FC<DataTableProps> = ({
     setStatusDialogOpen(false);
   };
 
+  const closeDeleteConfirmDialog = () => {
+    setDeleteConfirmDialogOpen(false);
+  };
+
   const columns: GridColDef[] = [
+    { field: " ", headerName: " ", width: 27 },
     { field: "id", headerName: "ID", width: 90 },
     { field: "name", headerName: "Name", width: 350 },
     { field: "question", headerName: "Question", width: 80 },
-    { field: "type", headerName: "Type of Survey", width: 200 },
-    { field: "abbreviation", headerName: "Abbreviation", width: 125 },
+    { field: "type", headerName: "Type of Survey", width: 300 },
+    { field: "abbreviation", headerName: "Abbreviation", width: 225 },
     { field: "modified", headerName: "Modified", width: 170 },
     {
       field: "status",
       headerName: "Status",
-      width: 200,
+      width: 250,
       renderCell: (params: GridRenderCellParams) => (
         <Switch
           checked={params.value as boolean}
@@ -215,38 +261,68 @@ const DataTable: React.FC<DataTableProps> = ({
       sortable: false,
       renderCell: (params: GridRenderCellParams) => (
         <>
-          <IconButton onClick={() => handleEyeClick(params.row.id)}>
-            <VisibilityIcon />
-          </IconButton>
-          <IconButton onClick={() => handleEdit(params.row as DataRow)}>
-            <EditIcon />
-          </IconButton>
-          <IconButton onClick={() => handleMoreOptionsClick(params.row.id)}>
+          <Tooltip title="View Survey" sx={{fontSize:"14px"
+            
+          }}>
+            <IconButton onClick={() => handleEyeClick(params.row.id)}>
+              <VisibilityIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Edit">
+            <IconButton onClick={() => handleEdit(params.row)}>
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="More ">
+            <IconButton onClick={(event) => handleMoreOptionsClick(event, params.row.id)}>
+             
             <MoreVertIcon />
-          </IconButton>
-          {deleteOptionId === params.row.id && (
-            <span
+            </IconButton>
+          </Tooltip>
+          <Popover
+            open={Boolean(anchorEl) && deleteOptionId === params.row.id}
+            anchorEl={anchorEl}
+            onClose={handleClosePopover}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+          >
+            <Typography
+              sx={{ p: 2, cursor: "pointer", color: "black" }}
               onClick={() => handleDelete(params.row.id)}
-              style={{ cursor: "pointer", marginLeft: 10, color: "red" }}
             >
+              <DeleteOutlineIcon/>
               Delete
-            </span>
-          )}
+            </Typography>
+          </Popover>
         </>
       ),
     },
   ];
 
   return (
-    <div style={{ height: 525, width: "100%", background: "white" }}>
+    <div style={{ height: 675, width: "100%", background: "white", paddingBottom: "80px" }}>
       <DataGrid
-        rows={rows}
+        rows={filteredSurvey}
         columns={columns}
         pagination
         pageSize={10}
-        rowsPerPageOptions={[5, 10, 15, 20, 50, 100]}
+        pageSizeOptions={[5, 10, 15, 20, 25, 30, 50, 100, 150]}
         loading={loading}
         className="custom-data-grid"
+        sx={{
+          "& .MuiDataGrid-cell:focus": {
+            outline: "none",
+          },
+          "& .MuiDataGrid-cell:focus-within": {
+            outline: "none",
+          },
+        }}
       />
 
       <EditSurveyDialogBox
@@ -260,6 +336,12 @@ const DataTable: React.FC<DataTableProps> = ({
         onClose={closeStatusDialog}
         onAgree={agreeStatusChange}
         status={currentStatus}
+      />
+
+      <AlertDialogConfirmationDeleteSurvey
+        open={deleteConfirmDialogOpen}
+        onClose={closeDeleteConfirmDialog}
+        onAgree={confirmDelete}
       />
     </div>
   );

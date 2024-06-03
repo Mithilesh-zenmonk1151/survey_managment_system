@@ -59,6 +59,8 @@ export default function InsideSurveyTabTab({
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [pendingStatus, setPendingStatus] = React.useState(survey.is_published);
   const dispatch = useAppDispatch();
+  const [selectedModality, setSelectedModality] = React.useState(survey?.options?.modality);
+  const [selectedLanguage, setSelectedLanguage] = React.useState(survey?.options?.languages);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -130,6 +132,23 @@ export default function InsideSurveyTabTab({
       console.error("Failed to fetch questions:", error);
     }
   };
+  const handleUpdateSurveyInfo = async (updatedInfo: any) => {
+    const updatedSurvey = {
+      id: survey.id,
+      options: {
+        modality: selectedModality,
+        languages: selectedLanguage
+      }
+    };
+    try {
+      // await dispatch(update_survey(updatedSurvey));
+      toast.success("Survey Information Updated Successfully");
+    } catch (error) {
+      console.error("Failed to update survey information:", error);
+      // Handle error state if needed
+    }
+  };
+ 
 
   return (
     <Box sx={{ width: "100%", bgcolor: "white" }}>
@@ -137,7 +156,8 @@ export default function InsideSurveyTabTab({
         sx={{
           display: "flex",
           justifyContent: "space-between",
-          padding: "30px",
+          paddingTop: "30px",
+          paddingBottom: "30px",
         }}
       >
         <Typography sx={{ fontSize: "20px", fontWeight: "500" }}>
@@ -170,8 +190,9 @@ export default function InsideSurveyTabTab({
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
-          <SurveyInformation survey={survey} />
-        </CustomTabPanel>
+        <SurveyInformation
+  survey={survey}
+/>        </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
           <QuestionTab survey={survey} />
         </CustomTabPanel>

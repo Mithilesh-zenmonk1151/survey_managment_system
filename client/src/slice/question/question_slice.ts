@@ -5,8 +5,8 @@ type initialStateProps = {
   isLoading: boolean;
   isLoggedIn: boolean;
   content: any;
-  pageNumber:number;
-  pageLimit:number;
+  page_number:number;
+  page_limit:number;
 
   error: Object | null;
 };
@@ -25,8 +25,8 @@ const initialState: initialStateProps = {
       active: false,
     },
   },
-  pageNumber: 1,
-  pageLimit: 10,
+  page_number: 1,
+  page_limit: 10,
 };
 
 export const question_slice = createSlice({

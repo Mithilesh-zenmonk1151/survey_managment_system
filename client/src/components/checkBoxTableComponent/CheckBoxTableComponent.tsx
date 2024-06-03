@@ -266,7 +266,6 @@ export default function EnhancedTable({ survey,onSelectedQuestions}: InfoSurvey)
         const respo: Question[] = data?.payload?.response;
         setStateRows(respo);
 
-        toast.success("Get success");
       } catch (error) {
         console.error("Error fetching data:", error);
       }

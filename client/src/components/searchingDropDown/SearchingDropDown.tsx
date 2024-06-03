@@ -73,7 +73,7 @@ export default function SearchingDropDown(props: DropDownForEditSurveyProps) {
           sx={{
             bgcolor: "#f5f5f5",
             width: "fit-content",
-            height: "32px",
+            height: "38px",
             border: "none",
             borderRadius: "40px",
             '& .MuiOutlinedInput-root': {

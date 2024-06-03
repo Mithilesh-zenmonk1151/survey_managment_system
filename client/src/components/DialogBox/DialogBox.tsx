@@ -40,6 +40,7 @@ const DialogBox: React.FC = () => {
   const questionTypes = useAppSelector(
     (state) => state.question_type?.content?.response || []
   );
+  const questionError = useAppSelector((state) => state.questions?.error?.message);
 
   useEffect(() => {
     dispatch(get_question_type());
@@ -57,22 +58,94 @@ const DialogBox: React.FC = () => {
     const question = {
       description,
       abbr,
-      active: false,
+      active: true,
       question_type_id: parseInt(selectedQuestionTypeId),
     };
 
     try {
-      await dispatch(create_question(question));
+      await dispatch(create_question(question)).unwrap(); // Unwraps the result for error handling
+
+      if (!questionError) {
+        const CustomToast = () => {
+          const handleCloseToast = () => {
+            toast.dismiss();
+          };
+
+          return (
+            <div
+              className="custom-toast"
+              style={{
+                background: "#4d9f49",
+                color: "#ffffff",
+                transition: "all 0.5s ease",
+                height: "50px",
+                width: "300px",
+                alignItems: "center",
+                padding: "10px",
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <p>Question Created Successfully</p>
+              <CloseIcon
+                sx={{ cursor: "pointer" }}
+                onClick={handleCloseToast}
+              />
+            </div>
+          );
+        };
+
+        toast.custom(() => <CustomToast />);
+      } else {
+        const CustomToast = () => {
+          const handleCloseToast = () => {
+            toast.dismiss();
+          };
+
+          return (
+            <div
+              className="custom-toast"
+              style={{
+                background: "#4d9f49",
+                color: "#ffffff",
+                transition: "all 0.5s ease",
+                height: "50px",
+                width: "300px",
+                alignItems: "center",
+                padding: "10px",
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <p>{questionError || "Question cannot be created"}</p>
+              <CloseIcon
+                sx={{ cursor: "pointer" }}
+                onClick={handleCloseToast}
+              />
+            </div>
+          );
+        };
+
+        toast.custom(() => <CustomToast />);
+      }
+
+      dispatch(get_question());
+      setDescription("");
+      setSelectedQuestionTypeId("");
+      setAbbr("");
+      setOpen(false);
+    } catch (error) {
+      console.error("Error creating question:", error);
       const CustomToast = () => {
         const handleCloseToast = () => {
-          toast.dismiss(); 
+          toast.dismiss();
         };
 
         return (
           <div
             className="custom-toast"
             style={{
-              background: "#4d9f49",
+              background: "red",
               color: "#ffffff",
               transition: "all 0.5s ease",
               height: "50px",
@@ -83,21 +156,16 @@ const DialogBox: React.FC = () => {
               justifyContent: "space-between",
             }}
           >
-            <p>Question Created Successfully</p>
-            <CloseIcon sx={{
-              cursor:"pointer"
-            }} onClick={handleCloseToast} />
+            <p>{questionError || "Question cannot be created"}</p>
+            <CloseIcon
+              sx={{ cursor: "pointer" }}
+              onClick={handleCloseToast}
+            />
           </div>
         );
       };
-      toast.custom(() => <CustomToast />);      dispatch(get_question());
-      setDescription("");
-      setSelectedQuestionTypeId("");
-      setAbbr("");
-      setOpen(false);
-    } catch (error) {
-      console.error("Error creating question:", error);
-      toast.error("Failed to create question");
+
+      toast.custom(() => <CustomToast />);
     }
   };
 
@@ -130,7 +198,6 @@ const DialogBox: React.FC = () => {
             }}
             onClick={handleClose}
           >
-            <CloseIcon />
           </IconButton>
         </DialogTitle>
         <DialogContent>

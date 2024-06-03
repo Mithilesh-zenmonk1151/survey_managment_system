@@ -21,8 +21,8 @@ export default function SearchbarCompo(props: SearchProp) {
       sx={{
         display: "flex",
         alignItems: "center",
-        width: 250,
-        height: 35,
+        width: "330px",
+        height: "50px",
         bgcolor: "#fff",
         borderBottom: "white",
         boxShadow: "none",

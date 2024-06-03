@@ -25,6 +25,28 @@ export const create_question = createAsyncThunk(
   }
 );
 
+interface FetchQuestionsParams {
+  page_number: number;
+  limit: number;
+}
+
+// export const get_question = createAsyncThunk(
+//   'questions/get_question',
+//   async ({ page_number , limit }: FetchQuestionsParams, { rejectWithValue }) => {
+//     try {
+//       const response = await axios.get('http://localhost:4000/api/questions', {
+//         params: {
+//           page_number,
+//           limit,
+//         },
+//       });
+//       return response.data;
+//     } catch (error: any) {
+//       return rejectWithValue(error.response.data);
+//     }
+//   }
+// );
+
 export const get_question = createAsyncThunk(
   get_question_type,
   async (_, { rejectWithValue }) => {
@@ -44,6 +66,7 @@ export const update_question = createAsyncThunk(
       try {
           const response = await put_question_service( question);
           const data = response;
+          console.log("$^%^%^%%^RRRRRREAS",response);
           return data;
       } catch (err:any) {
           console.log(err?.response?.data?.error);
@@ -116,7 +139,7 @@ export const delete_question = createAsyncThunk(
       const response = await axios.delete(
         `http://localhost:4000/api/question/${question_id}`
       );
-      return {  question_id };
+      return response ;
     } catch (err: any) {
       console.error("Error in deleting question of survey");
       return rejectWithValue(err.response.data);

@@ -153,6 +153,8 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
         </Box>
         <Box sx={{ width: "50%" }}>
           <Typography sx={{ fontSize: "20px", fontWeight: "500" }}>Dates</Typography>
+          
+          
           <Box sx={{ bgcolor: "#fafafa", border: "1px solid #e0e0e0", width: "85%", padding: 2 }}>
             <OppositeContentTimeline survey={survey} />
           </Box>
