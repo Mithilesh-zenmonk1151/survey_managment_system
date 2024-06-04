@@ -105,8 +105,9 @@ exports.partialy_delete = async (payload) => {
         400
       );
     }
+    const deleted_at=new Date();
     const delete_question = await question.update(
-      { active: false },
+      { active: false, deleted_at:deleted_at },
       {
         where: { id: question_id },
       }
@@ -252,6 +253,7 @@ exports.get_question_of_survey = async (payload) => {
     if (!survey_id) {
       throw new CustomError("errroroor", 400);
     }
+    console.log("jfjdgifdfdk",survey_id)
 
     const question_ids_in_table = await survey_data.map(
       (survey_question) => survey_question.question_id
@@ -259,10 +261,12 @@ exports.get_question_of_survey = async (payload) => {
     const all_question_ids = await question.findAll({
       attributes: ["id"],
     });
+    // const questions_descriptions= await survey_question.findAll({where:{survey_id:survey_id}});
     const questions = await question.findAll({
       where: {
         id: question_ids_in_table,
       },
+
     });
 
     return questions;

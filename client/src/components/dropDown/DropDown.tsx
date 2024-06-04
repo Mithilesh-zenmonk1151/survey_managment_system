@@ -22,13 +22,15 @@ export default function DropDown(props: DropDownProps) {
   };
 
   return (
-    <FormControl className={customClassDrop} sx={{ width: "400px", }}>
-      <InputLabel>{select_type}</InputLabel>
+    <FormControl className={customClassDrop} size="small" sx={{ width: "90%", borderRadius: "80px" }}>
+      <InputLabel id={`${select_type}-label`}>{select_type}</InputLabel>
       <Select
-       labelId={`${select_type}-label`}
-       id={`${select_type}-dropdown`}
+        labelId={`${select_type}-label`}
+        id={`${select_type}-dropdown`}
         value={value || ""}
         onChange={handleChange}
+        label={select_type}
+        sx={{ borderRadius: "8px" }}
       >
         <MenuItem value="">
           <em>{select_type}</em>

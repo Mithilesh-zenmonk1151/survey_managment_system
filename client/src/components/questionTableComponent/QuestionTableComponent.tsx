@@ -191,7 +191,7 @@ const DataTable: React.FC<DataTableProps> = ({ searchTerm, selectedType, checkSe
         pageSize={10}
         loading={loading}
         sortingOrder={["desc", "asc"]}
-        pageSizeOptions={[5, 10, 15, 20, 25, 30, 50, 100, 150]}
+        pageSizeOptions={[5,10, 25,50,100]}
         sortModel={[
           {
             field: "id",

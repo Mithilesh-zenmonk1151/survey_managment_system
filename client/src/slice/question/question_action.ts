@@ -90,6 +90,7 @@ export const get_question_of_survey = createAsyncThunk(
   'survey/getQuestionOfSurvey',
   async (survey_id: number , { rejectWithValue }) => {
     try {
+      console.log("SurveyIDDDDD",survey_id)
       const response= await axios.get(
         `http://localhost:4000/api/question/question_of_survey/${survey_id}`
       );

@@ -171,11 +171,20 @@ const DialogBox: React.FC = () => {
 
   return (
     <>
+      
       <Button
-        variant="outlined"
         sx={{
-          bgcolor: "#153b6b",
+          bgcolor: "#1c5091",
           color: "white",
+          width: "83px",
+          height: "36px",
+          fontSize: "12px",
+          '&:hover': {
+            bgcolor: "#1c5091", 
+          },
+          '&:active': {
+            bgcolor: "#1c5091",
+          },
         }}
         onClick={handleClickOpen}
       >
@@ -185,8 +194,9 @@ const DialogBox: React.FC = () => {
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
         open={open}
+        
       >
-        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+        <DialogTitle sx={{ m: 0, p: 2 ,width:"490px",fontWeight:"500",fontSize:"22px"}} id="customized-dialog-title">
           Create Question
           <IconButton
             aria-label="close"
@@ -201,12 +211,12 @@ const DialogBox: React.FC = () => {
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <Box
               sx={{
                 display: "flex",
-                justifyContent: "space-between",
-                gap: "30px",
+                gap: "16px",
+                marginTop:"10px"
               }}
             >
               <DropDown
@@ -216,23 +226,40 @@ const DialogBox: React.FC = () => {
                 onChange={setSelectedQuestionTypeId}
               />
               <TextField
-                placeholder="Abbreviation"
-                value={abbr}
-                onChange={(e) => setAbbr(e.target.value)}
-              />
+              required
+          placeholder="Abbreviation"
+          value={abbr}
+          onChange={(e) => setAbbr(e.target.value)}
+          sx={{
+            width: "100%",
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '8px',
+              height: '40px', // Adjust the height to match the Dropdown height
+              '& fieldset': {
+                borderRadius: '8px',
+              },
+            },
+            '& .MuiOutlinedInput-input': {
+              padding: '10px 14px', // Adjust padding to fit the height
+            },
+          }}
+        />
             </Box>
             <Textarea
               minRows={2}
               maxRows={50}
-              sx={{ width: "350px" }}
+              sx={{ width: "100%",height:"105px" }}
               placeholder="Question"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              required
             />
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button sx={{
+            color:"black"
+          }} onClick={handleClose}>Cancel</Button>
           <Button onClick={handleCreateQuestion}>Create</Button>
         </DialogActions>
       </BootstrapDialog>

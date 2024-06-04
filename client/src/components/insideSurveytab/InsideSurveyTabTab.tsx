@@ -12,6 +12,7 @@ import { get_question_of_survey } from "@/slice/question/question_action";
 import AlertDialog from "../confirmationnDialogBox/ConfirmationDialogBox";
 import CloseIcon from "@mui/icons-material/Close";
 import toast from "react-hot-toast";
+import PreviewDialogBox from "../previewDialogBox/PreviewDialogBox";
 // import AlertDialog from '';
 
 interface TabPanelProps {
@@ -170,7 +171,8 @@ export default function InsideSurveyTabTab({
           />
           <Typography>PUBLISH SURVEY</Typography>
           <Box sx={{ display: "flex", gap: "10px" }}>
-            <Button variant="outlined">Preview</Button>
+            <PreviewDialogBox survey={survey}/>
+           
             <Button variant="outlined" onClick={handleOnClickSave}>
               Save
             </Button>

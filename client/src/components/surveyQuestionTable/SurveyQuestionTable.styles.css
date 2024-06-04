@@ -1,3 +1,8 @@
-.MuiDataGrid-columnHeaders{
-    width: unset !important
-}
+/* .MuiDataGrid-columnHeader{
+    width: unset !important;
+    background-color: red !important;
+} */
+.css-yrdy0g-MuiDataGrid-columnHeaderRow{
+    background-color: #efefef !important;
+  }
+  

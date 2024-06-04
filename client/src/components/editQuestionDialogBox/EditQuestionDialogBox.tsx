@@ -60,8 +60,7 @@ const EditQuestionDialogBox: React.FC<EditQuestionDialogBoxProps> = ({
     if (question) {
       set_description(question.name);
       set_abbr(question.abbreviation);
-      // Assuming you have a way to get question type ID from question
-      // set_selected_question_type_id(question.question_type_id.toString());
+     
     }
   }, [question]);
 
@@ -153,7 +152,6 @@ const EditQuestionDialogBox: React.FC<EditQuestionDialogBoxProps> = ({
           }}
           onClick={onClose}
         >
-          <CloseIcon />
         </IconButton>
       </DialogTitle>
       <DialogContent>
@@ -166,19 +164,30 @@ const EditQuestionDialogBox: React.FC<EditQuestionDialogBoxProps> = ({
             }}
           >
             <TextField
-              placeholder="Question Type"
-              value={question?.type}
-              disabled
-            />
-            <TextField
-              value={question?.abbreviation}
-              disabled
-            />
+  placeholder="Question Type"
+  value={question?.type}
+  disabled
+  InputLabelProps={{
+    shrink: !!question?.type
+  }}
+  variant="outlined"
+/>
+
+<TextField
+  value={question?.abbreviation}
+  disabled
+  placeholder="Abbreviation"
+  InputLabelProps={{
+    shrink: !!question?.abbreviation 
+  }}
+  variant="outlined"
+/>
+
           </Box>
           <Textarea
             minRows={2}
             maxRows={50}
-            sx={{ width: "350px" }}
+            sx={{ width: "100%" }}
             placeholder="Question"
             value={description}
             onChange={(e) => set_description(e.target.value)}
@@ -186,8 +195,14 @@ const EditQuestionDialogBox: React.FC<EditQuestionDialogBoxProps> = ({
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={handleSave}>Update</Button>
+        <Button onClick={onClose} sx={{
+          color:"black",
+          fontWeight:"600",
+          
+        }}>Cancel</Button>
+        <Button onClick={handleSave} sx={{
+           fontWeight:"600",
+        }}>Update</Button>
       </DialogActions>
     </BootstrapDialog>
   );

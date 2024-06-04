@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Typography, Switch, Stack } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -39,10 +39,7 @@ const QuestionTab: React.FC<SurveyInfoProps> = ({ survey }) => {
   const [selectedQuestions, setSelectedQuestions] = useState<Question[]>([]);
   
 const  dispatch=useAppDispatch();
-// Define a callback function to receive the selected question IDs
-const handleSelectedQuestions = (selected:  Question[]) => {
-  setSelectedQuestions(selected);
-};
+
 const survey_id= survey?.id;
 
   const question_type = useAppSelector((state) => state.question_type?.content?.response) || [];
@@ -58,7 +55,27 @@ const survey_id= survey?.id;
     dispatch(get_question_of_survey(survey_id));
     // const {reee}=await dispatch(get_question_of_survey(survey_id));
   }
+  useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const data = await dispatch(get_question_of_survey(survey_id));
+          const respo: Question[] = data?.payload?.response;
+          setSelectedQuestions(respo);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+        fetchData();
+      };
+    },[]
+    )
+    
+    const handleSelectedQuestions = (selected:  Question[]) => {
+      setSelectedQuestions(selected);
+    };
 
+  useEffect(() => {
+    dispatch(get_question_of_survey(survey_id));
+  },[dispatch])
   const {content} = useAppSelector((state) => state.questions)
 
   return (

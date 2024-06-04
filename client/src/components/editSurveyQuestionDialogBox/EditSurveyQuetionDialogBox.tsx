@@ -111,7 +111,7 @@ const EditSurveyQuestionDialogBox: React.FC<EditQuestionDialogBoxProps> = ({open
           <Textarea
             minRows={2}
             maxRows={50}
-            sx={{ width: "350px" }}
+            sx={{ width: "100%" }}
             placeholder="Question"
             value={question_description}
             onChange={(e) => set_question_description(e.target.value)}

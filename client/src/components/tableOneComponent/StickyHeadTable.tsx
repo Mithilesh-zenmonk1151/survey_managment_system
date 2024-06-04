@@ -24,6 +24,7 @@ interface DataRow {
   name: string;
   question: number;
   type: string;
+  type1: string;
   abbreviation: string;
   modified: string;
   status: boolean;
@@ -36,6 +37,7 @@ interface DataTableProps {
   searchTerm: string;
   selectedType: string;
   checkSelectedType: string;
+  is_published: string;
 }
 
 const DataTable: React.FC<DataTableProps> = ({
@@ -43,6 +45,7 @@ const DataTable: React.FC<DataTableProps> = ({
   searchTerm,
   selectedType,
   checkSelectedType,
+  is_published,
 }) => {
   const [rows, setRows] = useState<DataRow[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -85,6 +88,7 @@ const DataTable: React.FC<DataTableProps> = ({
         name: item?.name,
         question: item?.questions?.length,
         type: item?.survey_type?.abbr,
+        type1: item?.survey_type?.name,
         abbreviation: item?.abbr,
         modified: new Date(item?.updatedAt).toISOString().split("T")[0],
         status: item?.is_published,
@@ -103,14 +107,21 @@ const DataTable: React.FC<DataTableProps> = ({
 
   const filteredSurvey = rows.filter((survey) => {
     const matchesType =
-      checkSelectedType.length > 0 ? checkSelectedType.includes(survey.abbreviation) : true;
+      checkSelectedType.length > 0 ? checkSelectedType.includes(survey?.abbreviation) : true;
 
     const matchesSelectedType =
-      selectedType.length > 0 ? selectedType.includes(survey.type) : true;
+      selectedType.length > 0 ? selectedType.includes(survey?.type1) : true;
     const matchesSearch = searchTerm
-      ? survey.name.toLowerCase().includes(searchTerm.toLowerCase())
+      ? survey?.name.toLowerCase().includes(searchTerm.toLowerCase())
       : true;
-    return matchesType && matchesSearch && matchesSelectedType;
+    const matchesPublishedStatus =
+      is_published === "Published"
+        ? survey.status === true
+        : is_published === "Unpublished"
+        ? survey.status === false
+        : true;
+
+    return matchesType && matchesSearch && matchesSelectedType && matchesPublishedStatus;
   });
 
   const handleStatusChange = (id: number, status: boolean) => {
@@ -251,102 +262,104 @@ const DataTable: React.FC<DataTableProps> = ({
         <Switch
           checked={params.value as boolean}
           onChange={() => openStatusDialog(params.row.id, params.value as boolean)}
+          inputProps={{ "aria-label": "controlled" }}
         />
       ),
     },
     {
-      field: "actions",
-      headerName: "",
-      width: 200,
-      sortable: false,
+      field: "options",
+      headerName: "Options",
+      width: 130,
       renderCell: (params: GridRenderCellParams) => (
         <>
-          <Tooltip title="View Survey" sx={{fontSize:"14px"
-            
-          }}>
-            <IconButton onClick={() => handleEyeClick(params.row.id)}>
+          <Tooltip title="View">
+            <IconButton
+              onClick={() => handleEyeClick(params.row.id)}
+              size="small"
+            >
               <VisibilityIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="Edit">
-            <IconButton onClick={() => handleEdit(params.row)}>
+            <IconButton
+              onClick={() => handleEdit(params.row)}
+              size="small"
+            >
               <EditIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="More ">
-            <IconButton onClick={(event) => handleMoreOptionsClick(event, params.row.id)}>
-             
-            <MoreVertIcon />
+          <Tooltip title="More options">
+            <IconButton
+              onClick={(event) => handleMoreOptionsClick(event, params.row.id)}
+              size="small"
+            >
+              <MoreVertIcon />
             </IconButton>
           </Tooltip>
-          <Popover
-            open={Boolean(anchorEl) && deleteOptionId === params.row.id}
-            anchorEl={anchorEl}
-            onClose={handleClosePopover}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "left",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "left",
-            }}
-          >
-            <Typography
-              sx={{ p: 2, cursor: "pointer", color: "black" }}
-              onClick={() => handleDelete(params.row.id)}
-            >
-              <DeleteOutlineIcon/>
-              Delete
-            </Typography>
-          </Popover>
         </>
       ),
     },
   ];
 
   return (
-    <div style={{ height: 675, width: "100%", background: "white", paddingBottom: "80px" }}>
-      <DataGrid
-        rows={filteredSurvey}
-        columns={columns}
-        pagination
-        pageSize={10}
-        pageSizeOptions={[5, 10, 15, 20, 25, 30, 50, 100, 150]}
-        loading={loading}
-        className="custom-data-grid"
-        sx={{
-          "& .MuiDataGrid-cell:focus": {
-            outline: "none",
-          },
-          "& .MuiDataGrid-cell:focus-within": {
-            outline: "none",
-          },
-        }}
-      />
-
+    <div style={{ height: 600, width: "100%" }}>
+      <DataGrid rows={filteredSurvey} columns={columns} pageSize={10} loading={loading} />
       <EditSurveyDialogBox
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
-        question={selectedQuestion}
+        survey={selectedQuestion}
+        setRows={setRows}
       />
-
       <AlertDialog
         open={statusDialogOpen}
         onClose={closeStatusDialog}
         onAgree={agreeStatusChange}
-        status={currentStatus}
+        message="Are you sure you want to change the status?"
       />
-
+      <Popover
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={handleClosePopover}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+      >
+        <Typography sx={{ p: 2 }} onClick={() => handleDelete(deleteOptionId!)}>
+          <IconButton>
+            <DeleteOutlineIcon /> Delete
+          </IconButton>
+        </Typography>
+      </Popover>
       <AlertDialogConfirmationDeleteSurvey
         open={deleteConfirmDialogOpen}
         onClose={closeDeleteConfirmDialog}
         onAgree={confirmDelete}
+
         modelHeading="Delete Survey"
-        modelBody="Are you sure you want to delete this survey?"
-      />
+        modelBody="Are you sure you want to delete this survey?"      />
     </div>
   );
 };
 
 export default DataTable;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

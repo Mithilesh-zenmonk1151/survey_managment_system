@@ -63,20 +63,26 @@ exports.create_survey_question = async (payload) => {
 };
 exports.update_survey_question = async (payload) => {
   try {
-    const { question_id,survey_id, question_description } = payload.body;
-    console.log("PAyloadBoooodyyy$$$$$$$$$$$$$$$$$$$$$$",payload.body,question_id,survey_id)
-    if (!question_id) {
+    const { question_id, survey_id, question_description } = payload.body;
+    console.log(
+      "PAyloadBoooodyyy$$$$$$$$$$$$$$$$$$$$$$",
+      payload.body,
+      question_id,
+      survey_id,
+      question_description
+    );
+    if (!question_id || !survey_id) {
       throw new CustomError("Survey question not found", 404);
     }
 
     const updated_survey_question = await survey_question.update(
       {
-        question_description:question_description
+        question_description: question_description,
       },
-      { where: { question_id: question_id,survey_id:survey_id } },
+      { where: { question_id: question_id, survey_id: survey_id } },
       { new: true }
     );
-    console.log("Updated@@@@@@@@@",updated_survey_question);
+    console.log("Updated@@@@@@@@@", updated_survey_question);
     return updated_survey_question;
   } catch (error) {
     throw error;
@@ -84,10 +90,10 @@ exports.update_survey_question = async (payload) => {
 };
 exports.delete_survey_question = async (payload) => {
   try {
-    const { question_id,survey_id } = payload.params;
-    console.log("PAYYYLOAD",payload.params)
+    const { question_id, survey_id } = payload.params;
+    console.log("PAYYYLOAD", payload.params);
     const deleted_survey_question = await survey_question.destroy({
-      where: { question_id:question_id, survey_id:survey_id },
+      where: { question_id: question_id, survey_id: survey_id },
     });
     return deleted_survey_question;
   } catch (error) {

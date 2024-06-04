@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Tabs, Tab, Box, Button, Switch, Typography, IconButton } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import { useRouter } from "next/navigation";
-import DataTable from "../tableOneComponent/StickyHeadTable";
+import DataTable from "../tableOneComponent/StickyHeadTable"; // Adjust import path if necessary
 import SearchbarCompo from "../searchBar/SearchBarCompo";
 import SearchingDropDown from "../searchingDropDown/SearchingDropDown";
 import CheckBoxDropDown from "../checkBoxDropDown/CheckBoxDropDown";
@@ -14,42 +14,39 @@ interface TabContent {
   content: JSX.Element;
 }
 
-const names = [
-  { name: 'Oliver Hansen' },
-  { name: 'Oliver Hansen' },
-  { name: 'Oliver Hansen' },
-  { name: 'Oliver Hansen' },
-  { name: 'Oliver Hansen' },
-  { name: 'Oliver Hansen' },
-];
-
 const MyTabsComponent = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("");
-  const router = useRouter();
   const [checkSelectedType, setCheckSelectedType] = useState("");
-
+  const [selectedPublishedType, setSelectedPublishedType] = useState("");
   const [additionalTabs, setAdditionalTabs] = useState<TabContent[]>([]);
   const [value, setValue] = useState(0);
+  const router = useRouter();
+
   const survey_type = useAppSelector((state) => state.survey_type?.content?.response) || [];
-  const abbr = useAppSelector((state) => state.survey?.content?.response?.data?.rows);
+  const abbr = useAppSelector((state) => state.survey?.content?.response?.data?.rows) || [];
 
   const handleAddTab = (newTab: TabContent) => {
     setAdditionalTabs((prevTabs) => {
       const isDuplicate = prevTabs.some((tab) => tab.id === newTab.id);
       if (isDuplicate) {
-        return prevTabs; 
+        return prevTabs;
       }
 
       const updatedTabs = [...prevTabs, newTab];
       if (updatedTabs.length > 3) {
-        updatedTabs.shift(); 
+        updatedTabs.shift();
       }
-      setValue(updatedTabs.length); 
+      setValue(updatedTabs.length);
       router.push(`?${newTab.id}`);
       return updatedTabs;
     });
   };
+
+  const status = [
+    { name: 'Published' },
+    { name: 'Unpublished' },
+  ];
 
   const handleRemoveTab = (index: number) => {
     setAdditionalTabs((prevTabs) => {
@@ -63,7 +60,13 @@ const MyTabsComponent = () => {
     {
       id: "main",
       label: "Surveys",
-      content: <DataTable onAddTab={handleAddTab} checkSelectedType={checkSelectedType} searchTerm={searchTerm} selectedType={selectedType} />,
+      content: <DataTable
+        onAddTab={handleAddTab}
+        checkSelectedType={checkSelectedType}
+        searchTerm={searchTerm}
+        selectedType={selectedType}
+        is_published={selectedPublishedType}
+      />,
     },
     ...additionalTabs,
   ];
@@ -77,16 +80,37 @@ const MyTabsComponent = () => {
     setSearchTerm("");
     setSelectedType("");
     setCheckSelectedType("");
+    setSelectedPublishedType("");
   };
 
   return (
-    <Box sx={{}}>
-      <Tabs value={value} onChange={handleChange} sx={{ bgcolor: "white", fontSize: "50px", display: "flex", gap: "20px", fontFamily: "Poppins",fontWeight:"800" }}>
+    <Box>
+      <Tabs
+        value={value}
+        onChange={handleChange}
+        sx={{
+          bgcolor: "white",
+          fontSize: "50px",
+          display: "flex",
+          gap: "20px",
+          fontFamily: "Poppins",
+          fontWeight: "800",
+        }}
+      >
         {tabs.map((tab, index) => (
           <Tab
             key={tab.id}
             label={
-              <Box sx={{ display: 'flex', alignItems: 'center' ,fontSize:"17px", paddingLeft:"20px",fontWeight:"900",fontFamily:"Poppins"}}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  fontSize: "17px",
+                  paddingLeft: "20px",
+                  fontWeight: "900",
+                  fontFamily: "Poppins",
+                }}
+              >
                 {tab.label}
                 {tab.id !== "main" && (
                   <IconButton
@@ -94,9 +118,6 @@ const MyTabsComponent = () => {
                     onClick={(e) => {
                       e.stopPropagation();
                       handleRemoveTab(index - 1);
-                    }}
-                    sx={{
-
                     }}
                   >
                     <CloseIcon fontSize="small" />
@@ -112,11 +133,34 @@ const MyTabsComponent = () => {
       <Box sx={{ bgcolor: "white" }}>
         {value === 0 && (
           <Box sx={{ display: "flex", justifyContent: "space-between", padding: "24px" }}>
-            <Box sx={{ display: "flex", alignItems: "center",paddingLeft:"20px" }}>
-              <SearchbarCompo customPlaceHolder="Search......" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-              <SearchingDropDown select_type="" value={selectedType} onChange={(value) => setSelectedType(value)} options={survey_type} em="Type" em_name="Type" />
-              <CheckBoxDropDown select_type="abbriviation" options={abbr} em_name="Abbriviation" em="Abbriviation" onChange={(value) => setCheckSelectedType(value)} />
-              <SearchingDropDown options={names} em="Status" em_name="Status" />
+            <Box sx={{ display: "flex", alignItems: "center", paddingLeft: "20px" }}>
+              <SearchbarCompo
+                customPlaceHolder="Search......"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <SearchingDropDown
+                select_type=""
+                value={selectedType}
+                onChange={(value) => setSelectedType(value)}
+                options={survey_type}
+                em="Type"
+                em_name="Type"
+              />
+              <CheckBoxDropDown
+                select_type="abbreviation"
+                options={abbr}
+                em_name="Abbreviation"
+                em="Abbreviation"
+                onChange={(value) => setCheckSelectedType(value)}
+              />
+              <SearchingDropDown
+                select_type=""
+                onChange={(value) => setSelectedPublishedType(value)}
+                options={status}
+                em="Status"
+                em_name="Status"
+              />
               <Button onClick={handleOnClearClick}>Clear</Button>
             </Box>
             <Box sx={{ display: "flex", alignContent: "center", alignItems: "center", textAlign: "center" }}>
@@ -133,9 +177,7 @@ const MyTabsComponent = () => {
             hidden={value !== index}
             id={`simple-tabpanel-${index}`}
             aria-labelledby={`simple-tab-${index}`}
-            sx={{
-              marginLeft: "50px"
-            }}
+            sx={{ marginLeft: "50px" }}
           >
             {value === index && <Box>{tab.content}</Box>}
           </Box>

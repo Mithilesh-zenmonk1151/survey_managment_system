@@ -8,6 +8,9 @@ import {
   IconButton,
   Box,
   TextField,
+  FormControlLabel,
+  Switch,
+  Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import DropDown from "../dropDown/DropDown";
@@ -24,6 +27,7 @@ const DialogBoxSurvey: React.FC = () => {
   const [modality, setModality] = useState("");
   const [languages, setLanguages] = useState("");
   const [abbr, setAbbr] = useState("");
+  const [mandatory, setMandatory] = useState(false);
   const dispatch = useAppDispatch();
 
   const surveyTypes = useAppSelector(
@@ -49,6 +53,7 @@ const DialogBoxSurvey: React.FC = () => {
       abbr,
       options: { modality, languages },
       survey_type_id: parseInt(selectedSurveyTypeId),
+      mandatory,
     };
 
     try {
@@ -109,13 +114,18 @@ const DialogBoxSurvey: React.FC = () => {
   return (
     <>
       <Button
-        variant="outlined"
         sx={{
           bgcolor: "#1c5091",
           color: "white",
           width: "83px",
           height: "36px",
           fontSize: "12px",
+          '&:hover': {
+            bgcolor: "#1c5091", // Keep the same background color on hover
+          },
+          '&:active': {
+            bgcolor: "#1c5091", // Keep the same background color on click
+          },
         }}
         onClick={handleClickOpen}
       >
@@ -125,8 +135,16 @@ const DialogBoxSurvey: React.FC = () => {
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
         open={open}
+        maxWidth="sm"
+        fullWidth
+        sx={{
+          "& .MuiDialog-paper": {
+            width: "500px",
+            height: "360px",
+          },
+        }}
       >
-        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+        <DialogTitle sx={{ m: 0, paddingBottom:"0px" ,fontWeight:"500",fontSize:"21px",color:"#5A5A5A"}} id="customized-dialog-title">
           Create Survey
           <IconButton
             aria-label="close"
@@ -140,34 +158,88 @@ const DialogBoxSurvey: React.FC = () => {
           >
           </IconButton>
         </DialogTitle>
-        <DialogContent>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
+        <DialogContent sx={{
+          paddingBottom:0,
+          
+        }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: "16px",marginBottom:"0px" }}>
             <TextField
               label="Survey Name"
-              sx={{ width: "100%" }}
+              sx={{
+                marginTop: "12px",
+                width: "100%",
+                borderRadius: "8px",
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '8px',
+                  '& fieldset': {
+                    borderRadius: '8px',
+                  },
+                },
+                '& .MuiInputLabel-root': {
+                  fontSize: '1rem',
+                  color: '#555',
+                },
+                '& .MuiOutlinedInput-input': {
+                  padding: '12px 14px',
+                },
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#ccc',
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#888',
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#3f51b5',
+                },
+              }}
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
             <Box
               sx={{
                 display: "flex",
-                justifyContent: "space-between",
-                gap: "30px",
+                gap: "20px",
               }}
             >
               <TextField
-                placeholder="Abbreviation"
+                label="Abbreviation"
+                sx={{
+                  width: "89%",
+                  borderRadius: "8px",
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '8px',
+                    '& fieldset': {
+                      borderRadius: '8px',
+                    },
+                  },
+                  '& .MuiInputLabel-root': {
+                    fontSize: '1rem',
+                    color: '#555',
+                  },
+                  '& .MuiOutlinedInput-input': {
+                    padding: '10px 14px',
+                  },
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#ccc',
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#888',
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#3f51b5',
+                  },
+                }}
                 value={abbr}
                 onChange={(e) => setAbbr(e.target.value)}
               />
               <DropDown
-                select_type="Survey Type"
-                options={surveyTypes}
                 value={selectedSurveyTypeId}
                 onChange={(value: string) => setSelectedSurveyTypeId(value)}
+                options={surveyTypes}
+                select_type="Type of Survey"
               />
             </Box>
-            <Box sx={{ display: "flex", gap: "20px" }}>
+            <Box sx={{ display: "flex", justifyContent: "space-between", gap: "20px" }}>
               <DropDownForEditSurvey
                 value={modality}
                 onChange={(value: string) => setModality(value)}
@@ -181,14 +253,34 @@ const DialogBoxSurvey: React.FC = () => {
                 select_type="Language"
               />
             </Box>
+            <Box sx={{ display: "flex", flexDirection: "column",  }}>
+              <FormControlLabel
+                control={<Switch checked={mandatory} onChange={(e) => setMandatory(e.target.checked)} />}
+                label="Mandatory"
+                sx={{
+                  padding:"0px"
+                }}
+              />
+              <Typography variant="body2" color="textSecondary" sx={{
+                marginLeft: "47px",
+                position: "relative",
+                bottom: "7px"
+              }}>
+                Toggle survey mandatory status
+              </Typography>
+            </Box>
           </Box>
         </DialogContent>
-        <DialogActions>
-          <Button autoFocus onClick={handleClose}>
-            Cancel
+        <DialogActions sx={{
+         position:"relative",
+         bottom:"24px",
+         paddingBottom:"0px"
+        }}>
+          <Button onClick={handleClose} sx={{ color: "#757575" ,fontWeight:"700",fontSize:"17px"}}>
+            CANCEL
           </Button>
-          <Button autoFocus onClick={handleCreateSurvey}>
-            Create
+          <Button onClick={handleCreateSurvey} sx={{ color: "#1c5091",fontWeight:"700",fontSize:"17px" }}>
+            CREATE
           </Button>
         </DialogActions>
       </Dialog>
