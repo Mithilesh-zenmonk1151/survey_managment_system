@@ -266,6 +266,8 @@ exports.get_question_of_survey = async (payload) => {
       where: {
         id: question_ids_in_table,
       },
+      include: [{ model: question_type, as: "question_type" }],
+
 
     });
 

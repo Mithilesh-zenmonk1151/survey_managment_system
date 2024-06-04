@@ -55,19 +55,19 @@ const survey_id= survey?.id;
     dispatch(get_question_of_survey(survey_id));
     // const {reee}=await dispatch(get_question_of_survey(survey_id));
   }
-  useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const data = await dispatch(get_question_of_survey(survey_id));
-          const respo: Question[] = data?.payload?.response;
-          setSelectedQuestions(respo);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-        fetchData();
-      };
-    },[]
-    )
+  // useEffect(() => {
+  //     const fetchData = async () => {
+  //       try {
+  //         const data = await dispatch(get_question_of_survey(survey_id));
+  //         const respo: Question[] = data?.payload?.response;
+  //         setSelectedQuestions(respo);
+  //       } catch (error) {
+  //         console.error("Error fetching data:", error);
+  //       }
+  //       fetchData();
+  //     };
+  //   },[]
+  //   )
     
     const handleSelectedQuestions = (selected:  Question[]) => {
       setSelectedQuestions(selected);

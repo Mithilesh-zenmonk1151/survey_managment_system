@@ -10,7 +10,7 @@ import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import toast from "react-hot-toast";
 import { delete_question_of_survey } from "@/slice/survey_question/survey_question_action";
 import { useAppSelector } from "@/store/hooks";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd"; // Import from react-beautiful-dnd
+// import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd"; // Import from react-beautiful-dnd
 import "./SurveyQuestionTable.styles.css";
 
 interface DataRow {
@@ -118,7 +118,7 @@ const SurveyQuestionTable: React.FC<SurveyInfo> = ({
       headerName: "",
       width: 50,
       renderCell: (params: GridRenderCellParams) => (
-        <DragIndicatorIcon {...params.dragHandleProps} />
+        <DragIndicatorIcon />
       ),
     },
     { field: "name", headerName: "Name", width: 250 },
@@ -145,7 +145,7 @@ const SurveyQuestionTable: React.FC<SurveyInfo> = ({
   ];
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
+    // <DragDropContext onDragEnd={onDragEnd}>
       <div style={{ height: 400, width: "100%" }}>
         <DataGrid
           rows={filteredQuestions}
@@ -163,7 +163,7 @@ const SurveyQuestionTable: React.FC<SurveyInfo> = ({
           />
         )}
       </div>
-    </DragDropContext>
+    // </DragDropContext>
   );
 };
 

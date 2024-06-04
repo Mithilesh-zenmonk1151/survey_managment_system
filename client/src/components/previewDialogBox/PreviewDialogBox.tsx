@@ -8,6 +8,9 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
+import PrevQuestionComponent from '../prevQuestion/PreviueQuestion';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { get_question_of_survey } from '@/slice/question/question_action';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -23,17 +26,47 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 interface SurveyInformationProps {
   survey: any;
 }
-
+interface Question {
+  id: number;
+  description: string;
+  question_type: {
+    name: string;
+    abbr:string;
+  };
+  abbr: string;
+  createdAt: string;
+}
 export default function PreviewDialogBox({ survey }: SurveyInformationProps) {
   const [open, setOpen] = React.useState(false);
+  console.log("SUUUU$$@$@$$@",survey.id)
+  const [response, setResponse] = React.useState<Question[]>([]);
+
 
   const handleClickOpen = () => {
     setOpen(true);
   };
+  const dispatch=useAppDispatch();
 
   const handleClose = () => {
     setOpen(false);
   };
+
+const survey_id=survey?.id;
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await dispatch(get_question_of_survey(survey_id));
+        console.log("DATA",data)
+        //  setResponse(respo);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+      fetchData();
+    };
+  },[dispatch,survey_id]
+  )
+  const states=useAppSelector((state)=>state.questions)
+  console.log("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR===",states);
 
   return (
     <React.Fragment>
@@ -63,44 +96,19 @@ export default function PreviewDialogBox({ survey }: SurveyInformationProps) {
         >
           <CloseIcon />
         </IconButton>
-        <DialogContent dividers>
-          <Typography gutterBottom>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-            consectetur ac, vestibulum at eros.
-          </Typography>
-          <Typography gutterBottom>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-            consectetur ac, vestibulum at eros.
-          </Typography>
-          <Typography gutterBottom>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-            consectetur ac, vestibulum at eros.
-          </Typography>
+        <DialogContent >
+
+
+
+{/* 
+        {questions.map((question) => (
+
+          <PrevQuestionComponent key={question.id} question={question}/>
           
-          <Typography gutterBottom>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-            consectetur ac, vestibulum at eros.
-          </Typography>
-          <Typography gutterBottom>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-            consectetur ac, vestibulum at eros.
-          </Typography>
-          <Typography gutterBottom>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-            consectetur ac, vestibulum at eros.
-          </Typography>
-          <Typography gutterBottom>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-            consectetur ac, vestibulum at eros.
-          </Typography>
-          {/* Add more content here */}
+        ))} 
+           */}
+          
+          
         </DialogContent>
         <DialogActions></DialogActions>
       </BootstrapDialog>
