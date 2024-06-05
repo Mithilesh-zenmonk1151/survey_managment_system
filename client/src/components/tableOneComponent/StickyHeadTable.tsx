@@ -326,12 +326,18 @@ const DataTable: React.FC<DataTableProps> = ({
         }}
         transformOrigin={{
           vertical: "top",
-          horizontal: "left",
+          horizontal: "right",
+        }}
+        sx={{
+          marginLeft:"35px"
         }}
       >
-        <Typography sx={{ p: 2 }} onClick={() => handleDelete(deleteOptionId!)}>
+        <Typography sx={{p:"7px",   }} onClick={() => handleDelete(deleteOptionId!)}>
           <IconButton>
-            <DeleteOutlineIcon /> Delete
+            <DeleteOutlineIcon /> <Typography sx={{
+              fontSize:"18px",
+              fontWeight:"400"
+            }}>Delete</Typography> 
           </IconButton>
         </Typography>
       </Popover>

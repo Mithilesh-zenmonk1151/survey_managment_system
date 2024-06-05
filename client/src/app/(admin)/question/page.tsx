@@ -1,12 +1,13 @@
 "use client"
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Button, Typography, Switch } from "@mui/material";
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import DialogBox from '@/components/DialogBox/DialogBox';
 import SearchbarCompo from '@/components/searchBar/SearchBarCompo';
 import SearchingDropDown from '@/components/searchingDropDown/SearchingDropDown';
 import QuestionTableComponent from '@/components/questionTableComponent/QuestionTableComponent';
 import CheckBoxDropDown from "@/components/checkBoxDropDown/CheckBoxDropDown";
+import { get_deleted_questions } from "@/slice/deleted_questions/deleted_questions_action";
 
 const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
@@ -15,15 +16,26 @@ const QuestionPage: React.FC = () => {
   const [selectedType, setSelectedType] = useState("");
   const [checkSelectedType,setCheckSelectedType]=useState("");
   const question_type = useAppSelector((state) => state.question_type?.content?.response) || [];
-  const abbr= useAppSelector((state)=>state.questions?.content?.response?.data?.rows);
+  const abbr= useAppSelector((state)=>state.questions?.content?.response?.data);
+  const dispatch= useAppDispatch();
+  const [showDeleted, setShowDeleted] = useState(false);
   // const abbrs: string[] = abbr?.map(item => item.abbr);
-    // console.log("AAAAAXCNHJHBJBBHJBJBNBN",abbrs)
-  console.log("***(&(***(",selectedType);
+    console.log("AAAAAXCNHJHBJBBHJBJBNBN",abbr)
+  console.log("***(&(***(",abbr);
   const clearAll=()=>{
     setSearchTerm("");
     setSelectedType("");
     setCheckSelectedType("");
   }
+  useEffect(()=>{
+    dispatch(get_deleted_questions());
+
+
+  },[dispatch])
+ 
+
+const deletedQuestions= useAppSelector((state)=>state.deleted_questions?.deletedQuestions?.response?.data);
+console.log("stateess",deletedQuestions);
 
   return (
     <Box>
@@ -56,11 +68,15 @@ const QuestionPage: React.FC = () => {
               <Button onClick={clearAll}>Clear</Button>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Switch {...label} aria-label='Show deleted' />
+              <Switch
+                checked={showDeleted}
+                onChange={() => setShowDeleted(!showDeleted)}
+                inputProps={{ "aria-label": "Show deleted" }}
+              />
               <Typography>Show deleted</Typography>
             </Box>
           </Box>
-          <QuestionTableComponent searchTerm={searchTerm} selectedType={selectedType}  checkSelectedType={checkSelectedType} />
+          <QuestionTableComponent  showDeleted={showDeleted} searchTerm={searchTerm} selectedType={selectedType}  checkSelectedType={checkSelectedType} />
         </Box>
       </Box>
     </Box>

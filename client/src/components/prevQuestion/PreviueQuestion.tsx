@@ -6,20 +6,46 @@ interface QuestionComponentProps {
 }
 
 const PrevQuestionComponent: React.FC<QuestionComponentProps> = ({ question }) => {
+  console.log("Question Details: ", question);
+console.log("QUESTIOJN",question?.question_type?.abbr)
   const renderQuestion = () => {
-    switch (question.abbr) {
-      case 'MCQ': 
+    switch (question?.question_type?.abbr) {
+      case 'mc':
         return (
-          <RadioGroup row>
-            <FormControlLabel value="1" control={<Radio />} label="1" />
-            <FormControlLabel value="2" control={<Radio />} label="2" />
-            <FormControlLabel value="3" control={<Radio />} label="3" />
-            <FormControlLabel value="4" control={<Radio />} label="4" />
+          <RadioGroup
+            row
+            sx={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            {['1', '2', '3', '4'].map(value => (
+              <FormControlLabel
+                key={value}
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+                value={value}
+                control={<Radio />}
+                label={value}
+              />
+            ))}
           </RadioGroup>
         );
-      case 'YN': 
+      case 'Y/N':
         return (
-          <RadioGroup row>
+          <RadioGroup
+            row
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              fontFamily: 'Arial, sans-serif',
+          fontWeight: '500',
+          fontSize:"20px"
+            }}
+          >
             <FormControlLabel value="yes" control={<Radio />} label="Yes" />
             <FormControlLabel value="no" control={<Radio />} label="No" />
           </RadioGroup>
@@ -30,11 +56,43 @@ const PrevQuestionComponent: React.FC<QuestionComponentProps> = ({ question }) =
   };
 
   return (
-    <Box sx={{ border: '1px solid #e0e0e0', borderRadius: '8px', padding: '16px', marginBottom: '16px' }}>
-      <Typography variant="body1" gutterBottom>
+    <Box
+      sx={{
+        border: '1px solid #e0e0e0',
+        borderRadius: '8px',
+        padding: '16px',
+        marginBottom: '16px',
+        width: "100%",
+        height: "196px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-around",
+        gap: "20px",
+        fontFamily: 'Arial, sans-serif',
+        fontWeight: 'bold',
+      }}
+    >
+      <Typography
+        variant="body1"
+        gutterBottom
+        sx={{
+          fontFamily: 'Arial, sans-serif',
+        fontWeight: '500',
+        fontSize:"20px"
+          
+        }}
+      >
         {question.description} - {question.abbr}
       </Typography>
-      {renderQuestion()}
+      <Box sx={{
+        fontFamily: 'Arial, sans-serif',
+        fontWeight: '500',
+        fontSize:"20px"
+      }}>
+              {renderQuestion()}
+
+
+      </Box>
     </Box>
   );
 };

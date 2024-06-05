@@ -57,6 +57,7 @@ export default function CheckBoxDropDown(props: CheckBoxDropDownProps) {
     setPersonName(newValue);
     onChange(newValue);
   };
+  console.log("OPTIONSSS",options);
 
   return (
     <div>

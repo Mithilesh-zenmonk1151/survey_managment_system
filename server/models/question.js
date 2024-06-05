@@ -21,10 +21,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey:"question_type_id",
         as:"question_type",
       });
-      question.hasMany(models.survey_question, {
+     question.hasOne(models.survey_question, {
         foreignKey: 'question_id',
-        onDelete: 'CASCADE'
+        as: 'survey_ques',
       });
+      
 
     }
   }

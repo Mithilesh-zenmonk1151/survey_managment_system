@@ -57,17 +57,17 @@ export const question_slice = createSlice({
       state.isLoading = false;
       state.error = action.error;
     });
-    // builder.addCase(get_question_of_survey.pending, (state) => {
-    //   state.isLoading = true;
-    // });
-    // builder.addCase(get_question_of_survey.fulfilled, (state, action) => {
-    //   state.isLoading = false;
-    //   state.content = action.payload;
-    // });
-    // builder.addCase(get_question_of_survey.rejected, (state, action) => {
-    //   state.isLoading = false;
-    //   state.error = action.error;
-    // });
+    builder.addCase(get_question_of_survey.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(get_question_of_survey.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.content = action.payload;
+    });
+    builder.addCase(get_question_of_survey.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error;
+    });
     builder.addCase(create_question.pending, (state) => {
       state.isLoading = true;
     });

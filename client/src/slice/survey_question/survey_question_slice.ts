@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { create_survey_question } from "./survey_question_action";
+import { create_survey_question, get_question_of_survey } from "./survey_question_action";
 
 type initialStateProps = {
   isLoading: boolean;
@@ -34,7 +34,7 @@ const initialState: initialStateProps = {
 };
 
 export const survey_question_slice = createSlice({
-  name: "question",
+  name: "survey_question",
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -74,6 +74,17 @@ export const survey_question_slice = createSlice({
     //   state.isLoading = false;
     //   state.error = action.error;
     // });
+    builder.addCase(get_question_of_survey.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(get_question_of_survey.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.content = action.payload;
+    });
+    builder.addCase(get_question_of_survey.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error;
+    });
   },
 });
 

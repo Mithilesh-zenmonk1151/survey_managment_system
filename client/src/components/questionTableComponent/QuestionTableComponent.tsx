@@ -11,21 +11,25 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
 import Tooltip from "@mui/material/Tooltip";
+import { format } from "date-fns";
+import "./styles.css";
+import EditQuestionDialogBox from "../editQuestionDialogBox/EditQuestionDialogBox";
+import AlertDialogConfirmationDeleteSurvey from "../dialogConfirmationDelet/AlertDialogDeleteSurvey";
+import toast from "react-hot-toast";
 import {
-  delete_question,
+  delete_partial_question,
   get_question,
 } from "@/slice/question/question_action";
+import {
+  get_deleted_questions,
+} from "@/slice/deleted_questions/deleted_questions_action";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import EditQuestionDialogBox from "../editQuestionDialogBox/EditQuestionDialogBox";
-import toast from "react-hot-toast";
-import { format } from "date-fns";
-import "./styles.css"; 
-import AlertDialogConfirmationDeleteSurvey from "../dialogConfirmationDelet/AlertDialogDeleteSurvey";
 
 interface DataRow {
   id: number;
   name: string;
   type: string;
+  type1: string;
   abbreviation: string;
   modified: string;
 }
@@ -34,19 +38,34 @@ interface DataTableProps {
   searchTerm: string;
   selectedType: string;
   checkSelectedType: string;
+  showDeleted: boolean;
 }
 
-const DataTable: React.FC<DataTableProps> = ({ searchTerm, selectedType, checkSelectedType }) => {
+const DataTable: React.FC<DataTableProps> = ({
+  searchTerm,
+  selectedType,
+  checkSelectedType,
+  showDeleted,
+}) => {
   const [rows, setRows] = useState<DataRow[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [selectedQuestion, setSelectedQuestion] = useState<DataRow | null>(null);
+  const [selectedQuestion, setSelectedQuestion] = useState<DataRow | null>(
+    null
+  );
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  const [deleteConfirmDialogOpen, setDeleteConfirmDialogOpen] = useState<boolean>(false);
-  const [questionToDelete, setQuestionToDelete] = useState<number | null>(null);
+  const [deleteConfirmDialogOpen, setDeleteConfirmDialogOpen] =
+    useState<boolean>(false);
+  const [questionToDelete, setQuestionToDelete] = useState<number | null>(
+    null
+  );
   const dispatch = useAppDispatch();
 
-  const questiondata = useAppSelector((state) => state.questions?.content?.response?.data);
-  console.log("QUESIIOP__________", questiondata);
+  const questiondata = useAppSelector(
+    (state) => state.questions?.content?.response?.data
+  );
+  const deletedQuestions = useAppSelector(
+    (state) => state.deleted_questions?.deletedQuestions?.response?.data
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,21 +81,25 @@ const DataTable: React.FC<DataTableProps> = ({ searchTerm, selectedType, checkSe
     fetchData();
   }, [dispatch]);
 
-  const error = useAppSelector((state) => state.questions?.error);
-  const displayedToastId = React.useRef(null); // useRef to track the current displayed toast
-
   useEffect(() => {
-    if (error) {
-      // Handle error toast
-    }
-  }, [error]);
-
-  useEffect(() => {
-    if (questiondata) {
+    if (questiondata && !showDeleted) {
       const mappedRows = questiondata.map((item: any, index: number) => ({
         id: item?.id || index,
         name: item?.description || "",
         type: item?.question_type?.abbr || "",
+        type1: item?.question_type?.name,
+        abbreviation: item?.abbr || "",
+        modified: item?.createdAt
+          ? format(new Date(item.createdAt), "yyyy-MM-dd HH:mm:ss")
+          : "",
+      }));
+      setRows(mappedRows);
+    } else if (deletedQuestions && showDeleted) {
+      const mappedRows = deletedQuestions.map((item: any, index: number) => ({
+        id: item?.id || index,
+        name: item?.description || "",
+        type: item?.question_type?.abbr || "",
+        type1: item?.question_type?.name,
         abbreviation: item?.abbr || "",
         modified: item?.createdAt
           ? format(new Date(item.createdAt), "yyyy-MM-dd HH:mm:ss")
@@ -84,7 +107,7 @@ const DataTable: React.FC<DataTableProps> = ({ searchTerm, selectedType, checkSe
       }));
       setRows(mappedRows);
     }
-  }, [questiondata]);
+  }, [questiondata, deletedQuestions, showDeleted]);
 
   const handleEdit = (row: DataRow) => {
     setSelectedQuestion(row);
@@ -99,8 +122,10 @@ const DataTable: React.FC<DataTableProps> = ({ searchTerm, selectedType, checkSe
   const confirmDelete = async () => {
     if (questionToDelete !== null) {
       try {
-        await dispatch(delete_question(questionToDelete));
-        setRows((prevRows) => prevRows.filter((row) => row.id !== questionToDelete));
+        await dispatch(delete_partial_question(questionToDelete));
+        setRows((prevRows) =>
+          prevRows.filter((row) => row.id !== questionToDelete)
+        );
         const CustomToast = () => {
           const handleCloseToast = () => {
             toast.dismiss();
@@ -122,7 +147,10 @@ const DataTable: React.FC<DataTableProps> = ({ searchTerm, selectedType, checkSe
               }}
             >
               <p>Question deleted successfully</p>
-              <CloseIcon sx={{ cursor: "pointer" }} onClick={handleCloseToast} />
+              <CloseIcon
+                sx={{ cursor: "pointer" }}
+                onClick={handleCloseToast}
+              />
             </div>
           );
         };
@@ -145,9 +173,13 @@ const DataTable: React.FC<DataTableProps> = ({ searchTerm, selectedType, checkSe
 
   const filteredQuestions = rows.filter((question) => {
     const matchesType =
-      checkSelectedType.length > 0 ? checkSelectedType.includes(question.abbreviation) : true;
+      checkSelectedType.length > 0
+        ? checkSelectedType.includes(question.abbreviation)
+        : true;
     const matchesSelectedType =
-      selectedType.length > 0 ? selectedType.includes(question.type) : true;
+      selectedType.length > 0
+        ? selectedType.includes(question.type1)
+        : true;
     const matchesSearch = searchTerm
       ? question.name.toLowerCase().includes(searchTerm.toLowerCase())
       : true;
@@ -188,10 +220,10 @@ const DataTable: React.FC<DataTableProps> = ({ searchTerm, selectedType, checkSe
       <DataGrid
         rows={filteredQuestions}
         columns={columns}
-        pageSize={10}
+        pageSize={5}
         loading={loading}
         sortingOrder={["desc", "asc"]}
-        pageSizeOptions={[5,10, 25,50,100]}
+        pageSizeOptions={[5, 10, 25, 50, 100]}
         sortModel={[
           {
             field: "id",

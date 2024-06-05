@@ -43,7 +43,7 @@ const  dispatch=useAppDispatch();
 const survey_id= survey?.id;
 
   const question_type = useAppSelector((state) => state.question_type?.content?.response) || [];
-  const abbr = useAppSelector((state) => state.questions?.content?.response?.data?.rows);
+  const abbr= useAppSelector((state)=>state.questions?.content?.response?.data);
 
   const handleDrawerToggle = () => {
     setDrawerOpen((prev) => !prev);
@@ -74,30 +74,16 @@ const survey_id= survey?.id;
     };
 
   useEffect(() => {
-    dispatch(get_question_of_survey(survey_id));
-  },[dispatch])
-  const {content} = useAppSelector((state) => state.questions)
+    const user= dispatch(get_question_of_survey(survey_id));
+    console.log("UUUUUUSEER",user)
+  },[dispatch,survey_id])
+  const {content} = useAppSelector((state) => state.survey_question)
+  console.log("CCCCCOOMMMNNTTTENNT",content);
 
   return (
     <Box display="flex" flexDirection="row" height="100vh" overflow="hidden">
       <Box flex={drawerOpen ? 1 : 2} transition="flex 0.3s" overflow="auto">
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Box> </Box>
-          <Box sx={{ display: 'flex', gap: '20px' }}>
-            <Box onClick={handleDrawerToggle}>
-              {drawerOpen ? (
-                <ArrowForwardIcon
-                  sx={{ cursor: 'pointer', borderLeft: '2px solid black',borderRadius:"20px",bgcolor:"white",marginLeft:"30px" }}
-                />
-              ) : (
-                <Button variant="outlined" sx={{ bgcolor: 'white' }}>
-                  Add
-                </Button>
-              )}
-            </Box>
-            {!drawerOpen && <DialogBox />}
-          </Box>
-        </Box>
+       
         <Box sx={{ bgcolor: 'white', borderRadius: '5px' }}>
           <Box sx={{ padding: '30px', marginTop: '20px' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -125,17 +111,30 @@ const survey_id= survey?.id;
                 <Button onClick={handleClearClick}>Clear</Button>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Switch aria-label="Show deleted" />
-                <Typography>Show deleted</Typography>
+                
               </Box>
+              <Box sx={{ display: 'flex', gap: '20px' }}>
+            <Box onClick={handleDrawerToggle}>
+              {drawerOpen ? (
+                <ArrowForwardIcon
+                  sx={{ cursor: 'pointer', borderLeft: '1px solid black',borderRadius:"20px",bgcolor:"white", }}
+                />
+              ) : (
+                <Button variant="outlined" sx={{ bgcolor: 'white' }}>
+                  Add
+                </Button>
+              )}
+            </Box>
+            {!drawerOpen && <DialogBox />}
+          </Box>
             </Box>
             <SurveyQuestionTable 
               survey={survey} 
               searchTerm={searchTerm} 
               selectedType={selectedType} 
               checkSelectedType={checkSelectedType} 
-              selecttedQuestions={selectedQuestions}
-              questionss={content}
+              // selecttedQuestions={selectedQuestions}
+              // questionss={content}
             />
           </Box>
         </Box>
@@ -148,6 +147,7 @@ const survey_id= survey?.id;
       >
         <EnhancedTable survey={survey} onSelectedQuestions={handleSelectedQuestions}/>
       </Stack>
+      
     </Box>
   );
 };

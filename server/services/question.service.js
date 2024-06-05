@@ -105,9 +105,9 @@ exports.partialy_delete = async (payload) => {
         400
       );
     }
-    const deleted_at=new Date();
+    const deleted_at = new Date();
     const delete_question = await question.update(
-      { active: false, deleted_at:deleted_at },
+      { active: false, deleted_at: deleted_at },
       {
         where: { id: question_id },
       }
@@ -247,38 +247,126 @@ exports.get_question_thr_id = async (payload) => {
 exports.get_question_of_survey = async (payload) => {
   try {
     const { survey_id } = payload.params;
+    if (!survey_id) {
+      throw new CustomError("Survey Id Not found", 400);
+    }
+
     const survey_data = await survey_question.findAll({
       where: { survey_id: survey_id },
     });
-    if (!survey_id) {
-      throw new CustomError("errroroor", 400);
-    }
-    console.log("jfjdgifdfdk",survey_id)
 
-    const question_ids_in_table = await survey_data.map(
+    const question_ids_in_table = survey_data.map(
       (survey_question) => survey_question.question_id
     );
-    const all_question_ids = await question.findAll({
-      attributes: ["id"],
-    });
-    // const questions_descriptions= await survey_question.findAll({where:{survey_id:survey_id}});
+
+    const unique_question_ids_in_table = [...new Set(question_ids_in_table)];
+
+    console.log("PKANbxscksxj===========", unique_question_ids_in_table);
+
     const questions = await question.findAll({
       where: {
-        id: question_ids_in_table,
+        id: unique_question_ids_in_table,
       },
-      include: [{ model: question_type, as: "question_type" }],
-
-
+      
+      
     });
 
+    console.log("data length", questions.length);
     return questions;
   } catch (error) {
     throw error;
   }
 };
+
 exports.create_question_survey_inside_survey = async (payload) => {
   try {
     const { question_type_id, description, abbr, active, survey_id } =
       payload.body;
   } catch (error) {}
 };
+
+exports.get_deleted_questions = async (payload) => {
+  try {
+    console.log("QUERY@@@@@***************", payload.query);
+    const page_number = payload.query.page_number || 1;
+    const limit = payload.query.limit || 50;
+    const search = payload.query.search || "";
+    const offset = (page_number - 1) * limit;
+    console.log("PAGENUMBER", page_number);
+    console.log("PAGENUMBERLimit", limit);
+    console.log("LIMITsdjkghfegf==", limit);
+    console.log("LIMIT&&&&OFerde", limit, offset);
+    console.log("PAYload.Query", payload.query.search);
+    let query_options = {
+      where: {
+        active: false,
+      },
+      include: [{ model: question_type, as: "question_type" }],
+      order: [["createdAt", "ASC"]],
+      limit: limit,
+      offset: offset,
+    };
+
+    if (search) {
+      query_options.where = {
+        ...query_options.where,
+        description: {
+          [Op.like]: `%${search}%`,
+        },
+      };
+    }
+    const surveyes = await question.findAndCountAll(query_options);
+    if (!surveyes) {
+      throw new CustomError("Survey not found", 404);
+    }
+    const total_items = surveyes.count;
+    const total_pages = Math.ceil(total_items / limit);
+    const res = {
+      data: surveyes.rows,
+      total_items: total_items,
+      total_pages: total_pages,
+      current_page: page_number,
+    };
+
+    return res;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// exports.get_question_of_survey = async (payload) => {
+//   try {
+//     const { survey_id } = payload.params;
+//     console.log("PAYLOAD", payload.body);
+
+//     if (!survey_id) {
+//       throw new CustomError("Survey Id Not found", 400);
+//     }
+
+//     const survey_data = await survey_question.findAll({
+//       where: { survey_id },
+//     });
+//     console.log("surveyData", survey_data);
+
+//     const question_ids_in_table = survey_data.map(
+//       (survey_question) => survey_question.question_id
+//     );
+//     console.log("Questsasdajd", question_ids_in_table);
+
+//     const questions = await question.findAll({
+//       where: {
+//         id: question_ids_in_table,
+//       },
+//       include: [
+//         {
+//           model: survey_question,
+//           as: "survey_question",
+//         },
+//       ],
+//     });
+
+//     return questions;
+//   } catch (error) {
+//     throw error;
+//   }
+// };

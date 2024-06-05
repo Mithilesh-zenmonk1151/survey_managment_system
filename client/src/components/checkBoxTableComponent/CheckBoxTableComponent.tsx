@@ -351,7 +351,7 @@ export default function EnhancedTable({ survey,onSelectedQuestions}: InfoSurvey)
               color: "#ffffff",
               transition: "all 0.5s ease",
               height: "50px",
-              width: "400px",
+              width: "300px",
               alignItems: "center",
               padding: "10px",
               display: "flex",

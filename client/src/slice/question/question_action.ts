@@ -90,12 +90,12 @@ export const get_question_of_survey = createAsyncThunk(
   'survey/getQuestionOfSurvey',
   async (survey_id: number , { rejectWithValue }) => {
     try {
-      console.log("SurveyIDDDDD",survey_id)
       const response= await axios.get(
         `http://localhost:4000/api/question/question_of_survey/${survey_id}`
       );
       // const response = await get_question_of_survey_service(survey_id);
       const data=await response?.data
+      console.log("SurveyIDDDDD",data)
       return data; 
     } catch (err:any) {
       return rejectWithValue(err.response.data); 
@@ -106,7 +106,7 @@ export const delete_question_of_survey = createAsyncThunk(
   'survey/getQuestionOfSurvey',
   async (survey_id: number , { rejectWithValue }) => {
     try {
-      const response= await axios.get(
+      const response= await axios.delete(
         `http://localhost:4000/api/question/question_of_survey/${survey_id}`
       );
       // const response = await get_question_of_survey_service(survey_id);
@@ -118,7 +118,7 @@ export const delete_question_of_survey = createAsyncThunk(
   }
 );
 export const get_question_for_survey = createAsyncThunk(
-  'survey/getQuestionOfSurvey',
+  'survey/getQuestionOf',
   async (survey_id: number , { rejectWithValue }) => {
     try {
       const response= await axios.get(
@@ -133,11 +133,11 @@ export const get_question_for_survey = createAsyncThunk(
   }
 );
 
-export const delete_question = createAsyncThunk(
+export const delete_partial_question = createAsyncThunk(
   'survey/deleteQuestionOfSurvey',
   async ( question_id:number, { rejectWithValue }) => {
     try {
-      const response = await axios.delete(
+      const response = await axios.put(
         `http://localhost:4000/api/question/${question_id}`
       );
       return response ;
@@ -147,4 +147,7 @@ export const delete_question = createAsyncThunk(
     }
   }
 );
+
+
+  
 

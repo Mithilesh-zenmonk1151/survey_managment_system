@@ -1,25 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import { useAppDispatch } from "@/store/hooks";
-import { get_question_of_survey } from "@/slice/question/question_action";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { get_question_of_survey, delete_question_of_survey } from "@/slice/question/question_action";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import EditSurveyQuestionDialogBox from "../editSurveyQuestionDialogBox/EditSurveyQuetionDialogBox";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import toast from "react-hot-toast";
-import { delete_question_of_survey } from "@/slice/survey_question/survey_question_action";
-import { useAppSelector } from "@/store/hooks";
-// import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd"; // Import from react-beautiful-dnd
+import AlertDialogConfirmationDeleteSurvey from "../dialogConfirmationDelet/AlertDialogDeleteSurvey";
 import "./SurveyQuestionTable.styles.css";
 
 interface DataRow {
   id: number;
   name: string;
   type: string;
+  type1: string;
   abbreviation: string;
   modified: string;
-  order: number; // Add order field for tracking row order
+  order: number;
 }
 
 interface SurveyInfo {
@@ -27,8 +26,8 @@ interface SurveyInfo {
   searchTerm: string;
   selectedType: string;
   checkSelectedType: string;
-  selectedQuestions: any[];
-  questionss: any;
+  selectedQuestions?: any[];
+  questionss?: any;
 }
 
 const SurveyQuestionTable: React.FC<SurveyInfo> = ({
@@ -42,19 +41,21 @@ const SurveyQuestionTable: React.FC<SurveyInfo> = ({
   const [rows, setRows] = useState<DataRow[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedQuestion, setSelectedQuestion] = useState<DataRow | null>(null);
-  const [response, setResponse] = useState<Question[] | null>(null);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [deleteConfirmDialogOpen, setDeleteConfirmDialogOpen] = useState<boolean>(false);
+  const [questionToDelete, setQuestionToDelete] = useState<number | null>(null);
   const dispatch = useAppDispatch();
   const survey_id = survey.id;
   const { content } = useAppSelector((state) => state.questions);
-  const resss = content?.response;
+  console.log("Conteantssss",content)
 
   useEffect(() => {
     if (content?.response?.length) {
-      const mappedRows = content?.response?.map((item, index) => ({
+      const mappedRows = content.response.map((item, index) => ({
         id: item.id,
-        name: item.description,
-        type: item.abbr,
+        name: item?.survey_question?.question_description,
+        type: item?.question_type?.abbr,
+        type1: item.question_type?.name,
         abbreviation: item.abbr,
         order: index + 1,
         modified: item.createdAt,
@@ -63,54 +64,51 @@ const SurveyQuestionTable: React.FC<SurveyInfo> = ({
     } else {
       setRows([]);
     }
-  }, [content?.response?.length]);
+    setLoading(false);
+  }, [content?.response]);
 
   const handleEdit = (row: DataRow) => {
     setSelectedQuestion(row);
     setDialogOpen(true);
   };
 
-  const handleDelete = async (id: number) => {
-    try {
-      await dispatch(delete_question_of_survey({ survey_id, question_id: id }));
-      toast.success("Question removed from survey");
-    } catch (error) {
-      toast.error("Question deletion failed");
+  const handleDelete = (id: number) => {
+    setQuestionToDelete(id);
+    setDeleteConfirmDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (questionToDelete !== null) {
+      try {
+        await dispatch(delete_question_of_survey({ survey_id, question_id: questionToDelete }));
+        setRows((prevRows) => prevRows.filter((row) => row.id !== questionToDelete));
+        toast.success("Question removed from survey");
+      } catch (error) {
+        toast.error("Question deletion failed");
+      } finally {
+        setDeleteConfirmDialogOpen(false);
+        setQuestionToDelete(null);
+      }
     }
   };
 
-  const filteredQuestions = rows.filter((question) => {
-    const matchesType =
-      checkSelectedType.length > 0
-        ? checkSelectedType.includes(question.abbreviation)
-        : true;
+  const closeDeleteConfirmDialog = () => {
+    setDeleteConfirmDialogOpen(false);
+    setQuestionToDelete(null);
+  };
 
-    const matchesSelectedType =
-      selectedType.length > 0 ? selectedType.includes(question.type) : true;
+  const filteredQuestions = rows.filter((question) => {
+    const matchesType = checkSelectedType.length > 0
+      ? checkSelectedType.includes(question.abbreviation)
+      : true;
+    const matchesSelectedType = selectedType.length > 0
+      ? selectedType.includes(question.type1)
+      : true;
     const matchesSearch = searchTerm
       ? question.name.toLowerCase().includes(searchTerm.toLowerCase())
       : true;
     return matchesType && matchesSearch && matchesSelectedType;
   });
-
-  const onDragEnd = (result: any) => {
-    // Dropped outside the list
-    if (!result.destination) {
-      return;
-    }
-
-    const items = Array.from(filteredQuestions);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-
-    // Update the order field based on the new order
-    const updatedRows = items.map((item, index) => ({
-      ...item,
-      order: index + 1,
-    }));
-
-    setRows(updatedRows);
-  };
 
   const columns: GridColDef[] = [
     {
@@ -145,25 +143,30 @@ const SurveyQuestionTable: React.FC<SurveyInfo> = ({
   ];
 
   return (
-    // <DragDropContext onDragEnd={onDragEnd}>
-      <div style={{ height: 400, width: "100%" }}>
-        <DataGrid
-          rows={filteredQuestions}
-          columns={columns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          pageSizeOptions={[5, 10, 15, 20, 25, 30, 50, 100, 150]}
+    <div style={{ height: 400, width: "100%" }}>
+      <DataGrid
+        rows={filteredQuestions}
+        columns={columns}
+        pageSize={5}
+        loading={loading}
+        pageSizeOptions={[5, 10, 15, 20, 25, 30, 50, 100, 150]}
+      />
+      {selectedQuestion && (
+        <EditSurveyQuestionDialogBox
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+          question={selectedQuestion}
+          survey={survey}
         />
-        {selectedQuestion && (
-          <EditSurveyQuestionDialogBox
-            open={dialogOpen}
-            onClose={() => setDialogOpen(false)}
-            question={selectedQuestion}
-            survey={survey}
-          />
-        )}
-      </div>
-    // </DragDropContext>
+      )}
+      <AlertDialogConfirmationDeleteSurvey
+        open={deleteConfirmDialogOpen}
+        onClose={closeDeleteConfirmDialog}
+        onAgree={confirmDelete}
+        modelHeading="Delete Question"
+        modelBody="Are you sure you want to delete this question?"
+      />
+    </div>
   );
 };
 
