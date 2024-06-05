@@ -70,6 +70,7 @@ console.log("QUESTIOJN",question?.question_type?.abbr)
         gap: "20px",
         fontFamily: 'Arial, sans-serif',
         fontWeight: 'bold',
+        bgcolor:"#fafafa"
       }}
     >
       <Typography
