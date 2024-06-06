@@ -278,7 +278,7 @@ exports.get_question_of_survey = async (payload) => {
       
     });
 
-    console.log("data length", questions.length);
+    console.log("data lrthrthrthrt", questions.length);
     return questions;
   } catch (error) {
     throw error;

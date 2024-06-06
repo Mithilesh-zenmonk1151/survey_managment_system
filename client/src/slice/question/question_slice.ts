@@ -62,7 +62,7 @@ export const question_slice = createSlice({
     });
     builder.addCase(get_question_of_survey.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.content = action.payload.response;
+      state.content = action.payload;
       console.log("SSSSSSTATE]]]]]]]]]]]]]]]]]",state.content)
     });
     builder.addCase(get_question_of_survey.rejected, (state, action) => {

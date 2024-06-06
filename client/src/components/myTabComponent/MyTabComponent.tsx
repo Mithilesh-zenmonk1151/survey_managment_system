@@ -22,14 +22,17 @@ const MyTabsComponent = () => {
   const [additionalTabs, setAdditionalTabs] = useState<TabContent[]>([]);
   const [value, setValue] = useState(0);
   const router = useRouter();
+  const [showDeleted, setShowDeleted] = useState(false);
 
   const survey_type = useAppSelector((state) => state.survey_type?.content?.response) || [];
   const abbr = useAppSelector((state) => state.survey?.content?.response?.data?.rows) || [];
 
   const handleAddTab = (newTab: TabContent) => {
     setAdditionalTabs((prevTabs) => {
-      const isDuplicate = prevTabs.some((tab) => tab.id === newTab.id);
-      if (isDuplicate) {
+      const existingTabIndex = prevTabs.findIndex((tab) => tab.id === newTab.id);
+      if (existingTabIndex !== -1) {
+        setValue(existingTabIndex + 1);
+        router.push(`?${newTab.id}`);
         return prevTabs;
       }
 
@@ -66,6 +69,7 @@ const MyTabsComponent = () => {
         searchTerm={searchTerm}
         selectedType={selectedType}
         is_published={selectedPublishedType}
+        showDeleted={showDeleted}
       />,
     },
     ...additionalTabs,
@@ -93,7 +97,7 @@ const MyTabsComponent = () => {
           fontSize: "50px",
           display: "flex",
           gap: "20px",
-          fontFamily: "Poppins",
+          fontFamily: "Open Sans, sans-serif",
           fontWeight: "800",
         }}
       >
@@ -105,10 +109,12 @@ const MyTabsComponent = () => {
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  fontSize: "17px",
+                  fontSize: "14px",
                   paddingLeft: "20px",
-                  fontWeight: "900",
-                  fontFamily: "Poppins",
+                  fontWeight: "600",
+                  fontFamily: "Open Sans, sans-serif",
+                  color:"#424242"
+                  
                 }}
               >
                 {tab.label}
@@ -164,7 +170,9 @@ const MyTabsComponent = () => {
               <Button onClick={handleOnClearClick}>Clear</Button>
             </Box>
             <Box sx={{ display: "flex", alignContent: "center", alignItems: "center", textAlign: "center" }}>
-              <Switch />
+              <Switch checked={showDeleted}
+                onChange={() => setShowDeleted(!showDeleted)}
+                inputProps={{ "aria-label": "Show deleted" }} />
               <Typography>Show deleted</Typography>
             </Box>
           </Box>

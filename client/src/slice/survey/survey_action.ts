@@ -49,7 +49,7 @@ export const update_survey = createAsyncThunk(
 );
 export const put_survey = createAsyncThunk(
   update_survey_type,
-  async (survey:{name:string,survey_type_id:number,id:number,options:{modality:string,languages:string}}, { rejectWithValue }) => {
+  async (survey:{name:string,survey_type_id:number,survey_id:number,options:{modality:string,languages:string}}, { rejectWithValue }) => {
       try {
           const response = await update_survey_service(survey);
           const data = response?.data;
@@ -70,6 +70,20 @@ export const delete_survey = createAsyncThunk(
       return {  survey_id };
     } catch (err: any) {
       console.error("Error in deleting question of survey");
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+export const delete_partial_survey = createAsyncThunk(
+  'survey/deleteSurvey',
+  async ( survey_id:number, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:4000/api/survey/${survey_id}`
+      );
+      return response ;
+    } catch (err: any) {
+      console.error("Error in deleting  survey");
       return rejectWithValue(err.response.data);
     }
   }

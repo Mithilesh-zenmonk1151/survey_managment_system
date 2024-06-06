@@ -46,9 +46,44 @@ interface EditSurveyDialogBoxProps {
   open: boolean;
   onClose: () => void;
   question: DataRow | null;
+  survey: DataRow | null;
 }
 
-const EditSurveyDialogBox: React.FC<EditSurveyDialogBoxProps> = ({ open, onClose, question }) => {
+const CustomToast: React.FC<{ message: string; type: "success" | "error" }> = ({
+  message,
+  type,
+}) => {
+  const handleCloseToast = () => {
+    toast.dismiss();
+  };
+
+  return (
+    <div
+      className="custom-toast"
+      style={{
+        background: type === "success" ? "#4d9f49" : "red",
+        color: "#ffffff",
+        transition: "all 0.5s ease",
+        height: "50px",
+        width: "300px",
+        alignItems: "center",
+        padding: "10px",
+        display: "flex",
+        justifyContent: "space-between",
+      }}
+    >
+      <p>{message}</p>
+      <CloseIcon sx={{ cursor: "pointer" }} onClick={handleCloseToast} />
+    </div>
+  );
+};
+
+const EditSurveyDialogBox: React.FC<EditSurveyDialogBoxProps> = ({
+  open,
+  onClose,
+  survey,
+  question,
+}) => {
   const [selectedSurveyTypeId, setSelectedSurveyTypeId] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [abbr, setAbbr] = useState<string>("");
@@ -57,23 +92,27 @@ const EditSurveyDialogBox: React.FC<EditSurveyDialogBoxProps> = ({ open, onClose
   const [isMandatory, setIsMandatory] = useState<boolean>(false);
   const dispatch = useAppDispatch();
 
+  const survey_id = survey?.id;
+
   useEffect(() => {
-    if (question) {
-      setAbbr(question.abbreviation);
-      setName(question.name);
-      setSelectedSurveyTypeId(question.survey_type?.id.toString() || "");
-      setSelectedModality(question.options?.modality || "");
-      setSelectedLanguage(question.options?.languages || "");
-      setIsMandatory(question.options?.mandatory || false);
+    if (survey) {
+      setAbbr(survey.abbreviation);
+      setName(survey.name);
+      setSelectedSurveyTypeId(survey.survey_type?.id.toString() || "");
+      setSelectedModality(survey.options?.modality || "");
+      setSelectedLanguage(survey.options?.languages || "");
+      setIsMandatory(survey.options?.mandatory || false);
     }
-  }, [question]);
+  }, [survey]);
 
   useEffect(() => {
     dispatch(get_question_type());
     dispatch(get_survey_type());
   }, [dispatch]);
 
-  const surveyTypes = useAppSelector((state) => state.survey_type?.content?.response || []);
+  const surveyTypes = useAppSelector(
+    (state) => state.survey_type?.content?.response || []
+  );
 
   const modalities = [
     { id: "1", name: "In Person", value: "In Person" },
@@ -90,85 +129,30 @@ const EditSurveyDialogBox: React.FC<EditSurveyDialogBoxProps> = ({ open, onClose
   ];
 
   const handleSave = async () => {
-    if (!question) return;
+    if (!survey) return;
 
-    const survey = {
-      id: question.id,
+    const surveyToUpdate = {
+      id: survey_id,
       name,
       abbr,
       options: {
         modality: selectedModality,
         languages: selectedLanguage,
-        mandatory: isMandatory,
+        
       },
-      survey_type_id: selectedSurveyTypeId ? parseInt(selectedSurveyTypeId) : 0,
+      survey_type_id: selectedSurveyTypeId
+        ? parseInt(selectedSurveyTypeId)
+        : 0,
     };
 
     try {
-      await dispatch(put_survey(survey)).unwrap();
-      const CustomToast = () => {
-      const handleCloseToast = () => {
-        toast.dismiss();
-      };
-
-      return (
-        <div
-          className="custom-toast"
-          style={{
-            background: "#4d9f49",
-            color: "#ffffff",
-            transition: "all 0.5s ease",
-            height: "50px",
-            width: "300px",
-            alignItems: "center",
-            padding: "10px",
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
-          <p> Survey Updated Successfully</p>
-          <CloseIcon
-            sx={{ cursor: "pointer" }}
-            onClick={handleCloseToast}
-          />
-        </div>
-      );
-    };
-
-    toast.custom(() => <CustomToast />);
-      dispatch(get_survey());
+      console.log("SSSSSSSSUUUUUUUUUUUUUURTWYJH",surveyToUpdate);
+      await dispatch(put_survey(surveyToUpdate)).unwrap();
       onClose();
+      toast.custom(() => <CustomToast message="Survey Updated Successfully" type="success" />);
+      dispatch(get_survey());
     } catch (error) {
-      const CustomToast = () => {
-        const handleCloseToast = () => {
-          toast.dismiss();
-        };
-
-        return (
-          <div
-            className="custom-toast"
-            style={{
-              background: "red",
-              color: "#ffffff",
-              transition: "all 0.5s ease",
-              height: "50px",
-              width: "300px",
-              alignItems: "center",
-              padding: "10px",
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            <p>Failed to update survey</p>
-            <CloseIcon
-              sx={{ cursor: "pointer" }}
-              onClick={handleCloseToast}
-            />
-          </div>
-        );
-      };
-
-      toast.custom(() => <CustomToast />);
+      toast.custom(() => <CustomToast message="Failed to update survey" type="error" />);
     }
   };
 
@@ -191,6 +175,7 @@ const EditSurveyDialogBox: React.FC<EditSurveyDialogBoxProps> = ({ open, onClose
           }}
           onClick={onClose}
         >
+          <CloseIcon />
         </IconButton>
       </DialogTitle>
       <DialogContent>
@@ -202,6 +187,9 @@ const EditSurveyDialogBox: React.FC<EditSurveyDialogBoxProps> = ({ open, onClose
             value={name}
             onChange={(e) => setName(e.target.value)}
             fullWidth
+            sx={{
+              marginTop: "10px",
+            }}
           />
           <Box sx={{ display: "flex", gap: "16px" }}>
             <TextField

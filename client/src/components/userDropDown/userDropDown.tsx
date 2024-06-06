@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Menu, MenuItem, IconButton, Avatar, Typography, Box } from "@mui/material";
 import { AccountCircle, Logout } from "@mui/icons-material";
 import { signOut, useSession } from "next-auth/react";
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 const UserDropdown: React.FC = () => {
   const { data: session } = useSession();
@@ -62,10 +63,21 @@ const UserDropdown: React.FC = () => {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <MenuItem disabled>
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <Typography>{session?.user?.name}</Typography>
-            <Typography variant="body2" color="textSecondary">
-              {session?.user?.email}
+          <Box display="flex"  alignItems="center" sx={{
+            gap:"5px",
+            paddingRight:"5px",
+            paddingTop:"30px",
+            paddingBottom:"30px",
+            
+          }}>
+            <Typography></Typography>
+            <PersonOutlineIcon/><Typography variant="body2" sx={{
+              fontSize:"18px",
+              color:"black",
+              fontWeight:"600",
+              width:""
+            }}>
+             {session?.user?.email}
             </Typography>
           </Box>
         </MenuItem>
@@ -74,7 +86,7 @@ const UserDropdown: React.FC = () => {
           height:"1px",
           bgcolor:"black"
         }}></Box>
-        <MenuItem onClick={handleLogout}>
+        <MenuItem onClick={handleLogout} >
           <Logout fontSize="small" />
           <Typography  sx={{ ml: 1 ,bgcolor:"white"}}>
             Logout

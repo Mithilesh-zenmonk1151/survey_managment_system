@@ -99,19 +99,4 @@ export const delete_question_of_survey = createAsyncThunk(
     }
   }
 );
-export const get_question_of_survey = createAsyncThunk(
-  'survey/getQuestionOfSurvey',
-  async (survey_id: number , { rejectWithValue }) => {
-    try {
-      const response= await axios.get(
-        `http://localhost:4000/api/question/question_of_survey/${survey_id}`
-      );
-      // const response = await get_question_of_survey_service(survey_id);
-      const data=await response?.data
-      console.log("SurveyIDDDDD",data)
-      return data; 
-    } catch (err:any) {
-      return rejectWithValue(err.response.data); 
-    }
-  }
-);
+

@@ -12,7 +12,8 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import PrevQuestionComponent from '../prevQuestion/PreviueQuestion';
 import Image from 'next/image';
 import { Box } from '@mui/material';
-import { get_question_of_survey } from '@/slice/survey_question/survey_question_action';
+import { get_question_of_survey } from '@/slice/question/question_action';
+// import { get_question_of_survey } from '@/slice/survey_question/survey_question_action';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -66,7 +67,7 @@ export default function PreviewDialogBox({ survey }: SurveyInformationProps) {
 console.log("sSSSSSSSSSSSSSSS",survey);
   return (
     <React.Fragment>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <Button variant="outlined" onClick={handleClickOpen} sx={{ fontSize: "14px", fontWeight: "600",lineHeight:"25px",fontFamily:"Open Sans, sans-serif",color:"#01579b" }}>
         Preview
       </Button>
       <BootstrapDialog

@@ -10,7 +10,6 @@ import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import toast from "react-hot-toast";
 import AlertDialogConfirmationDeleteSurvey from "../dialogConfirmationDelet/AlertDialogDeleteSurvey";
 import "./SurveyQuestionTable.styles.css";
-import { resetpost } from "@/slice/survey_question/survey_question_slice";
 
 interface DataRow {
   id: number;
@@ -23,22 +22,14 @@ interface DataRow {
 }
 
 interface SurveyInfo {
-  survey: { id: number, questions: any[] };
+  survey: { id: number };
   searchTerm: string;
   selectedType: string;
   checkSelectedType: string;
   selectedQuestions?: any[];
   questionss?: any;
 }
-interface Question {
-  id: number;
-  description: string;
-  question_type: {
-    name: string;
-  };
-  abbr: string;
-  createdAt: string;
-}
+
 const SurveyQuestionTable: React.FC<SurveyInfo> = ({
   survey,
   searchTerm,
@@ -55,69 +46,26 @@ const SurveyQuestionTable: React.FC<SurveyInfo> = ({
   const [questionToDelete, setQuestionToDelete] = useState<number | null>(null);
   const dispatch = useAppDispatch();
   const survey_id = survey.id;
-  const contents = useAppSelector((state) => state?.content);
-  console.log("Contentkljhlkjhlkj;kljkl:", contents);
-  console.log("Survey questions:", survey?.questions);
+  const { content } = useAppSelector((state) => state.questions);
+  console.log("Conteantssss",content)
 
   useEffect(() => {
-    dispatch(resetpost());
-  }, [dispatch]);
-  useEffect(()=>{
-    dispatch(get_question_of_survey(survey?.id))
-  },[dispatch,survey?.questions?.length])
-  const rre= useAppSelector((state)=>state)
-
-
-  React.useEffect(() => {
-    
-  }, [dispatch, survey_id]);
-
-  useEffect(() => {
-    const existingQuestions = survey?.questions ?? [];
-    const mappedRows = existingQuestions.map((item, index) => ({
-      id: item?.id,
-      name: item?.name || '',
-      type: item?.question_type?.abbr || '',
-      type1: item?.question_type?.name || '',
-      abbreviation: item?.abbr || '',
-      order: index + 1,
-      modified: item?.createdAt || '',
-    }));
-    setRows(mappedRows);
-
-    const fetchData = async () => {
-      try {
-        const data = await dispatch(get_question_of_survey(survey_id));
-        const respo: Question[] = data?.payload?.response;
-        
-        setRows(respo);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
+    if (content?.response?.length) {
+      const mappedRows = content.response.map((item, index) => ({
+        id: item.id,
+        name: item?.description,
+        type: item?.question_type?.abbr,
+        type1: item.question_type?.name,
+        abbreviation: item.abbr,
+        order: index + 1,
+        modified: item.createdAt,
+      }));
+      setRows(mappedRows);
+    } else {
+      setRows([]);
+    }
     setLoading(false);
-  }, [dispatch,survey?.questions]);
-  console.log("REEESSSSSAAAAAAAA",rows);
-
-
-  // useEffect(() => {
-  //   if (content?.response?.data?.length) {
-  //     const newQuestions = content?.response?.data;
-  //     console.log("NNNNNNNNNNNNNNNNEWWWWWWWWWWWWWWWW",newQuestions)
-  //     const mappedNewRows = newQuestions?.map((item, index) => ({
-  //       id: item?.id,
-  //       name: item?.survey_question?.question_description || '',
-  //       type: item?.question_type?.abbr || '',
-  //       type1: item?.question_type?.name || '',
-  //       abbreviation: item?.abbr || '',
-  //       order: rows?.length + index + 1,
-  //       modified: item?.createdAt || '',
-  //     }));
-  //     setRows((prevRows) => [...prevRows, ...mappedNewRows]);
-  //   }
-  // }, [content?.response?.length]);
+  }, [content?.response]);
 
   const handleEdit = (row: DataRow) => {
     setSelectedQuestion(row);

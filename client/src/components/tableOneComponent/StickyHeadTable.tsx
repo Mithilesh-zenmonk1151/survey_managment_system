@@ -7,7 +7,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Switch, Popover, Typography, Tooltip } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
-  delete_survey,
+  delete_partial_survey,
   get_survey,
   update_survey,
 } from "@/slice/survey/survey_action";
@@ -17,7 +17,9 @@ import toast from "react-hot-toast";
 import AlertDialog from "../confirmationnDialogBox/ConfirmationDialogBox";
 import CloseIcon from "@mui/icons-material/Close";
 import AlertDialogConfirmationDeleteSurvey from "../dialogConfirmationDelet/AlertDialogDeleteSurvey";
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { get_deleted_questions } from "@/slice/deleted_questions/deleted_questions_action";
+import { delete_survey, get_deleted_survey } from "@/slice/deleted_survey/deleted_survey_action";
 
 interface DataRow {
   id: number;
@@ -38,6 +40,7 @@ interface DataTableProps {
   selectedType: string;
   checkSelectedType: string;
   is_published: string;
+  showDeleted: boolean;
 }
 
 const DataTable: React.FC<DataTableProps> = ({
@@ -46,6 +49,7 @@ const DataTable: React.FC<DataTableProps> = ({
   selectedType,
   checkSelectedType,
   is_published,
+  showDeleted,
 }) => {
   const [rows, setRows] = useState<DataRow[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -58,14 +62,23 @@ const DataTable: React.FC<DataTableProps> = ({
   const [currentStatus, setCurrentStatus] = useState<boolean>(false);
   const [currentStatusId, setCurrentStatusId] = useState<number | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
-  const [deleteConfirmDialogOpen, setDeleteConfirmDialogOpen] = useState<boolean>(false);
+  const [deleteConfirmDialogOpen, setDeleteConfirmDialogOpen] =
+    useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const dispatch = useAppDispatch();
-
+  console.log("Show deletedf", showDeleted);
   const survey = useAppSelector(
     (state) => state.survey?.content?.response?.data?.rows
   );
+
+  const deletedSurveys = useAppSelector(
+    (state) => state.deleted_questions.deletedQuestions?.response?.data?.rows
+  );
+  useEffect(() => {
+    dispatch(get_deleted_survey());
+  }, [dispatch]);
+  console.log("Survey$$$$$$$$$$$", deletedSurveys);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -82,7 +95,7 @@ const DataTable: React.FC<DataTableProps> = ({
   }, [dispatch]);
 
   useEffect(() => {
-    if (survey) {
+    if (survey && !showDeleted) {
       let filteredRows = survey?.map((item: any) => ({
         id: item?.id,
         name: item?.name,
@@ -97,8 +110,23 @@ const DataTable: React.FC<DataTableProps> = ({
       }));
 
       setRows(filteredRows);
+    } else if (deletedSurveys && showDeleted) {
+      let filteredRows = deletedSurveys?.map((item: any) => ({
+        id: item?.id,
+        name: item?.name,
+        question: item?.questions?.length,
+        type: item?.survey_type?.abbr,
+        type1: item?.survey_type?.name,
+        abbreviation: item?.abbr,
+        modified: new Date(item?.updatedAt).toISOString().split("T")[0],
+        status: item?.is_published,
+        options: item?.options,
+        survey_type: item?.survey_type,
+      }));
+
+      setRows(filteredRows);
     }
-  }, [survey]);
+  }, [survey, deletedSurveys, showDeleted]);
 
   const handleEdit = (row: DataRow) => {
     setSelectedQuestion(row);
@@ -107,7 +135,9 @@ const DataTable: React.FC<DataTableProps> = ({
 
   const filteredSurvey = rows.filter((survey) => {
     const matchesType =
-      checkSelectedType.length > 0 ? checkSelectedType.includes(survey?.abbreviation) : true;
+      checkSelectedType.length > 0
+        ? checkSelectedType.includes(survey?.abbreviation)
+        : true;
 
     const matchesSelectedType =
       selectedType.length > 0 ? selectedType.includes(survey?.type1) : true;
@@ -121,7 +151,12 @@ const DataTable: React.FC<DataTableProps> = ({
         ? survey.status === false
         : true;
 
-    return matchesType && matchesSearch && matchesSelectedType && matchesPublishedStatus;
+    return (
+      matchesType &&
+      matchesSearch &&
+      matchesSelectedType &&
+      matchesPublishedStatus
+    );
   });
 
   const handleStatusChange = (id: number, status: boolean) => {
@@ -175,7 +210,10 @@ const DataTable: React.FC<DataTableProps> = ({
     }
   };
 
-  const handleMoreOptionsClick = (event: React.MouseEvent<HTMLElement>, id: number) => {
+  const handleMoreOptionsClick = (
+    event: React.MouseEvent<HTMLElement>,
+    id: number
+  ) => {
     setDeleteOptionId(id);
     setAnchorEl(event.currentTarget);
   };
@@ -188,12 +226,24 @@ const DataTable: React.FC<DataTableProps> = ({
   const handleDelete = (id: number) => {
     setDeleteConfirmDialogOpen(true);
     setConfirmDeleteId(id);
+    dispatch(get_deleted_survey());
   };
 
-  const confirmDelete = () => {
+  const confirmDelete =async () => {
     if (confirmDeleteId !== null) {
-      dispatch(delete_survey(confirmDeleteId));
-      setRows((prevRows) => prevRows?.filter((row) => row?.id !== confirmDeleteId));
+      if(!showDeleted){
+      await dispatch(delete_partial_survey(confirmDeleteId));
+      setRows((prevRows) =>
+        prevRows?.filter((row) => row?.id !== confirmDeleteId)
+      );
+    }
+    else if(showDeleted){
+      const survey_id= confirmDeleteId;
+      await dispatch(delete_survey(survey_id));
+      setRows((prevRows) =>
+        prevRows.filter((row) => row.id !== confirmDelete)
+      );
+    }
       const CustomToast = () => {
         const handleCloseToast = () => {
           toast.dismiss();
@@ -261,7 +311,9 @@ const DataTable: React.FC<DataTableProps> = ({
       renderCell: (params: GridRenderCellParams) => (
         <Switch
           checked={params.value as boolean}
-          onChange={() => openStatusDialog(params.row.id, params.value as boolean)}
+          onChange={() =>
+            openStatusDialog(params.row.id, params.value as boolean)
+          }
           inputProps={{ "aria-label": "controlled" }}
         />
       ),
@@ -281,10 +333,7 @@ const DataTable: React.FC<DataTableProps> = ({
             </IconButton>
           </Tooltip>
           <Tooltip title="Edit">
-            <IconButton
-              onClick={() => handleEdit(params.row)}
-              size="small"
-            >
+            <IconButton onClick={() => handleEdit(params.row)} size="small">
               <EditIcon />
             </IconButton>
           </Tooltip>
@@ -303,7 +352,13 @@ const DataTable: React.FC<DataTableProps> = ({
 
   return (
     <div style={{ height: 600, width: "100%" }}>
-      <DataGrid rows={filteredSurvey} columns={columns} pageSize={10} loading={loading} />
+      <DataGrid
+        rows={filteredSurvey}
+        pageSizeOptions={[5, 10, 25, 50, 100]}
+        columns={columns}
+        pageSize={10}
+        loading={loading}
+      />
       <EditSurveyDialogBox
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
@@ -329,15 +384,23 @@ const DataTable: React.FC<DataTableProps> = ({
           horizontal: "right",
         }}
         sx={{
-          marginLeft:"35px"
+          marginLeft: "35px",
         }}
       >
-        <Typography sx={{p:"7px",   }} onClick={() => handleDelete(deleteOptionId!)}>
+        <Typography
+          sx={{ p: "7px" }}
+          onClick={() => handleDelete(deleteOptionId!)}
+        >
           <IconButton>
-            <DeleteOutlineIcon /> <Typography sx={{
-              fontSize:"18px",
-              fontWeight:"400"
-            }}>Delete</Typography> 
+            <DeleteOutlineIcon />{" "}
+            <Typography
+              sx={{
+                fontSize: "18px",
+                fontWeight: "400",
+              }}
+            >
+              Delete
+            </Typography>
           </IconButton>
         </Typography>
       </Popover>
@@ -345,27 +408,11 @@ const DataTable: React.FC<DataTableProps> = ({
         open={deleteConfirmDialogOpen}
         onClose={closeDeleteConfirmDialog}
         onAgree={confirmDelete}
-
         modelHeading="Delete Survey"
-        modelBody="Are you sure you want to delete this survey?"      />
+        modelBody="Are you sure you want to delete this survey?"
+      />
     </div>
   );
 };
 
 export default DataTable;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,4 +1,6 @@
 const CustomError = require("../libs/error");
+const { Op, where } = require("sequelize");
+
 const { survey, survey_type ,question} = require("../models");
 exports.create_survey = async (payload) => {
   try {
@@ -35,6 +37,7 @@ exports.get_survey = async (payload) => {
         { model: survey_type, as: "survey_type" },
         { model: question, as: "questions" }, // Include the 'question' model
       ],order: [['createdAt', 'ASC']],
+      where: { deleted_at: null }
       // limit: limit,
       // offset: offset,
     });
@@ -56,9 +59,9 @@ exports.get_survey = async (payload) => {
 };
 exports.update_survey = async (payload) => {
   try {
-    const { name, survey_type_id, options } = payload.body;
+    const { name, survey_type_id, options ,id} = payload.body;
     console.log("Surve^%%^&&yiiiddd",payload.body)
-    const survey_id = payload.body.id;
+    const survey_id = id;
     console.log("survey_IIIIIIIIIIIII",survey_id)
     if(!survey_type_id ){
       throw new CustomError("Survey type Id not found",400);
@@ -125,6 +128,27 @@ exports.survey_update_at_publish = async (payload) => {
     throw error;
   }
 };
+exports.partial_delete_survey=async(payload)=>{
+  try{
+    const { survey_id } = payload.params;
+    console.log("$%%$%fgdfggfgfh%^^",payload.params);
+    if (!survey_id) {
+      throw new CustomError("Survey id required", 400);
+    }
+    const deleted_at=new Date();
+    const partial_delete_surve = await survey.update( {
+      deleted_at:deleted_at
+    },{
+      where: { id: survey_id },
+    });
+    console.log("PARTIIAAAAAALDELETE",partial_delete_surve)
+    return partial_delete_surve;
+
+  }
+  catch(error){
+
+  }
+}
 exports.delete_survey = async (payload) => {
   try {
     const { survey_id } = payload.params;
@@ -152,6 +176,33 @@ exports.delete_survey = async (payload) => {
       where: { id: survey_id },
     });
     return delete_surve;
+  } catch (error) {
+    throw error;
+  }
+};
+exports.get_deleted_survey = async (payload) => {
+  try {
+   
+    const get_srv = await survey.findAndCountAll({
+      include: [
+        { model: survey_type, as: "survey_type" },
+        { model: question, as: "questions" }, // Include the 'question' model
+      ],order: [['createdAt', 'ASC']],
+      where: { deleted_at: { [Op.not]: null } }       // limit: limit,
+      // offset: offset,
+    });
+    if (!get_srv) {
+      throw new CustomError("Survey not found", 404);
+    }
+    // const total_items = await question.count();
+    const res = {
+      data: get_srv,
+      // total_items: total_items,
+      // total_pages: Math.ceil(total_items / limit),
+      // current_page: page_number,
+      
+    };
+    return res;
   } catch (error) {
     throw error;
   }

@@ -58,6 +58,8 @@ export const survey_question_slice = createSlice({
     });
     builder.addCase(create_survey_question.fulfilled, (state, action) => {
       state.isLoading = false;
+      console.log("ACTION.PAYLOAD", action.payload)
+      // state.content=[...]
     });
     builder.addCase(create_survey_question.rejected, (state, action) => {
       state.isLoading = false;
@@ -76,18 +78,19 @@ export const survey_question_slice = createSlice({
     // builder.addCase(update_survey.rejected, (state, action) => {
     //   state.isLoading = false;
     //   state.error = action.error;
+    // // });
+    // builder.addCase(get_question_of_survey.pending, (state) => {
+    //   state.isLoading = true;
     // });
-    builder.addCase(get_question_of_survey.pending, (state) => {
-      state.isLoading = true;
-    });
-    builder.addCase(get_question_of_survey.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.content = action.payload;
-    });
-    builder.addCase(get_question_of_survey.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error;
-    });
+    // builder.addCase(get_question_of_survey.fulfilled, (state, action) => {
+    //   state.isLoading = false;
+    //   state.content = action.payload;
+    //   console.log("ttrerew###################",action.payload);
+    // });
+    // builder.addCase(get_question_of_survey.rejected, (state, action) => {
+    //   state.isLoading = false;
+    //   state.error = action.error;
+    // });
   },
 });
 export const {resetpost}=survey_question_slice.actions

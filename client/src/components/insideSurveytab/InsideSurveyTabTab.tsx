@@ -161,7 +161,7 @@ export default function InsideSurveyTabTab({
           paddingBottom: "30px",
         }}
       >
-        <Typography sx={{ fontSize: "20px", fontWeight: "500" }}>
+        <Typography sx={{ fontSize: "20px", fontWeight: "600",lineHeight:"28px",fontFamily:"Open Sans, sans-serif",color:"#424242" }}>
           {survey.name} - {survey.options?.modality} ({survey.abbr})
         </Typography>
         <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -169,9 +169,9 @@ export default function InsideSurveyTabTab({
             checked={isPublished}
             onChange={(event) => handleDialogOpen(event.target.checked)}
           />
-          <Typography>PUBLISH SURVEY</Typography>
+          <Typography sx={{ fontSize: "14px", fontWeight: "600",lineHeight:"21px",fontFamily:"Open Sans, sans-serif",color:"#424242" }}>PUBLISH SURVEY</Typography>
           <Box sx={{ display: "flex", gap: "10px" }}>
-            <PreviewDialogBox survey={survey}/>
+            <PreviewDialogBox survey={survey} />
            
             <Button variant="outlined" onClick={handleOnClickSave}>
               Save
@@ -182,12 +182,13 @@ export default function InsideSurveyTabTab({
       <Box sx={{ border: "1px solid #e0e0e0" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
-            sx={{ border: "1px solid #e0e0e0", bgcolor: "#fafafa" }}
+            sx={{ border: "1px solid #e0e0e0", bgcolor: "#fafafa",fontFamily:"Open Sans, sans-serif",fontSize:"14px",fontWeight:"600",lineHeight:"18px" }}
             value={value}
             onChange={handleChange}
             aria-label="basic tabs example"
           >
-            <Tab label="Information" {...a11yProps(0)} />
+            <Tab label="Information" {...a11yProps(0)}             sx={{ border: "1px solid #e0e0e0", bgcolor: "#fafafa",fontFamily:"Open Sans, sans-serif",fontSize:"14px",fontWeight:"600",lineHeight:"18px", color:"#0009" }}
+            />
             <Tab label="Questions" {...a11yProps(1)} />
           </Tabs>
         </Box>

@@ -164,6 +164,7 @@ const DialogBoxSurvey: React.FC = () => {
         }}>
           <Box sx={{ display: "flex", flexDirection: "column", gap: "16px",marginBottom:"0px" }}>
             <TextField
+            required
               label="Survey Name"
               sx={{
                 marginTop: "12px",
@@ -203,6 +204,7 @@ const DialogBoxSurvey: React.FC = () => {
             >
               <TextField
                 label="Abbreviation"
+                required
                 sx={{
                   width: "89%",
                   borderRadius: "8px",
@@ -233,6 +235,7 @@ const DialogBoxSurvey: React.FC = () => {
                 onChange={(e) => setAbbr(e.target.value)}
               />
               <DropDown
+              
                 value={selectedSurveyTypeId}
                 onChange={(value: string) => setSelectedSurveyTypeId(value)}
                 options={surveyTypes}

@@ -41,6 +41,7 @@ const QuestionTab: React.FC<SurveyInfoProps> = ({ survey }) => {
 const  dispatch=useAppDispatch();
 
 const survey_id= survey?.id;
+// console.log()
 
   const question_type = useAppSelector((state) => state.question_type?.content?.response) || [];
   const abbr= useAppSelector((state)=>state.questions?.content?.response?.data);
@@ -73,10 +74,10 @@ const survey_id= survey?.id;
       setSelectedQuestions(selected);
     };
 
-  useEffect(() => {
-    const user= dispatch(get_question_of_survey(survey_id));
-    console.log("UUUUUUSEER",user)
-  },[dispatch,survey_id])
+  // useEffect(() => {
+  //   const user= dispatch(get_question_of_survey(survey_id));
+  //   console.log("UUUUUUSEER",user)
+  // },[dispatch,survey_id])
   const {content} = useAppSelector((state) => state.survey_question)
   console.log("CCCCCOOMMMNNTTTENNT",content);
 
@@ -133,8 +134,7 @@ const survey_id= survey?.id;
               searchTerm={searchTerm} 
               selectedType={selectedType} 
               checkSelectedType={checkSelectedType} 
-              // selecttedQuestions={selectedQuestions}
-              // questionss={content}
+              questionss={content}
             />
           </Box>
         </Box>

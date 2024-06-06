@@ -30,10 +30,11 @@ export default function Surveypage() {
         gap:"30px"
     }}>
         <Typography sx={{
-            fontSize:"20px",
-            fontWeight:"500",
-            fontFamily:""
-        }}>Surveys List</Typography>
+            fontSize:"23px",
+            fontWeight:"600",
+            fontFamily:"Open Sans, sans-serif",
+            color:"#424242"
+        }}>Surveys list</Typography>
        <Box> <DialogBoxSurvey/></Box>
     </Box>
     <Box >

@@ -21,6 +21,7 @@ import {
   get_question,
 } from "@/slice/question/question_action";
 import {
+  delete_question,
   get_deleted_questions,
 } from "@/slice/deleted_questions/deleted_questions_action";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -117,15 +118,26 @@ const DataTable: React.FC<DataTableProps> = ({
   const handleDelete = (id: number) => {
     setQuestionToDelete(id);
     setDeleteConfirmDialogOpen(true);
+
   };
 
   const confirmDelete = async () => {
     if (questionToDelete !== null) {
+      const question_id=questionToDelete;
       try {
-        await dispatch(delete_partial_question(questionToDelete));
+        if(!showDeleted){
+          await dispatch(delete_partial_question(questionToDelete));
         setRows((prevRows) =>
           prevRows.filter((row) => row.id !== questionToDelete)
         );
+        }
+       
+        else if(showDeleted){
+          await dispatch(delete_question(question_id))
+          setRows((prevRows) =>
+            prevRows.filter((row) => row.id !== questionToDelete)
+          );
+        }
         const CustomToast = () => {
           const handleCloseToast = () => {
             toast.dismiss();
