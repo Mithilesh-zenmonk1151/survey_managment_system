@@ -36,7 +36,10 @@ const initialState: initialStateProps = {
 export const survey_question_slice = createSlice({
   name: "survey_question",
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    resetpost: () => {return initialState},
+    },
+
   extraReducers: (builder) => {
     // builder.addCase(get_survey.pending, (state) => {
     //   state.isLoading = true;
@@ -87,5 +90,5 @@ export const survey_question_slice = createSlice({
     });
   },
 });
-
+export const {resetpost}=survey_question_slice.actions
 export default survey_question_slice.reducer;

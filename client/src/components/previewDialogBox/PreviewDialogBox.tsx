@@ -48,7 +48,6 @@ export default function PreviewDialogBox({ survey }: SurveyInformationProps) {
   const [open, setOpen] = React.useState(false);
   const dispatch = useAppDispatch();
   const questions = useAppSelector((state) => state.questions?.content?.response);
-
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -64,7 +63,7 @@ export default function PreviewDialogBox({ survey }: SurveyInformationProps) {
     }
   }, [dispatch, survey.id, open]);
   console.log("Sueefre",survey)
-
+console.log("sSSSSSSSSSSSSSSS",survey);
   return (
     <React.Fragment>
       <Button variant="outlined" onClick={handleClickOpen}>

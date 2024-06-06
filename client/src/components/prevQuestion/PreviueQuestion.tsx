@@ -6,7 +6,7 @@ interface QuestionComponentProps {
 }
 
 const PrevQuestionComponent: React.FC<QuestionComponentProps> = ({ question }) => {
-  console.log("Question Details: ", question);
+  console.log("Question DetailsaaDDA: ", question);
 console.log("QUESTIOJN",question?.question_type?.abbr)
   const renderQuestion = () => {
     switch (question?.question_type?.abbr) {

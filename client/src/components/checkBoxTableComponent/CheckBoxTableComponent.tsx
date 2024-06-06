@@ -240,9 +240,9 @@ export default function EnhancedTable({ survey,onSelectedQuestions}: InfoSurvey)
 
 
   const dispatch = useAppDispatch();
-  React.useEffect(() => {
-    dispatch(get_question());
-  }, [dispatch]);
+  // React.useEffect(() => {
+  //   dispatch(get_question());
+  // }, [dispatch]);
   const survey_id = survey.id;
 
 
