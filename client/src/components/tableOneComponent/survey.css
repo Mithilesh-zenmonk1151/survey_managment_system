@@ -4,7 +4,7 @@
 } */
 .css-yrdy0g-MuiDataGrid-columnHeaderRow{
     background-color: #efefef !important;
-    font-size: 13px !important;
+    font-size: 14px !important;
     font-weight: 800 !important;
     font-family:"Open Sans" !important;
     color: #424242 !important;
@@ -16,10 +16,23 @@
 
   }
   .css-n3fyjk-MuiDataGrid-root .MuiDataGrid-virtualScrollerContent .MuiDataGrid-row{
-    max-height: 20px !important;
+   
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    font-family:"Open Sans" !important;
+    color: #424242 !important;
+    line-height: 24px !important;
+    height:39px !important;
+    align-items: center;
+    justify-content: center;
+
+
   }
   .MuiDataGrid-row{
-    max-height: 20px !important;
+    height: 20px !important;
 
     
+  }
+  .data-table-row {
+    height: 60px; /* Adjust this value as needed */
   }

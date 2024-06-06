@@ -20,7 +20,7 @@ import AlertDialogConfirmationDeleteSurvey from "../dialogConfirmationDelet/Aler
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { get_deleted_questions } from "@/slice/deleted_questions/deleted_questions_action";
 import { delete_survey, get_deleted_survey } from "@/slice/deleted_survey/deleted_survey_action";
-
+import "./survey.css"
 interface DataRow {
   id: number;
   name: string;

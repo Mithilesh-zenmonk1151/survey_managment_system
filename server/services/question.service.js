@@ -169,7 +169,7 @@ exports.get_question_for_survey = async (payload) => {
     );
 
     const all_question_ids = await question.findAll(
-      { where: { active: true } },
+      { where: { active: true,deleted_at: null } },
       {
         attributes: ["id"],
       }
@@ -265,7 +265,7 @@ exports.get_question_of_survey = async (payload) => {
 
     const questions = await question.findAll({
       where: {
-        id: unique_question_ids_in_table,
+        id: unique_question_ids_in_table,deleted_at: null
       },
       include: [
                 {

@@ -4,6 +4,8 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Chip from '@mui/material/Chip';
+import CloseIcon from '@mui/icons-material/Close';
 import "./SearchingDropDown.css";
 
 const ITEM_HEIGHT = 48;
@@ -26,8 +28,8 @@ interface Option {
 interface DropDownForEditSurveyProps {
   options?: Option[];
   value?: string;
-  onChange: (value: string) => void;
-  select_type: string;
+  onChange?: (value: string) => void;
+  select_type?: string;
   em?: string;
   em_name?: string;
 }
@@ -42,7 +44,7 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
 }
 
 export default function SearchingDropDown(props: DropDownForEditSurveyProps) {
-  const { options, value, onChange, select_type, em, em_name } = props;
+  const { options, value, onChange, select_type, em, em_name, clearAll } = props;
   const theme = useTheme();
   const [selectedValue, setSelectedValue] = React.useState<string[]>([]);
 
@@ -54,9 +56,20 @@ export default function SearchingDropDown(props: DropDownForEditSurveyProps) {
     onChange(value as string); // Call onChange with the selected value
   };
 
+  const handleDelete = (valueToDelete: string) => () => {
+    setSelectedValue((prevSelected) => prevSelected.filter((value) => value !== valueToDelete));
+    onChange(''); // Clear the value when deleted
+  };
+
+  React.useEffect(() => {
+    if (selectedValue.length === 0) {
+      clearAll();
+    }
+  }, [selectedValue, clearAll]);
+
   return (
     <div>
-      <FormControl sx={{ m: 1, width: 125, mt: 0 }}>
+      <FormControl sx={{ m: 1, width: 200, mt: 0 }}> {/* Fixed width */}
         <Select
           displayEmpty
           value={selectedValue}
@@ -66,7 +79,24 @@ export default function SearchingDropDown(props: DropDownForEditSurveyProps) {
             if (selected.length === 0) {
               return <em className='em-c'>{em_name}</em>;
             }
-            return selected.join(', '); // Display selected values
+            return (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {selected.map((value) => (
+                  <Chip
+                    key={value}
+                    label={value}
+                    deleteIcon={<CloseIcon onMouseDown={(event) => event.stopPropagation()} />}
+                    onDelete={handleDelete(value)}
+                    style={{
+                      backgroundColor: '#e3f2fd',
+                      color: '#000',
+                      borderRadius: '20px',
+                      padding: '0 4px',
+                    }}
+                  />
+                ))}
+              </div>
+            );
           }}
           MenuProps={MenuProps}
           inputProps={{ 'aria-label': 'Without label' }}
@@ -103,6 +133,3 @@ export default function SearchingDropDown(props: DropDownForEditSurveyProps) {
     </div>
   );
 }
-
-
-

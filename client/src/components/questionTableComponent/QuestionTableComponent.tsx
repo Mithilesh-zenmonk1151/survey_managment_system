@@ -25,6 +25,7 @@ import {
   get_deleted_questions,
 } from "@/slice/deleted_questions/deleted_questions_action";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import "./styles.css"
 
 interface DataRow {
   id: number;

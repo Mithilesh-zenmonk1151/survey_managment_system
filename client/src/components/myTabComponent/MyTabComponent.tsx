@@ -144,6 +144,7 @@ const MyTabsComponent = () => {
                 customPlaceHolder="Search......"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                
               />
               <SearchingDropDown
                 select_type=""

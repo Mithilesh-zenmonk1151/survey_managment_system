@@ -1,11 +1,69 @@
 
 .custom-cell {
-    font-size: 10px; /* Adjust the font size as needed */
+    font-size: 20px !important; /* Adjust the font size as needed */
   }
   
   .custom-header-cell {
-    font-size: px; /* Adjust the font size as needed */
+    font-size: 10px !important; /* Adjust the font size as needed */
     font-weight: bold;
-    background-color: #e15252; /* Change this to your desired background color */
+    background-color: #e15252 !important; /* Change this to your desired background color */
   }
+  .css-yrdy0g-MuiDataGrid-columnHeaderRow{
+    background-color: #efefef !important;
+  }
+  .MuiDataGrid-columnHeader{
+    background-color: #efefef !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  font-family:"Open Sans" !important;
+  color: #424242 !important;
+  line-height: 24px !important;
+  height:39px !important;
+  align-items: center;
+  justify-content: center;
+
+}
+.MuiDataGrid-columnBODY{
+
+}
+.css-yrdy0g-MuiDataGrid-columnHeaderRow{
+  background-color: #efefef !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  font-family:"Open Sans" !important;
+  color: #424242 !important;
+  line-height: 24px !important;
+  height:39px !important;
+  align-items: center;
+  justify-content: center;
+
+
+}
+.css-wggte6-MuiDataGrid-root{
+  
+}
+.css-n3fyjk-MuiDataGrid-root .MuiDataGrid-virtualScrollerContent .MuiDataGrid-row{
+ 
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  font-family:"Open Sans" !important;
+  color: #424242 !important;
+  line-height: 24px !important;
+  height:39px !important;
+  align-items: center;
+  justify-content: center;
+  background-color: #e15252 !important;
+
+
+}
+.MuiDataGrid-row{
+  height: 20px !important;
+
+  
+}
+.data-table-row {
+  height: 60px; /* Adjust this value as needed */
+}
+  
+
   
