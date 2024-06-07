@@ -6,9 +6,9 @@ exports.create_survey_type = async (payload) => {
     if (!name || !abbr) {
       throw new CustomError("All fields are required",404);
     }
-    const check_survey_type= await survey_type.findOne({where:{name:name}});
+    const check_survey_type= await survey_type.findOne({where:{name:name,abbr:abbr}});
     if(check_survey_type){
-        throw new CustomError("This type of survey is already exists",409)
+        throw new CustomError("This name or abbriviation of survey is already exists",409)
     }
     const survey_tp = await survey_type.create({ name: name, abbr: abbr });
     return survey_tp

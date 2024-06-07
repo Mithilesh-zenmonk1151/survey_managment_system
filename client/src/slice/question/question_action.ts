@@ -45,18 +45,36 @@ interface FetchQuestionsParams {
 //       return rejectWithValue(error.response.data);
 //     }
 //   }
+// // );
+
+// export const get_question = createAsyncThunk(
+//   get_question_type,
+//   async (_, { rejectWithValue }) => {
+//     try {
+//       const response = await get_question_service();
+//       // console.log('Response===========slice Question',response);
+//       return response;
+//     } catch (err) {
+//       console.log("error In getting  question Yype")
+//       return rejectWithValue(err);
+//     }
+//   }
 // );
 
 export const get_question = createAsyncThunk(
-  get_question_type,
-  async (_, { rejectWithValue }) => {
+  "questions/get_question",
+  async (payload: { query: string; limit: number; page: number }, { rejectWithValue }) => {
     try {
-      const response = await get_question_service();
-      // console.log('Response===========slice Question',response);
-      return response;
-    } catch (err) {
-      console.log("error In getting  question Yype")
-      return rejectWithValue(err);
+      const response = await axios.get("http://localhost:4000/api/question", {
+        params: {
+          search: payload.query,
+          limit: payload.limit,
+          page: payload.page,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
     }
   }
 );

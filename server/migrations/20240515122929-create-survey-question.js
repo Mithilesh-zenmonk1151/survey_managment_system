@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('survey_questions', {
+    await queryInterface.createTable("survey_questions", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -16,34 +16,32 @@ module.exports = {
       },
       survey_id: {
         type: Sequelize.INTEGER,
-        allowNull:false
+        allowNull: false,
       },
       question_id: {
         type: Sequelize.INTEGER,
-        allowNull:false
+        allowNull: false,
       },
       order: {
         type: Sequelize.INTEGER,
-        allowNull:false
+        allowNull: false,
       },
       question_description: {
         type: Sequelize.TEXT,
-
       },
-      
       deleted_at: {
-        type: Sequelize.TIME
+        type: Sequelize.TIME,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('survey_questions');
-  }
+    await queryInterface.dropTable("survey_questions");
+  },
 };

@@ -6,6 +6,7 @@ import {
   GridRenderCellParams,
   GridSortDirection,
 } from "@mui/x-data-grid";
+import CustomRowsPerPageDropdown from './CustomRowsPerPageDropdown';
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -25,7 +26,8 @@ import {
   get_deleted_questions,
 } from "@/slice/deleted_questions/deleted_questions_action";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import "./styles.css"
+import "./styles.css";
+import { TextField } from "@mui/material";
 
 interface DataRow {
   id: number;
@@ -60,7 +62,13 @@ const DataTable: React.FC<DataTableProps> = ({
   const [questionToDelete, setQuestionToDelete] = useState<number | null>(
     null
   );
+  const [page, setPage] = useState<number>(0);
+  const [pageSize, setPageSize] = useState<number>(5);
+
   const dispatch = useAppDispatch();
+  console.log("PAGEEE",pageSize);
+  console.log("PAGEN",page);
+  console.log("SERCHTERM",searchTerm);
 
   const questiondata = useAppSelector(
     (state) => state.questions?.content?.response?.data
@@ -72,7 +80,17 @@ const DataTable: React.FC<DataTableProps> = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        dispatch(get_question());
+        const payload = {
+          query: searchTerm,
+          limit: pageSize,
+          page: page + 1,
+        };
+
+        if (showDeleted) {
+          dispatch(get_deleted_questions(payload));
+        } else {
+          dispatch(get_question(payload));
+        }
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -81,13 +99,13 @@ const DataTable: React.FC<DataTableProps> = ({
     };
 
     fetchData();
-  }, [dispatch]);
+  }, [dispatch, page, pageSize, searchTerm, showDeleted]);
 
   useEffect(() => {
     if (questiondata && !showDeleted) {
       const mappedRows = questiondata.map((item: any, index: number) => ({
         id: item?.id || index,
-        Id:index+1,
+        Id: index + 1,
         name: item?.description || "",
         type: item?.question_type?.abbr || "",
         type1: item?.question_type?.name,
@@ -100,7 +118,7 @@ const DataTable: React.FC<DataTableProps> = ({
     } else if (deletedQuestions && showDeleted) {
       const mappedRows = deletedQuestions.map((item: any, index: number) => ({
         id: item?.id || index,
-        Id:index+1,
+        Id: index + 1,
         name: item?.description || "",
         type: item?.question_type?.abbr || "",
         type1: item?.question_type?.name,
@@ -121,22 +139,19 @@ const DataTable: React.FC<DataTableProps> = ({
   const handleDelete = (id: number) => {
     setQuestionToDelete(id);
     setDeleteConfirmDialogOpen(true);
-
   };
 
   const confirmDelete = async () => {
     if (questionToDelete !== null) {
-      const question_id=questionToDelete;
+      const question_id = questionToDelete;
       try {
-        if(!showDeleted){
+        if (!showDeleted) {
           await dispatch(delete_partial_question(questionToDelete));
-        setRows((prevRows) =>
-          prevRows.filter((row) => row.id !== questionToDelete)
-        );
-        }
-       
-        else if(showDeleted){
-          await dispatch(delete_question(question_id))
+          setRows((prevRows) =>
+            prevRows.filter((row) => row.id !== questionToDelete)
+          );
+        } else if (showDeleted) {
+          await dispatch(delete_question(question_id));
           setRows((prevRows) =>
             prevRows.filter((row) => row.id !== questionToDelete)
           );
@@ -235,17 +250,31 @@ const DataTable: React.FC<DataTableProps> = ({
       <DataGrid
         rows={filteredQuestions}
         columns={columns}
-        pageSize={5}
+        pageSize={pageSize}
+        page={page}
+        rowCount={filteredQuestions.length}
+        paginationMode="server"
+        onPageChange={(newPage) => setPage(newPage)}
+        onPageSizeChange={(newPageSize) => {
+          setPageSize(newPageSize);
+          setPage(0);
+        }}
         loading={loading}
         sortingOrder={["desc", "asc"]}
-        pageSizeOptions={[5, 10, 25, 50, 100]}
+        rowsPerPageOptions={[5, 10, 25, 50]}
         sortModel={[
           {
             field: "id",
-            sort: "asc" as GridSortDirection,
+            sort: "asc",
           },
         ]}
+        components={{
+          RowsPerPageDropdown: CustomRowsPerPageDropdown,
+        }}
         componentsProps={{
+          rowsPerPageDropdown: {
+            rowsPerPageOptions: [5, 10, 25, 50],
+          },
           cell: {
             className: "custom-cell",
           },
@@ -259,6 +288,7 @@ const DataTable: React.FC<DataTableProps> = ({
           fontFamily: "Poppins",
         }}
       />
+
       <EditQuestionDialogBox
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
@@ -271,6 +301,8 @@ const DataTable: React.FC<DataTableProps> = ({
         modelHeading="Delete Question"
         modelBody="Are you sure you want to delete this question?"
       />
+      <TextField type="numder" value={pageSize} onChange={(e)=>setPageSize(e.target.value)}/>
+      <TextField placeholder="pa" type="numder" value={page} onChange={(e)=>setPage(e.target.value)}/>
     </div>
   );
 };

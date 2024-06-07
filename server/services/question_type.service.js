@@ -7,10 +7,13 @@ exports.create_question_type = async (payload) => {
       throw new CustomError("All fields are Required", 400);
     }
     const is_exist_question_type = await question_type.findOne({
-      where: { name: name },
+      where: { name: name, abbr: abbr },
     });
     if (is_exist_question_type) {
-      throw new CustomError("Question type allready exist", 409);
+      throw new CustomError(
+        "Question type  and abbriviation allready exist",
+        409
+      );
     }
     const question_tp = await question_type.create({
       name: name,
@@ -27,9 +30,7 @@ exports.get_question_type = async (payload) => {
     const quest_type = await question_type.findAll({
       include: [{ model: question, as: "questions" }],
     });
-
     console.log("Survey==========================");
-
     if (!quest_type) {
       throw new CustomError("Survey not found", 404);
     }
@@ -38,4 +39,3 @@ exports.get_question_type = async (payload) => {
     throw error;
   }
 };
-

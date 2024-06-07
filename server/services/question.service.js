@@ -13,10 +13,13 @@ exports.create_question = async (payload) => {
       throw new CustomError("All fields are required", 400);
     }
     const check_is_question_exists = await question.findOne({
-      where: { description: description },
+      where: { description: description, abbr: abbr },
     });
     if (check_is_question_exists) {
-      throw new CustomError("Question already exists", 409);
+      throw new CustomError(
+        "This name or abbriviation of question already exists",
+        409
+      );
     }
     const quest = await question.create({
       question_type_id: question_type_id,
@@ -32,8 +35,8 @@ exports.create_question = async (payload) => {
 exports.get_question = async (payload) => {
   try {
     console.log("QUERY@@@@@***************", payload.query);
-    const page_number = payload.query.page_number || 1;
-    const limit = payload.query.limit || 50;
+    const page_number = payload.query.page || 1;
+    const limit = payload.query.limit || 5;
     const search = payload.query.search || "";
     const offset = (page_number - 1) * limit;
     console.log("PAGENUMBER", page_number);
@@ -65,17 +68,17 @@ exports.get_question = async (payload) => {
     if (!surveyes) {
       throw new CustomError("Survey not found", 404);
     }
+    console.log("SSSSSSSSU#$#$$$$$",surveyes);
 
     const total_items = surveyes.count;
     const total_pages = Math.ceil(total_items / limit);
-
-    // Build the response
     const res = {
       data: surveyes.rows,
       total_items: total_items,
       total_pages: total_pages,
       current_page: page_number,
     };
+    console.log("sSer???????????????",res);
 
     return res;
   } catch (error) {
@@ -121,7 +124,7 @@ exports.update_question = async (payload) => {
   try {
     const { id, description } = payload.body;
     const question_id = id;
-    console.log("PAPPAAYYAAAAAAAAAAAA", payload.body);
+    console.log("PAAAYYAAAAAAAAAAAALOADDDDDDD", payload.body);
     console.log("PAPPAAYYAAAAAAAAAAAA", description);
     const servey_qu = await survey_question.findAll({
       where: { question_id: question_id },
@@ -151,7 +154,6 @@ exports.update_question = async (payload) => {
     throw error;
   }
 };
-
 exports.get_question_for_survey = async (payload) => {
   try {
     const { survey_id } = payload.params;
@@ -159,17 +161,14 @@ exports.get_question_for_survey = async (payload) => {
     if (!survey_id) {
       throw new CustomError("survey id is required", 400);
     }
-
     const survey_data = await survey_question.findAll({
       where: { survey_id: survey_id },
     });
-
     const question_ids_in_table = await survey_data.map(
       (survey_question) => survey_question.question_id
     );
-
     const all_question_ids = await question.findAll(
-      { where: { active: true,deleted_at: null } },
+      { where: { active: true, deleted_at: null } },
       {
         attributes: ["id"],
       }
@@ -182,8 +181,9 @@ exports.get_question_for_survey = async (payload) => {
       where: {
         id: missing_question_ids,
       },
+      limit: limit,
+      offset: offset,
     });
-
     return missing_questions;
   } catch (error) {
     throw error;
@@ -220,11 +220,9 @@ exports.delete_question = async (payload) => {
     throw error;
   }
 };
-
 exports.get_question_thr_id = async (payload) => {
   try {
     const { question_id } = payload.body;
-
     const surveyes = await question.findOne({
       where: { id: question_id },
       include: [{ model: question_type, as: "question_type" }],
@@ -234,11 +232,9 @@ exports.get_question_thr_id = async (payload) => {
     if (!surveyes) {
       throw new CustomError("Survey not found", 404);
     }
-
     const res = {
       data: surveyes,
     };
-
     return res;
   } catch (error) {
     throw error;
@@ -246,52 +242,49 @@ exports.get_question_thr_id = async (payload) => {
 };
 exports.get_question_of_survey = async (payload) => {
   try {
+    console.log("QUERY@@@@@***************", payload.query);
+    const page_number = payload.query.page || 1;
+    const limit = payload.query.limit || 5;
+    const search = payload.query.search || "";
+    const offset = (page_number - 1) * limit;
     const { survey_id } = payload.params;
     if (!survey_id) {
       throw new CustomError("Survey Id Not found", 400);
     }
-
     const survey_data = await survey_question.findAll({
       where: { survey_id: survey_id },
     });
-
     const question_ids_in_table = survey_data.map(
       (survey_question) => survey_question.question_id
     );
-
     const unique_question_ids_in_table = [...new Set(question_ids_in_table)];
-
     console.log("PKANbxscksxj===========", unique_question_ids_in_table);
-
     const questions = await question.findAll({
       where: {
-        id: unique_question_ids_in_table,deleted_at: null
+        id: unique_question_ids_in_table,
+        deleted_at: null,
       },
       include: [
-                {
-                  model:question_type,
-                  as: "question_type",
-                },
-                
-              ],
-      
-      
+        {
+          model: question_type,
+          as: "question_type",
+        },
+      ],
+      limit: limit,
+      offset: offset,
     });
-
     console.log("data lrthrthrthrt", questions.length);
     return questions;
   } catch (error) {
     throw error;
   }
 };
-
 exports.create_question_survey_inside_survey = async (payload) => {
   try {
     const { question_type_id, description, abbr, active, survey_id } =
       payload.body;
   } catch (error) {}
 };
-
 exports.get_deleted_questions = async (payload) => {
   try {
     console.log("QUERY@@@@@***************", payload.query);
@@ -313,7 +306,6 @@ exports.get_deleted_questions = async (payload) => {
       limit: limit,
       offset: offset,
     };
-
     if (search) {
       query_options.where = {
         ...query_options.where,
@@ -334,13 +326,11 @@ exports.get_deleted_questions = async (payload) => {
       total_pages: total_pages,
       current_page: page_number,
     };
-
     return res;
   } catch (error) {
     throw error;
   }
 };
-
 // exports.get_question_of_survey = async (payload) => {
 //   try {
 //     const { survey_id } = payload.params;

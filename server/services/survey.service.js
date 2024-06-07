@@ -1,7 +1,8 @@
 const CustomError = require("../libs/error");
 const { Op, where } = require("sequelize");
 
-const { survey, survey_type ,question} = require("../models");
+const { survey, survey_type, question } = require("../models");
+const { search } = require("../routes");
 exports.create_survey = async (payload) => {
   try {
     const { survey_type_id, name, abbr, options } = payload.body;
@@ -9,9 +10,14 @@ exports.create_survey = async (payload) => {
     if (!survey_type_id || !name || !abbr || !options) {
       throw new CustomError("All Fields are required", 400);
     }
-    const check_survey_exists = await survey.findOne({ where: { name: name } });
+    const check_survey_exists = await survey.findOne({
+      where: { name: name, abbr: abbr },
+    });
     if (check_survey_exists) {
-      throw new CustomError("Same name of survey allready exists", 409);
+      throw new CustomError(
+        "Same name or abbriviation of survey allready exists",
+        409
+      );
     }
     const crt_survey = await survey.create({
       survey_type_id: survey_type_id,
@@ -27,37 +33,59 @@ exports.create_survey = async (payload) => {
 };
 exports.get_survey = async (payload) => {
   try {
-    // const page_number = payload.query.page_number || 1;
-    // const limit = payload.query.limit || 3;
-    // console.log("PAGENUMER", page_number);
-    // console.log("PAGENUMER", limit);
-    // const offset = (page_number - 1) * limit;
-    const get_srv = await survey.findAndCountAll({
+    const page_number = payload.query.page_number || 1;
+    const limit = payload.query.limit || 3;
+    console.log("PAGENUMER", page_number);
+    console.log("PAGENUMER", limit);
+    const offset = (page_number - 1) * limit;
+    const query_options={
       include: [
         { model: survey_type, as: "survey_type" },
         {
           model: question,
           as: "questions",
-         
-         
-        }
+        },
       ],
-      order: [['createdAt', 'ASC']],
-      where: { deleted_at: null }
-      // limit: limit,
-      // offset: offset,
-    });
+      order: [["createdAt", "ASC"]],
+      where: { deleted_at: null },
+      limit: limit,
+      offset: offset,
+
+    }
+    if(search){
+      query_options.where={
+        ...query_options.where,
+        description:{
+          [Op.like]: `%${search}%`,
+        }
+      }
+    }
+    const get_srv = await question.findAndCountAll(query_options);
+
+    // const get_srv = await survey.findAndCountAll({
+    //   include: [
+    //     { model: survey_type, as: "survey_type" },
+    //     {
+    //       model: question,
+    //       as: "questions",
+    //     },
+    //   ],
+    //   order: [["createdAt", "ASC"]],
+    //   where: { deleted_at: null },
+    //   limit: limit,
+    //   offset: offset,
+    // });
     if (!get_srv) {
       throw new CustomError("Survey not found", 404);
     }
-    // const total_items = await question.count();
+    const total_items = await survey.count({where:{deleted_at:null}});
     const res = {
       data: get_srv,
-      // total_items: total_items,
-      // total_pages: Math.ceil(total_items / limit),
-      // current_page: page_number,
+      total_items: total_items,
+      total_pages: Math.ceil(total_items / limit),
+      current_page: page_number,
     };
-    console.log("RES",res)
+    console.log("RES", res);
     return res;
   } catch (error) {
     throw error;
@@ -65,20 +93,20 @@ exports.get_survey = async (payload) => {
 };
 exports.update_survey = async (payload) => {
   try {
-    const { name, survey_type_id, options ,id} = payload.body;
-    console.log("Surve^%%^&&yiiiddd",payload.body)
+    const { name, survey_type_id, options, id } = payload.body;
+    console.log("Surve^%%^&&yiiiddd", payload.body);
     const survey_id = id;
-    console.log("survey_IIIIIIIIIIIII",survey_id)
-    if(!survey_type_id ){
-      throw new CustomError("Survey type Id not found",400);
+    console.log("survey_IIIIIIIIIIIII", survey_id);
+    if (!survey_type_id) {
+      throw new CustomError("Survey type Id not found", 400);
     }
-    if(!survey_id ){
-      throw new CustomError("Survey Id not found",400);
+    if (!survey_id) {
+      throw new CustomError("Survey Id not found", 400);
     }
     const check_is_survey_exists = await survey.findOne({
       where: { id: survey_id },
     });
-    console.log("NNAAMMAM",name);
+    console.log("NNAAMMAM", name);
 
     if (!check_is_survey_exists) {
       throw new CustomError("Survey is not exists", 404);
@@ -93,15 +121,13 @@ exports.update_survey = async (payload) => {
     throw error;
   }
 };
-
 exports.survey_update_at_publish = async (payload) => {
   try {
     const { is_published } = payload.body;
     const survey_id = payload.body.id;
-    if(!survey_id){
-      throw new CustomError("Survey id required",499)
+    if (!survey_id) {
+      throw new CustomError("Survey id required", 499);
     }
-
     const check_is_survey_exists = await survey.findOne({
       where: { id: survey_id },
     });
@@ -110,7 +136,6 @@ exports.survey_update_at_publish = async (payload) => {
     }
     const published_at = new Date();
     const publication_status_changed_at = new Date();
-
     let updated_survey;
     if (is_published) {
       updated_survey = await survey.update(
@@ -134,31 +159,30 @@ exports.survey_update_at_publish = async (payload) => {
     throw error;
   }
 };
-exports.partial_delete_survey=async(payload)=>{
-  try{
+exports.partial_delete_survey = async (payload) => {
+  try {
     const { survey_id } = payload.params;
-    console.log("$%%$%fgdfggfgfh%^^",payload.params);
+    console.log("$%%$%fgdfggfgfh%^^", payload.params);
     if (!survey_id) {
       throw new CustomError("Survey id required", 400);
     }
-    const deleted_at=new Date();
-    const partial_delete_surve = await survey.update( {
-      deleted_at:deleted_at
-    },{
-      where: { id: survey_id },
-    });
-    console.log("PARTIIAAAAAALDELETE",partial_delete_surve)
+    const deleted_at = new Date();
+    const partial_delete_surve = await survey.update(
+      {
+        deleted_at: deleted_at,
+      },
+      {
+        where: { id: survey_id },
+      }
+    );
+    console.log("PARTIIAAAAAALDELETE", partial_delete_surve);
     return partial_delete_surve;
-
-  }
-  catch(error){
-
-  }
-}
+  } catch (error) {}
+};
 exports.delete_survey = async (payload) => {
   try {
     const { survey_id } = payload.params;
-    console.log("$%%$%fgdfggfgfh%^^",payload.params);
+    console.log("$%%$%fgdfggfgfh%^^", payload.params);
     if (!survey_id) {
       throw new CustomError("Survey id required", 400);
     }
@@ -188,13 +212,13 @@ exports.delete_survey = async (payload) => {
 };
 exports.get_deleted_survey = async (payload) => {
   try {
-   
     const get_srv = await survey.findAndCountAll({
       include: [
         { model: survey_type, as: "survey_type" },
         { model: question, as: "questions" }, // Include the 'question' model
-      ],order: [['createdAt', 'ASC']],
-      where: { deleted_at: { [Op.not]: null } }       // limit: limit,
+      ],
+      order: [["createdAt", "ASC"]],
+      where: { deleted_at: { [Op.not]: null } }, // limit: limit,
       // offset: offset,
     });
     if (!get_srv) {
@@ -206,7 +230,6 @@ exports.get_deleted_survey = async (payload) => {
       // total_items: total_items,
       // total_pages: Math.ceil(total_items / limit),
       // current_page: page_number,
-      
     };
     return res;
   } catch (error) {
