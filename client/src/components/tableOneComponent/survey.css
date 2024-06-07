@@ -23,8 +23,7 @@
     color: #424242 !important;
     line-height: 24px !important;
     height:39px !important;
-    align-items: center;
-    justify-content: center;
+   
 
 
   }
@@ -52,8 +51,7 @@
     font-size: 13px !important;
     line-height: 24px !important;
     height: 39px !important;
-    align-items: center !important;
-    justify-content: center !important;
+   
   }
   
   .MuiDataGrid-filler {

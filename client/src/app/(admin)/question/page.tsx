@@ -39,7 +39,9 @@ const QuestionPage: React.FC = () => {
 
   return (
     <Box>
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between",
+        width:"98%"
+       }}>
         <Typography sx={{ fontSize: "22px", fontWeight: "600" }}>
           Questions List
         </Typography>
@@ -49,7 +51,7 @@ const QuestionPage: React.FC = () => {
       </Box>
       <Box sx={{ bgcolor: "white", borderRadius: "5px" }}>
         <Box sx={{ padding: "30px", marginTop: "20px" }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between" ,width:"95%"}}>
             <Box sx={{ display: "flex", gap: "30px", alignItems: "center" }}>
               <SearchbarCompo
                 value={searchTerm}

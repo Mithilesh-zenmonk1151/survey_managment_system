@@ -298,8 +298,8 @@ const DataTable: React.FC<DataTableProps> = ({
     { field: "Id", headerName: "ID", width: 90 },
     { field: "name", headerName: "Name", width: 350 },
     { field: "question", headerName: "Question", width: 80 },
-    { field: "type", headerName: "Type of Survey", width: 300 },
-    { field: "abbreviation", headerName: "Abbreviation", width: 225 },
+    { field: "type", headerName: "Type of Survey", width: 200 },
+    { field: "abbreviation", headerName: "Abbreviation", width: 150 },
     { field: "modified", headerName: "Modified", width: 170 },
     {
       field: "status",

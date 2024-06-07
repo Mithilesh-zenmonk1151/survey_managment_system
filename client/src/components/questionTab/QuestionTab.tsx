@@ -80,6 +80,7 @@ const survey_id= survey?.id;
   // },[dispatch,survey_id])
   const {content} = useAppSelector((state) => state.survey_question)
   console.log("CCCCCOOMMMNNTTTENNT",content);
+  console.log("DRWE")
 
   return (
     <Box display="flex" flexDirection="row" height="100vh" overflow="hidden">
@@ -116,9 +117,10 @@ const survey_id= survey?.id;
               </Box>
               <Box sx={{ display: 'flex', gap: '20px' }}>
             <Box onClick={handleDrawerToggle}>
+              
               {drawerOpen ? (
                 <ArrowForwardIcon
-                  sx={{ cursor: 'pointer', borderLeft: '1px solid black',borderRadius:"20px",bgcolor:"white", }}
+                  sx={{ cursor: 'pointer', borderLeft: '1px solid black',borderRadius:"20px",bgcolor:"red", }}
                 />
               ) : (
                 <Button variant="outlined" sx={{ bgcolor: 'white' }}>

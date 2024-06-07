@@ -27,7 +27,8 @@ export default function Surveypage() {
     <Box sx={{
         display:"flex",
         justifyContent:"space-between",
-        gap:"30px"
+        gap:"30px",
+        width:'95%'
     }}>
         <Typography sx={{
             fontSize:"23px",
@@ -37,7 +38,9 @@ export default function Surveypage() {
         }}>Surveys list</Typography>
        <Box> <DialogBoxSurvey/></Box>
     </Box>
-    <Box >
+    <Box  sx={{
+         width:'95%'
+    }}>
         {/* <BasicTabs/> */}
         {/* <MyTabsComponent/> */}
         {/* <DataTable/> */}

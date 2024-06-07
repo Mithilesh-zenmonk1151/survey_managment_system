@@ -3,11 +3,6 @@
     height: 39px;
 
   }
-  .custom-data-grid .MuiDataGrid-colCell {
-    background-color: #efefef; /* Set your desired background color */
-    height: 39px; /* Set the height of the header */
-  }
   .css-yrdy0g-MuiDataGrid-columnHeaderRow{
-    background-color: rgb(37, 173, 173) !important;
   }
   
