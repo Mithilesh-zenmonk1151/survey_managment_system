@@ -1,22 +1,25 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
 import { Box, Button, Typography, Switch } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import DialogBox from '@/components/DialogBox/DialogBox';
-import SearchbarCompo from '@/components/searchBar/SearchBarCompo';
-import SearchingDropDown from '@/components/searchingDropDown/SearchingDropDown';
-import QuestionTableComponent from '@/components/questionTableComponent/QuestionTableComponent';
+import DialogBox from "@/components/DialogBox/DialogBox";
+import SearchbarCompo from "@/components/searchBar/SearchBarCompo";
+import SearchingDropDown from "@/components/searchingDropDown/SearchingDropDown";
+import QuestionTableComponent from "@/components/questionTableComponent/QuestionTableComponent";
 import CheckBoxDropDown from "@/components/checkBoxDropDown/CheckBoxDropDown";
 import { get_deleted_questions } from "@/slice/deleted_questions/deleted_questions_action";
 
-const label = { inputProps: { 'aria-label': 'Switch demo' } };
+const label = { inputProps: { "aria-label": "Switch demo" } };
 
 const QuestionPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [checkSelectedType, setCheckSelectedType] = useState("");
-  const question_type = useAppSelector((state) => state.question_type?.content?.response) || [];
-  const abbr = useAppSelector((state) => state.questions?.content?.response?.data);
+  const question_type =
+    useAppSelector((state) => state.question_type?.content?.response) || [];
+  const abbr = useAppSelector(
+    (state) => state.questions?.content?.response?.data
+  );
   const dispatch = useAppDispatch();
   const [showDeleted, setShowDeleted] = useState(false);
 
@@ -30,7 +33,9 @@ const QuestionPage: React.FC = () => {
     dispatch(get_deleted_questions());
   }, [dispatch]);
 
-  const deletedQuestions = useAppSelector((state) => state.deleted_questions?.deletedQuestions?.response?.data);
+  const deletedQuestions = useAppSelector(
+    (state) => state.deleted_questions?.deletedQuestions?.response?.data
+  );
 
   return (
     <Box>
@@ -50,8 +55,9 @@ const QuestionPage: React.FC = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 customPlaceHolder="Search..."
-                onClear={() => setSearchTerm("")}
+                clearAll={clearAll}
               />
+
               <SearchingDropDown
                 options={question_type}
                 em_name="Type"
@@ -93,3 +99,22 @@ const QuestionPage: React.FC = () => {
 };
 
 export default QuestionPage;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

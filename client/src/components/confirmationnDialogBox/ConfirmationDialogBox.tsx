@@ -13,13 +13,14 @@ interface AlertDialogProps {
   onAgree: () => void;
   status: boolean;
 }
-  ``
+  
 const AlertDialog: React.FC<AlertDialogProps> = ({
   open,
   onClose,
   onAgree,
   status,
 }) => {
+  console.log("STTTTTTTTTTTTTTAAAAAAA",status);
   return (
     <Dialog
       open={open}

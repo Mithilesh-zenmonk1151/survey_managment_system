@@ -3,18 +3,16 @@ import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
-import CloseIcon from "@mui/icons-material/Close";
 
 type SearchProp = {
   customPlaceHolder?: string;
   customClassForSearchBar?: string;
-  value?: string;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onClear?: () => void;
+  value: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 export default function SearchbarCompo(props: SearchProp) {
-  const { customPlaceHolder, customClassForSearchBar, value, onChange, onClear } = props;
+  const { customPlaceHolder, customClassForSearchBar, value, onChange } = props;
 
   return (
     <Paper
@@ -45,11 +43,8 @@ export default function SearchbarCompo(props: SearchProp) {
         value={value}
         onChange={onChange}
       />
-      {value && (
-        <IconButton type="button" sx={{ p: "10px" }} aria-label="clear" onClick={onClear}>
-          <CloseIcon />
-        </IconButton>
-      )}
+      <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+      </IconButton>
     </Paper>
   );
 }

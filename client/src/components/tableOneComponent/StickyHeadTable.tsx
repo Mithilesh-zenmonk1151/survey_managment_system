@@ -93,11 +93,13 @@ const DataTable: React.FC<DataTableProps> = ({
 
     fetchData();
   }, [dispatch]);
+  console.log("SUEVEtttttttttt###########",survey);
 
   useEffect(() => {
     if (survey && !showDeleted) {
-      let filteredRows = survey?.map((item: any) => ({
+      let filteredRows = survey?.map((item: any,index:number) => ({
         id: item?.id,
+        Id:index+1,
         name: item?.name,
         question: item?.questions?.length,
         type: item?.survey_type?.abbr,
@@ -111,9 +113,10 @@ const DataTable: React.FC<DataTableProps> = ({
 
       setRows(filteredRows);
     } else if (deletedSurveys && showDeleted) {
-      let filteredRows = deletedSurveys?.map((item: any) => ({
+      let filteredRows = deletedSurveys?.map((item: any,index:number) => ({
         id: item?.id,
         name: item?.name,
+        Id:index+1,
         question: item?.questions?.length,
         type: item?.survey_type?.abbr,
         type1: item?.survey_type?.name,
@@ -231,19 +234,13 @@ const DataTable: React.FC<DataTableProps> = ({
 
   const confirmDelete =async () => {
     if (confirmDeleteId !== null) {
-      if(!showDeleted){
+     
       await dispatch(delete_partial_survey(confirmDeleteId));
       setRows((prevRows) =>
         prevRows?.filter((row) => row?.id !== confirmDeleteId)
       );
-    }
-    else if(showDeleted){
-      const survey_id= confirmDeleteId;
-      await dispatch(delete_survey(survey_id));
-      setRows((prevRows) =>
-        prevRows.filter((row) => row.id !== confirmDelete)
-      );
-    }
+   
+ 
       const CustomToast = () => {
         const handleCloseToast = () => {
           toast.dismiss();
@@ -297,8 +294,8 @@ const DataTable: React.FC<DataTableProps> = ({
   };
 
   const columns: GridColDef[] = [
-    { field: " ", headerName: " ", width: 27 },
-    { field: "id", headerName: "ID", width: 90 },
+    { field: " id", headerName: " ", width: 27 },
+    { field: "Id", headerName: "ID", width: 90 },
     { field: "name", headerName: "Name", width: 350 },
     { field: "question", headerName: "Question", width: 80 },
     { field: "type", headerName: "Type of Survey", width: 300 },
@@ -319,8 +316,8 @@ const DataTable: React.FC<DataTableProps> = ({
       ),
     },
     {
-      field: "options",
-      headerName: "Options",
+      field: "",
+      headerName: "",
       width: 130,
       renderCell: (params: GridRenderCellParams) => (
         <>
@@ -353,6 +350,7 @@ const DataTable: React.FC<DataTableProps> = ({
   return (
     <div style={{ height: 600, width: "100%" }}>
       <DataGrid
+      
         rows={filteredSurvey}
         pageSizeOptions={[5, 10, 25, 50, 100]}
         columns={columns}
@@ -369,6 +367,7 @@ const DataTable: React.FC<DataTableProps> = ({
         open={statusDialogOpen}
         onClose={closeStatusDialog}
         onAgree={agreeStatusChange}
+        status={currentStatus}
         message="Are you sure you want to change the status?"
       />
       <Popover

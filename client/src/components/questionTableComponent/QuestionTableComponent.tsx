@@ -87,6 +87,7 @@ const DataTable: React.FC<DataTableProps> = ({
     if (questiondata && !showDeleted) {
       const mappedRows = questiondata.map((item: any, index: number) => ({
         id: item?.id || index,
+        Id:index+1,
         name: item?.description || "",
         type: item?.question_type?.abbr || "",
         type1: item?.question_type?.name,
@@ -99,6 +100,7 @@ const DataTable: React.FC<DataTableProps> = ({
     } else if (deletedQuestions && showDeleted) {
       const mappedRows = deletedQuestions.map((item: any, index: number) => ({
         id: item?.id || index,
+        Id:index+1,
         name: item?.description || "",
         type: item?.question_type?.abbr || "",
         type1: item?.question_type?.name,
@@ -200,8 +202,8 @@ const DataTable: React.FC<DataTableProps> = ({
   });
 
   const columns: GridColDef[] = [
-    { field: " ", headerName: " ", width: 35 },
-    { field: "id", headerName: "ID", width: 90 },
+    { field: "", headerName: " ", width: 35 },
+    { field: "Id", headerName: "ID", width: 90 },
     { field: "name", headerName: "Name", width: 400 },
     { field: "type", headerName: "Type", width: 350 },
     { field: "abbreviation", headerName: "Abbreviation", width: 250 },

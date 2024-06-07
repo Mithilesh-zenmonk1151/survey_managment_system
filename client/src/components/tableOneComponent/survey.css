@@ -1,25 +1,25 @@
 /* .MuiDataGrid-columnHeader{
     width: unset !important;
     background-color: red !important;
-} */
-.css-yrdy0g-MuiDataGrid-columnHeaderRow{
+/* } */
+/* .css-yrdy0g-MuiDataGrid-columnHeaderRow{
     background-color: #efefef !important;
     font-size: 14px !important;
     font-weight: 800 !important;
-    font-family:"Open Sans" !important;
+    font-family:"Open Sans","sans" !important;
     color: #424242 !important;
     line-height: 24px !important;
     height:39px !important;
     align-items: center;
     justify-content: center;
+ */
 
-
-  }
+  /* } */ */
   .css-n3fyjk-MuiDataGrid-root .MuiDataGrid-virtualScrollerContent .MuiDataGrid-row{
    
     font-size: 13px !important;
     font-weight: 400 !important;
-    font-family:"Open Sans" !important;
+    font-family:"Open Sans" ,"sans-serif" !important;
     color: #424242 !important;
     line-height: 24px !important;
     height:39px !important;
@@ -35,4 +35,27 @@
   }
   .data-table-row {
     height: 60px; /* Adjust this value as needed */
+  }
+  .MuiDataGrid-cell--textLeft{
+    font-size: 14px;
+  }
+   .MuiDataGrid-cell--textLeft{
+    margin: 0px;
+    padding: 0px;
+  }
+  .css-yrdy0g-MuiDataGrid-columnHeaderRow {
+    background-color: #efefef !important;
+    font-family: "Open Sans", "sans-serif" !important;
+    font-style: normal !important;
+    font-weight: 600 !important;
+    color: rgb(66, 66, 66) !important;
+    font-size: 13px !important;
+    line-height: 24px !important;
+    height: 39px !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  .MuiDataGrid-filler {
+    height: 0px !important; /* Reset height to auto */
   }

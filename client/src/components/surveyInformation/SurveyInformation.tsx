@@ -67,7 +67,7 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
     <Box>
       <Box sx={{ display: "flex" }}>
         <Box sx={{ width: "50%", display: "flex", flexDirection: "column", gap: "30px" }}>
-          <Typography variant="h6">Basic Information</Typography>
+          <Typography variant="h6" sx={{ fontSize: "20px", fontWeight: "550", fontFamily:"Open Sans, sans-serif",color:"#000",lineHeight:"27px"}}>Basic information</Typography>
           <TextField
             id="outlined-name"
             label="Name"
@@ -80,14 +80,13 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
             id="outlined-abbr"
             label="Abbreviation"
             variant="outlined"
-            sx={{ width: "90%" }}
             value={survey?.abbr || ''}
             disabled
-          />
+            sx={{ fontSize: "14px", fontWeight: "400", fontFamily:"Open Sans, sans-serif",color:"#0009",lineHeight:"20px",width:"90%"}} />
           <FormControl fullWidth variant="outlined" sx={{
             width:"90%"
           }}>
-        <InputLabel id="type-of-survey-label">Type of Survey</InputLabel>
+        <InputLabel id="type-of-survey-label" sx={{ fontSize: "14px", fontWeight: "400", fontFamily:"Open Sans ,sans-serif",color:"#0009",lineHeight:"20px"}}>Type of Survey</InputLabel>
         <Select
           labelId="type-of-survey-label"
           id="type-of-survey"
@@ -96,7 +95,7 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
           label="Type of Survey"
         >
           {survey_types?.map((type:any) => (
-            <MenuItem key={type?.id} value={type?.name}>
+            <MenuItem key={type?.id} value={type?.name}  sx={{ fontSize: "14px", fontWeight: "400", fontFamily:"Open Sans, sans-serif",color:"#424242",lineHeight:"21px"}}>
               {type?.name}
             </MenuItem>
           ))}
@@ -106,7 +105,7 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
           <FormControl fullWidth variant="outlined" sx={{
             width:"90%"
           }}>
-        <InputLabel id="type-of-survey-label">Modality</InputLabel>
+        <InputLabel id="type-of-survey-label" sx={{ fontSize: "14px", fontWeight: "400", fontFamily:"Open Sans, sans-serif",color:"#0009",lineHeight:"20px"}}>Modality</InputLabel>
         <Select
           labelId="type-of-survey-label"
           id="type-of-survey"
@@ -115,14 +114,14 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
           label="Type of Survey"
         >
           {modalities.map((type:any) => (
-            <MenuItem key={type?.id} value={type?.name}>
+            <MenuItem key={type?.id} value={type?.name} sx={{ fontSize: "14px", fontWeight: "400", fontFamily:"Open Sans, sans-serif",color:"#424242",lineHeight:"21px"}}>
               {type?.name}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
           <FormControl sx={{ width: "90%" }}>
-            <InputLabel id="language-label">Language</InputLabel>
+            <InputLabel id="language-label"  sx={{ fontSize: "14px", fontWeight: "400", fontFamily:"Open Sans, sans-serif",color:"#0009",lineHeight:"20px"}}>Language</InputLabel>
             <Select
               labelId="language-label"
               id="outlined-language"
@@ -131,7 +130,7 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
               onChange={(e) => set_selected_language( e.target.value)} 
             >
               {languages?.map((lang) => (
-                <MenuItem key={lang.id} value={lang.value}>
+                <MenuItem key={lang.id} value={lang.value}  sx={{ fontSize: "14px", fontWeight: "400", fontFamily:"Open Sans, sans-serif",color:"#424242"}}>
                   {lang.name}
                 </MenuItem>
               ))}
@@ -142,17 +141,17 @@ function SurveyInformation({ survey }: SurveyInformationProps) {
             id="outlined-questions"
             label="N. questions"
             variant="outlined"
-            sx={{ width: "90%" }}
             value={survey?.questions?.length || 0}
             disabled
+            sx={{ fontSize: "14px", fontWeight: "400", fontFamily:"Open Sans ,sans-serif",color:"#0009",lineHeight:"20px",width:"90%"}}
           />
           <Box>
-            <Typography>Mandatory</Typography>
+            <Typography  sx={{ fontSize: "14px", fontWeight: "600", fontFamily:"Open Sans sans-serif",color:"#000",lineHeight:"21px"}}>Mandatory</Typography>
             <Switch checked={survey?.is_mandatory || false} disabled />
           </Box>
         </Box>
         <Box sx={{ width: "50%" }}>
-          <Typography sx={{ fontSize: "20px", fontWeight: "500" }}>Dates</Typography>
+          <Typography sx={{ fontSize: "18px", fontWeight: "600", fontFamily:"Open Sans sans-serif",color:"#000" }}>Dates</Typography>
           
           
           <Box sx={{ bgcolor: "#fafafa", border: "1px solid #e0e0e0", width: "85%", padding: 2 }}>

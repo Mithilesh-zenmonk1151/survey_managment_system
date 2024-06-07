@@ -35,8 +35,14 @@ exports.get_survey = async (payload) => {
     const get_srv = await survey.findAndCountAll({
       include: [
         { model: survey_type, as: "survey_type" },
-        { model: question, as: "questions" }, // Include the 'question' model
-      ],order: [['createdAt', 'ASC']],
+        {
+          model: question,
+          as: "questions",
+         
+         
+        }
+      ],
+      order: [['createdAt', 'ASC']],
       where: { deleted_at: null }
       // limit: limit,
       // offset: offset,
@@ -50,8 +56,8 @@ exports.get_survey = async (payload) => {
       // total_items: total_items,
       // total_pages: Math.ceil(total_items / limit),
       // current_page: page_number,
-      
     };
+    console.log("RES",res)
     return res;
   } catch (error) {
     throw error;

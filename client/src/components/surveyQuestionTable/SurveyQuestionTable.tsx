@@ -47,8 +47,7 @@ const SurveyQuestionTable: React.FC<SurveyInfo> = ({
   const dispatch = useAppDispatch();
   const survey_id = survey.id;
   const { content } = useAppSelector((state) => state.questions);
-  console.log("Conteantssss",content)
-
+console.log("QUESTIONS==========",content)
   useEffect(() => {
     if (content?.response?.length) {
       const mappedRows = content.response.map((item, index) => ({

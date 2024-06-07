@@ -5,8 +5,8 @@
 .css-yrdy0g-MuiDataGrid-columnHeaderRow{
     background-color: #efefef !important;
     font-size: 13px !important;
-    font-weight: 800 !important;
-    font-family:"Open Sans" !important;
+    font-weight: 600 !important;
+    font-family:"Open Sans", "sans-serif" !important;
     color: #424242 !important;
     line-height: 24px !important;
     height:39px !important;
@@ -17,9 +17,20 @@
   }
   .css-n3fyjk-MuiDataGrid-root .MuiDataGrid-virtualScrollerContent .MuiDataGrid-row{
     max-height: 20px !important;
+    
   }
   .MuiDataGrid-row{
-    max-height: 20px !important;
+    min-height: 39px !important;
+    height: 40px !important;
+    /* color: #da3838 !important; */
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    font-family:"Open Sans", "sans-serif" !important;
+    color: #424242 !important;
+    line-height: 24px !important;
+    height:39px !important;
+    align-items: center;
+    justify-content: center;
 
     
   }
