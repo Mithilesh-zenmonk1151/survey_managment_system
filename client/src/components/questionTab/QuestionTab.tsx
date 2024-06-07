@@ -59,6 +59,7 @@ const survey_id= survey?.id;
   // useEffect(() => {
   //     const fetchData = async () => {
   //       try {
+  
   //         const data = await dispatch(get_question_of_survey(survey_id));
   //         const respo: Question[] = data?.payload?.response;
   //         setSelectedQuestions(respo);

@@ -1,6 +1,14 @@
 import React, { useState } from "react";
-import { Tabs, Tab, Box, Button, Switch, Typography, IconButton } from "@mui/material";
-import CloseIcon from '@mui/icons-material/Close';
+import {
+  Tabs,
+  Tab,
+  Box,
+  Button,
+  Switch,
+  Typography,
+  IconButton,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { useRouter } from "next/navigation";
 import DataTable from "../tableOneComponent/StickyHeadTable"; // Adjust import path if necessary
 import SearchbarCompo from "../searchBar/SearchBarCompo";
@@ -24,12 +32,17 @@ const MyTabsComponent = () => {
   const router = useRouter();
   const [showDeleted, setShowDeleted] = useState(false);
 
-  const survey_type = useAppSelector((state) => state.survey_type?.content?.response) || [];
-  const abbr = useAppSelector((state) => state.survey?.content?.response?.data?.rows) || [];
+  const survey_type =
+    useAppSelector((state) => state.survey_type?.content?.response) || [];
+  const abbr =
+    useAppSelector((state) => state.survey?.content?.response?.data?.rows) ||
+    [];
 
   const handleAddTab = (newTab: TabContent) => {
     setAdditionalTabs((prevTabs) => {
-      const existingTabIndex = prevTabs.findIndex((tab) => tab.id === newTab.id);
+      const existingTabIndex = prevTabs.findIndex(
+        (tab) => tab.id === newTab.id
+      );
       if (existingTabIndex !== -1) {
         setValue(existingTabIndex + 1);
         router.push(`?${newTab.id}`);
@@ -46,10 +59,7 @@ const MyTabsComponent = () => {
     });
   };
 
-  const status = [
-    { name: 'Published' },
-    { name: 'Unpublished' },
-  ];
+  const status = [{ name: "Published" }, { name: "Unpublished" }];
 
   const handleRemoveTab = (index: number) => {
     setAdditionalTabs((prevTabs) => {
@@ -63,14 +73,16 @@ const MyTabsComponent = () => {
     {
       id: "main",
       label: "Surveys",
-      content: <DataTable
-        onAddTab={handleAddTab}
-        checkSelectedType={checkSelectedType}
-        searchTerm={searchTerm}
-        selectedType={selectedType}
-        is_published={selectedPublishedType}
-        showDeleted={showDeleted}
-      />,
+      content: (
+        <DataTable
+          onAddTab={handleAddTab}
+          checkSelectedType={checkSelectedType}
+          searchTerm={searchTerm}
+          selectedType={selectedType}
+          is_published={selectedPublishedType}
+          showDeleted={showDeleted}
+        />
+      ),
     },
     ...additionalTabs,
   ];
@@ -107,14 +119,13 @@ const MyTabsComponent = () => {
             label={
               <Box
                 sx={{
-                  display: 'flex',
-                  alignItems: 'center',
+                  display: "flex",
+                  alignItems: "center",
                   fontSize: "14px",
                   paddingLeft: "20px",
                   fontWeight: "600",
                   fontFamily: "Open Sans, sans-serif",
-                  color:"#424242"
-                  
+                  color: "#424242",
                 }}
               >
                 {tab.label}
@@ -138,13 +149,24 @@ const MyTabsComponent = () => {
       <Box sx={{ height: "1px", width: "100%" }}></Box>
       <Box sx={{ bgcolor: "white" }}>
         {value === 0 && (
-          <Box sx={{ display: "flex", justifyContent: "space-between", padding: "24px" }}>
-            <Box sx={{ display: "flex", alignItems: "center", paddingLeft: "20px" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              padding: "24px",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                paddingLeft: "20px",
+              }}
+            >
               <SearchbarCompo
                 customPlaceHolder="Search......"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                
               />
               <SearchingDropDown
                 select_type=""
@@ -170,10 +192,19 @@ const MyTabsComponent = () => {
               />
               <Button onClick={handleOnClearClick}>Clear</Button>
             </Box>
-            <Box sx={{ display: "flex", alignContent: "center", alignItems: "center", textAlign: "center" }}>
-              <Switch checked={showDeleted}
+            <Box
+              sx={{
+                display: "flex",
+                alignContent: "center",
+                alignItems: "center",
+                textAlign: "center",
+              }}
+            >
+              <Switch
+                checked={showDeleted}
                 onChange={() => setShowDeleted(!showDeleted)}
-                inputProps={{ "aria-label": "Show deleted" }} />
+                inputProps={{ "aria-label": "Show deleted" }}
+              />
               <Typography>Show deleted</Typography>
             </Box>
           </Box>
